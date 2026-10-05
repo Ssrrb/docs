@@ -26,3 +26,4 @@ A source provides evidence. A source creates no rule. These sources came from `f
 |---|---|
 | *Designing Data-Intensive Applications*, Martin Kleppmann | A first-class engineering process. The code must stay extensible and clean. A team must update a module. A team must extend a module. A team must change a module for one project. The change must not break the system. |
 | W. Ross Ashby, the law of requisite variety | Only variety absorbs variety. The current rule is L0-06. |
+| [Visual Studio Code roadmap wiki](https://github.com/microsoft/vscode/wiki/Roadmap) | Example of a roadmap grouped by themes and initiatives, with status annotations and nested work. |
