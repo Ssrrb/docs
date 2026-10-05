@@ -103,7 +103,8 @@ The states of an advance certificate follow this order.
 | Draft | The user edits the certificate and its lines. |
 | Issued | The user issued the certificate to the work. |
 | Approved | The user confirmed the measurement. The certificate measures the budget and certifies its contract. |
-| Rejected | The user refused the measurement. The certificate returns to `borrador`. |
+
+The certificate holds three states. A rejection is not a state. A rejection from `emitido` returns the certificate to `borrador`.
 
 ## Example
 
