@@ -57,3 +57,11 @@ Git is the history. No document holds a version. No document holds a revision da
 ## Language
 
 The repository holds English content. The reader uses the Chrome translation service to read the wiki in another language.
+
+## Setup
+
+Launch with
+
+```sh
+npx @docs.page/cli preview
+```
