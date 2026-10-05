@@ -1,0 +1,11 @@
+#!/bin/sh
+# The commit hook of this repository.
+# Git holds no hook in a commit. The author sets this path once after a clone.
+#
+#   git config core.hooksPath .githooks
+
+set -eu
+
+root=$(git rev-parse --show-toplevel)
+
+sh "$root/scripts/check.sh"

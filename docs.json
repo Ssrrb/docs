@@ -1,20 +1,35 @@
 {
   "$schema": "https://docs.page/schema.json",
-  "name": "Obra Studio Docs",
-  "description": "Obra Studio Docs documentation",
+  "name": "Obra Studio",
+  "description": "Documentation for Obra Studio",
   "sidebar": [
     {
-      "group": "Getting Started",
+      "group": "Foundations",
       "pages": [
         {
-          "title": "Getting to know docs.page",
-          "href": "/",
-          "icon": "rocket"
-        },
+          "title": "Principles",
+          "href": "/foundations/principles",
+          "icon": "anchor"
+        }
+      ]
+    },
+    {
+      "group": "Execution",
+      "pages": [
         {
-          "title": "Next Steps",
-          "href": "/next-steps",
-          "icon": "arrow-right"
+          "title": "Roadmap",
+          "href": "/execution/roadmap",
+          "icon": "map"
+        }
+      ]
+    },
+    {
+      "group": "References",
+      "pages": [
+        {
+          "title": "Tools and references",
+          "href": "/references/tools",
+          "icon": "wrench"
         }
       ]
     }

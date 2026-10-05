@@ -4,7 +4,7 @@ This file is the entry point for every agent that works in this repository.
 
 It holds the basic idea of the project and the terminology that every agent needs. It states where a topic belongs. It states how to write a document.
 
-This file states no rule of the project. `foundations/principles.md` holds the rules. `foundations/terminology.md` holds each full definition. If this file differs from one of those files, the file that holds the rule is correct.
+This file states no rule of the project. `foundations/principles.md` holds the rules. If this file differs from that file, that file is correct.
 
 ## 1. The project
 
@@ -18,7 +18,7 @@ The application has an opinionated core. The core holds a base structure, a cent
 
 ### Project terms
 
-This table gives one line per term. The full definition lives in `foundations/terminology.md`.
+This table holds the one meaning of each term. No other document states a second meaning for a term in this table.
 
 | Term | One line |
 |---|---|
@@ -44,7 +44,7 @@ This table gives one line per term. The full definition lives in `foundations/te
 | Obra (work site) | The unit of work of a construction company. |
 | Project | A group of `obra`. |
 
-The name `obra` names an entity of the domain. The name `Obras` names a module of the application. The `domain/` folder holds the full definition of the three domain terms when that folder appears.
+The name `obra` names an entity of the domain. The name `Obras` names a module of the application. The `domain/` folder holds the rules for the three domain terms when that folder appears. The `domain/` folder will hold budgets, unit price analysis, M.O. (labor), inputs, subcontractors, suppliers, and certificates.
 
 ### Writing terms
 
@@ -62,13 +62,14 @@ This table gives the words that this file uses.
 | Gloss | The English words that follow a Spanish term. |
 | Example | A line or a table that shows the use of a rule. Do not write an example as a rule. |
 | Citation | A reference to the identifier of a rule. |
+| Check | A program that verifies a rule. |
 
 ## 3. How to work
 
 1. Read section 4. Name the folder that holds the topic.
 2. Search that folder for a document that covers the topic.
 3. Read the document. Then read the documents of the folders with lower authority.
-4. Read `foundations/terminology.md` before a document defines a project term. The table in section 2 gives one line. The table gives no full definition.
+4. Use each project term as section 2 defines it. A term has one meaning.
 5. Extend the document that covers the topic. Create a file only if no document covers the topic.
 6. Follow sections 5 to 8. Check the result against section 10.
 7. Commit the change.
@@ -85,7 +86,7 @@ An agent must not reinterpret an instruction. An agent must not ignore an instru
 
 | Folder | Authority | Content |
 |---|---|---|
-| `foundations/` | L0 | Invariants, principles, terminology, permanent constraints. |
+| `foundations/` | L0 | Invariants, principles, permanent constraints. |
 | `domain/` | L1 | Entities, ownership, relationships, business rules. |
 | `system/` | L2 | Architecture, permissions, APIs, events, persistence. |
 | `product/` | L3 | Interfaces, workflows, features, observable behavior. |
@@ -145,6 +146,12 @@ An identifier contains a layer letter, a hyphen, and two digits. An example is `
 - Do not use a retired number for another rule.
 - Cite a rule by its identifier. Do not cite a rule by its title.
 
+### The limit for this file
+
+A check enforces the word limit of this file. The check holds the limit. The check is `scripts/check.sh`. The commit hook runs the check. A commit with a failing check does not pass.
+
+If the check fails, the agent removes words. The agent must not remove a rule to fit the limit. The author amends the limit in the check.
+
 ## 7. Language and style
 
 - Write the content in English.
@@ -196,6 +203,7 @@ Before the agent commits a document, the agent checks the list.
 - A document of that folder covers the topic.
 - The file name holds no layer number. The file name does not repeat the folder.
 - The header holds a title and a state line.
-- Each rule states one obligation and holds an identifier.
+- Each rule in a knowledge document states one obligation and holds an identifier.
 - No document holds a version or a revision date.
 - The commit message states what changed and why it changed.
+- If the change touches this file, the check passes.

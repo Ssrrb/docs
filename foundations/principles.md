@@ -1,0 +1,93 @@
+# Principles
+
+*Foundations · approved*
+
+## Purpose
+
+Obra Studio is an application that is open to modular extensions for construction companies. The first product serves construction companies in Paraguay. The first product serves one user with several projects. The people who use the application are engineers and architects.
+
+The application uses an opinionated core. The core establishes a base structure, a central library, and a common design. Modules and connectors follow that structure and that design.
+
+The ERP is the engine for cost, capital, and control. The ECMS is the engine for engineering processes and for project processes. The bridge allows an exchange of information between the two engines.
+
+The harness and the central library are internal components. Modules work as plugins. Modules work as extensions of the application.
+
+The application adapts to other contexts through the removal of modules. The application adapts to other contexts through the replacement of modules. A construction company in Germany that works with the government is an example of future adaptation. The example does not extend the scope of the MVP.
+
+The variety of the application resides in the extension points of the core. The variety of the application resides in the module reserve. The core remains stable. Modules absorb the needs of each project.
+
+The scope of the higher layers and the pending work are recorded in `execution/roadmap.md`. That file has no authority.
+
+## Fundamental rules
+
+### L0-01 — Opinionated core
+
+The core must establish a base structure. The core must establish a common design.
+
+The core must remain one core. The core must remain stable. A second core does not replace the established core.
+
+Every module must follow the base structure. Every module must follow the common design. Every connector must follow the base structure. Every connector must follow the common design.
+
+### L0-02 — Mandatory central library
+
+Every module must use the central library for a common function. Every connector must use the central library for a common function. The central library provides the common function.
+
+A module must not replace a common function with its own implementation. A connector must not replace a common function with its own implementation.
+
+The central library must include a function when two or more modules need the function. The central library must include a function when two or more connectors need the function. A module must not implement the function on its own.
+
+A function that only one module needs is a specific function. The module must implement the specific function through the base structure. The module must implement the specific function through the central library.
+
+A need of a module can start a proposal to extend the central library. The extension must respect the approved rules of this layer.
+
+### L0-03 — Conformance criterion
+
+The conformance criterion is one criterion. The conformance criterion is the use of the base structure. The conformance criterion is the use of the common design. The conformance criterion is the use of the central library.
+
+The conformance criterion applies to the core. The conformance criterion applies to the central library. The conformance criterion applies to the modules. The conformance criterion applies to the connectors. No component has another criterion.
+
+Customization must respect the conformance criterion. Customization changes an extension. Customization does not change the criterion.
+
+### L0-04 — Responsibility of the engines
+
+The ERP must act as the engine for cost, capital, and control.
+
+The ECMS must act as the engine for engineering processes. The ECMS must act as the engine for project processes.
+
+An exchange between the two engines must keep those responsibilities.
+
+The ERP is a module of the core. The ECMS is a module of the core. Each engine may keep its own interfaces. Each engine may keep its own internal schemas. Each engine must use the central library. Each engine must follow the common design.
+
+The `domain/` folder defines the responsibility for each piece of information. The `system/` folder defines the exchange contracts.
+
+### L0-05 — Composition through extensions
+
+The modules must integrate as plugins. The modules must integrate as extensions of the application.
+
+The application must allow a change of its composition through the removal of modules. The application must allow a change of its composition through the replacement of modules.
+
+A replacement module must use the central library. A replacement module must follow the common design.
+
+The platform must keep the ability to create modules through programming. The platform must keep the ability to create connectors through programming.
+
+### L0-06 — Variety absorbs variety
+
+An application can serve a need only if the application already contains that need as a possibility. An application cannot serve a need that the application does not contain.
+
+The variety of the application must reside in the extension points of the core. The variety of the application must reside in the module reserve.
+
+The core must not grow to serve a specific need. To serve a specific need, add a module. To serve a specific need, do not add an extension point.
+
+The module reserve must grow to serve the needs of the projects. To extend the reserve, add modules. To extend the reserve, do not change the core.
+
+An application with a small module reserve has a small variety. An application with a large module reserve has a large variety. The platform must keep a module reserve that is enough for the needs of the project.
+
+The core must stay stable in its set of extension points. To add a module, do not change the core.
+
+## Change control
+
+An approved rule in this folder must change only through an explicit amendment from the author.
+
+The amendment is a commit. The commit message names the identifier of the affected rule. The commit message names the higher-layer documents that the amendment changes.
+
+This folder has no change log. The Git history is the log.

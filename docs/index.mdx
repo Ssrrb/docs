@@ -1,58 +1,26 @@
 ---
-title: Welcome to docs.page!
-description: Get started with docs.page
+title: Obra Studio
+description: Documentation for Obra Studio
 ---
 
-Welcome to docs.page! The init command you just ran created a basic file structure in your project to help you get started.
+# Obra Studio
 
-This site is the documentation home for Obra Studio, published from a public GitHub repository with docs.page.
+Obra Studio is an application that is open to modular extensions for construction companies. The first product serves construction companies in Paraguay.
 
-## Walkthrough
+Use the Chrome translation service to read this site in another language.
 
-### Configuration
+## Documents
 
-In the root of your directory, a new `docs.json` file has been created. This file configures your documentation site. You can customize the name, description, sidebar, theme, logos, and more.
+| Document | Content |
+|---|---|
+| [Principles](/foundations/principles) | Invariants and permanent rules. |
+| [Roadmap](/execution/roadmap) | Scope by layer and pending work. |
+| [Tools and references](/references/tools) | The tools, books, and links of the team. |
 
-Here's a basic example of what the file looks like:
+`AGENTS.md` in the repository root holds the terms of the project. It holds the guide for writing a document.
 
-```json title="docs.json"
-{
-  "$schema": "https://docs.page/schema.json",
-  "name": "Obra Studio Docs",
-  "description": "Obra Studio Docs documentation",
-  "sidebar": [
-    {
-      "group": "Getting Started",
-      "pages": [
-        {
-          "title": "Getting to know docs.page",
-          "href": "/",
-          "icon": "rocket"
-        },
-        {
-          "title": "Next Steps",
-          "href": "/next-steps",
-          "icon": "arrow-right"
-        }
-      ]
-    }
-  ]
-}
-```
+## Layers
 
-To learn more about advanced configuration options, check out the [docs](https://use.docs.page/configuration).
+Authority descends. `foundations/` has the highest authority.
 
-### Content
-
-docs.page uses the `docs` directory to store your documentation pages. Two pages have been created for you:
-
-- `index.mdx` - The home page of your documentation site, resolves to the root URL.
-- `next-steps.mdx` - A page to help you get started with docs.page, resolves to `/next-steps`.
-
-Documentation can be written using the standard [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) and also supports [MDX](https://mdxjs.com/) components for more advanced use cases.
-
-## Preview
-
-To preview your documentation site, head over to [https://docs.page/preview](https://docs.page/preview) in your browser and open this directory.
-
-Previewing your documentation site lets you see changes in real time before you publish them.
+The folders `domain/`, `system/`, and `product/` have no documents yet. The [Roadmap](/execution/roadmap) holds the expected scope.
