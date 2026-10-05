@@ -4,7 +4,7 @@ This file is the entry point for every agent that works in this repository.
 
 It holds the basic idea of the project and the terminology that every agent needs. It states where a topic belongs. It states how to write a document.
 
-This file states no rule of the project. `foundations/principles.md` holds the rules. If this file differs from that file, that file is correct.
+This file states no rule of the project. `docs/foundations/principles.mdx` holds the rules. If this file differs from that file, that file is correct.
 
 ## 1. The project
 
@@ -12,7 +12,7 @@ Obra Studio is an application for construction companies. The first product serv
 
 The application has an opinionated core. The core holds a base structure, a central library, and a common design. Modules and connectors follow that structure. A new need enters through a module, not through a change of the core.
 
-`foundations/principles.md` holds the rules of this section.
+`docs/foundations/principles.mdx` holds the rules of this section.
 
 ## 2. Terminology
 
@@ -44,7 +44,7 @@ This table holds the one meaning of each term. No other document states a second
 | Obra (work site) | The unit of work of a construction company. |
 | Project | A group of `obra`. |
 
-The name `obra` names an entity of the domain. The name `Obras` names a module of the application. The `domain/` folder holds the rules for the three domain terms when that folder appears. The `domain/` folder will hold budgets, unit price analysis, M.O. (labor), inputs, subcontractors, suppliers, and certificates.
+The name `obra` names an entity of the domain. The name `Obras` names a module of the application. The `docs/domain/` folder holds the rules for the three domain terms when that folder appears. The `docs/domain/` folder will hold budgets, unit price analysis, M.O. (labor), inputs, subcontractors, suppliers, and certificates.
 
 ### Writing terms
 
@@ -52,7 +52,7 @@ This table gives the words that this file uses.
 
 | Term | Meaning in this file |
 |---|---|
-| Layer | One level of authority. `foundations/` is L0. `domain/` is L1. |
+| Layer | One level of authority. `docs/foundations/` is L0. `docs/domain/` is L1. |
 | Authority | The right of a layer to define a rule. |
 | Rule | A sentence that states one obligation. |
 | Obligation | A requirement that a rule states. |
@@ -84,17 +84,19 @@ An agent must not reinterpret an instruction. An agent must not ignore an instru
 
 ## 4. Where a topic belongs
 
+Each folder sits under `docs/`. The site serves no document from another location.
+
 | Folder | Authority | Content |
 |---|---|---|
-| `foundations/` | L0 | Invariants, principles, permanent constraints. |
-| `domain/` | L1 | Entities, ownership, relationships, business rules. |
-| `system/` | L2 | Architecture, permissions, APIs, events, persistence. |
-| `product/` | L3 | Interfaces, workflows, features, observable behavior. |
-| `execution/` | L4 | Roadmap, pending work, implementation plans. |
-| `references/` | None | Tools, books, links, anti-patterns. |
-| `decisions/` | None | The reason for a decision. The options that were rejected. |
+| `docs/foundations/` | L0 | Invariants, principles, permanent constraints. |
+| `docs/domain/` | L1 | Entities, ownership, relationships, business rules. |
+| `docs/system/` | L2 | Architecture, permissions, APIs, events, persistence. |
+| `docs/product/` | L3 | Interfaces, workflows, features, observable behavior. |
+| `docs/execution/` | L4 | Roadmap, pending work, implementation plans. |
+| `docs/references/` | None | Tools, books, links, anti-patterns. |
+| `docs/decisions/` | None | The reason for a decision. The options that were rejected. |
 
-Authority descends. `foundations/` has the highest authority.
+Authority descends. `docs/foundations/` has the highest authority.
 
 - A higher layer must not redefine a rule of a lower layer.
 - An approved rule changes only through an amendment from the author.
@@ -107,8 +109,8 @@ Authority descends. `foundations/` has the highest authority.
 ### File names
 
 - The name states the topic. The name contains no layer number.
-- The name uses lowercase letters and hyphens. An example is `unit-price-analysis.md`.
-- The name does not repeat the folder. An example is `domain/budgets.md`. Do not write `domain/domain-budgets.md`.
+- The name uses lowercase letters and hyphens. An example is `unit-price-analysis.mdx`.
+- The name does not repeat the folder. An example is `budgets.mdx` in `docs/domain/`. Do not write `domain-budgets.mdx`.
 
 ## 5. Document form
 
@@ -138,7 +140,7 @@ The state line contains the folder name. The state line contains the state.
 - Split the rule if the subject changes. Split the rule if the condition changes.
 - A rule must not hold an implementation detail of a lower layer.
 - Put an example in its own line or in its own table. Do not put an example in the sentence of a rule.
-- A citation is not a rule. Record the source in `references/` or in `decisions/`.
+- A citation is not a rule. Record the source in `docs/references/` or in `docs/decisions/`.
 
 An identifier contains a layer letter, a hyphen, and two digits. An example is `L0-01`.
 
