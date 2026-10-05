@@ -57,8 +57,8 @@
           "icon": "box"
         },
         {
-          "title": "Proveedor",
-          "href": "/domain/suppliers",
+          "title": "Socio",
+          "href": "/domain/partners",
           "icon": "truck"
         },
         {

@@ -14,83 +14,83 @@ One document measures the work. The application holds no second document for the
 
 ## Rules
 
-### L1-104 — Creation of an advance certificate
+### L1-108 — Creation of an advance certificate
 
 Only the ECMS must issue an advance certificate.
 
-### L1-105 — Work unit of an advance certificate
+### L1-109 — Work unit of an advance certificate
 
 An advance certificate must belong to exactly one work unit.
 
-### L1-106 — Contract of an advance certificate
+### L1-110 — Contract of an advance certificate
 
 An advance certificate must name at most one subcontract contract.
 
-### L1-107 — The named contract must be current
+### L1-111 — The named contract must be current
 
 An advance certificate must name a subcontract contract that is in the state `vigente`.
 
-### L1-108 — Period of an advance certificate
+### L1-112 — Period of an advance certificate
 
 An advance certificate must declare exactly one period. A period must declare one start and one end. The end of a period must be later than its start.
 
-### L1-109 — Lines of an advance certificate
+### L1-113 — Lines of an advance certificate
 
 An advance certificate must hold at least one measurement line.
 
-### L1-110 — Budget line of a measurement line
+### L1-114 — Budget line of a measurement line
 
 A measurement line must name exactly one budget line of the project.
 
-### L1-111 — Covered line
+### L1-115 — Covered line
 
 Every measurement line of an advance certificate that names a contract must name a budget line that the contract covers.
 
-### L1-112 — Period quantity of a measurement line
+### L1-116 — Period quantity of a measurement line
 
 A measurement line must declare exactly one period quantity.
 
-### L1-113 — Unit price of a measurement line
+### L1-117 — Unit price of a measurement line
 
 The unit price of a measurement line must equal the unit price of the budget line that the line names.
 
-### L1-114 — Amount of a measurement line
+### L1-118 — Amount of a measurement line
 
 The amount of a measurement line must equal the period quantity of the line multiplied by the unit price of the line.
 
-### L1-115 — Amount of an advance certificate
+### L1-119 — Amount of an advance certificate
 
 The amount of an advance certificate must equal the sum of the amounts of its measurement lines.
 
-### L1-116 — Certified quantity of a contract line
+### L1-120 — Certified quantity of a contract line
 
 The certified quantity of a subcontract contract over a budget line must equal the sum of the period quantities of the approved advance certificates of that contract that measure that line.
 
-### L1-117 — Evidence of a measurement line
+### L1-121 — Evidence of a measurement line
 
 A measurement line must hold zero evidence files or more.
 
-### L1-118 — State of an advance certificate
+### L1-122 — State of an advance certificate
 
 An advance certificate must declare exactly one state.
 
-### L1-119 — Effect of a rejection
+### L1-123 — Effect of a rejection
 
 The rejection of an advance certificate must return the certificate to the state `borrador`.
 
-### L1-120 — Record of a rejection
+### L1-124 — Record of a rejection
 
 The rejection of an advance certificate must record the account that rejected it and the moment of the rejection.
 
-### L1-121 — No deletion outside the draft
+### L1-125 — No deletion outside the draft
 
 The application must not delete an advance certificate that is not in the state `borrador`.
 
-### L1-122 — Effect of the approval on a contract
+### L1-126 — Effect of the approval on a contract
 
 The approval of an advance certificate that names a contract must add its amount to the certified amount of that contract.
 
-### L1-123 — Tax in the total
+### L1-127 — Tax in the total
 
 The total of an advance certificate must include the tax rate of the project.
 
