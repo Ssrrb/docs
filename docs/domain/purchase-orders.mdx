@@ -4,49 +4,49 @@
 
 ## Purpose
 
-A purchase order buys inputs from a supplier. The name `orden de compra` names this entity. The ERP raises a purchase order. The ERP approves it, issues it, and receives it.
+A purchase order buys inputs from a `proveedor`. The name `orden de compra` names this entity. The ERP raises a purchase order. The ERP approves it, issues it, and receives it.
 
 A purchase order commits the budget of the project. The approval of the purchase order commits the budget. The receipt of the purchase order executes the budget.
 
 ## Rules
 
-### L1-67 — Creation of a purchase order
+### L1-79 — Creation of a purchase order
 
 Only the ERP must raise a purchase order.
 
-### L1-68 — Supplier of a purchase order
+### L1-80 — Proveedor of a purchase order
 
-A purchase order must name exactly one supplier.
+A purchase order must name exactly one `proveedor`.
 
-### L1-69 — Origin in a purchase request
+### L1-81 — Origin in a purchase request
 
 A purchase order of a project that requires a purchase request must come from exactly one issued purchase request.
 
-### L1-70 — Origin in a budget line
+### L1-82 — Origin in a budget line
 
 A purchase order of a project that does not require a purchase request must come from at least one budget line.
 
-### L1-71 — Content of a purchase order
+### L1-83 — Content of a purchase order
 
 A purchase order must hold at least one input.
 
-### L1-72 — Quantity of an input
+### L1-84 — Quantity of an input
 
 A purchase order must declare exactly one quantity per input.
 
-### L1-73 — State of a purchase order
+### L1-85 — State of a purchase order
 
 A purchase order must declare exactly one state.
 
-### L1-74 — Commitment of the budget
+### L1-86 — Commitment of the budget
 
 The approval of a purchase order must commit the budget of the project.
 
-### L1-75 — No commitment before approval
+### L1-87 — No commitment before approval
 
 A purchase order that is not approved must not change the committed amount of the budget.
 
-### L1-76 — Execution of the budget
+### L1-88 — Execution of the budget
 
 The receipt of a purchase order must execute the budget of the project.
 
@@ -58,9 +58,11 @@ The states of a purchase order follow this order. The user can move a purchase o
 |---|---|
 | Draft | The user edits the purchase order. |
 | Approved | The purchase order commits the budget. |
-| Issued | The user sends the purchase order to the supplier. |
-| Received | The supplier delivered the inputs. The purchase order executes the budget. |
+| Issued | The user sent the purchase order to the `proveedor`. |
+| Received | The `proveedor` delivered the inputs. The purchase order executes the budget. |
 
 ## Notes
 
 A purchase order has no cancellation state. A draft purchase order can be deleted. An approved purchase order cannot be deleted. The document `docs/execution/roadmap.mdx` holds the work for a cancellation state.
+
+A purchase order buys inputs. An advance certificate measures work. The document `docs/domain/certificates.mdx` holds that measurement.

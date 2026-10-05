@@ -6,24 +6,24 @@
 
 An `obra` (work site) is the unit of work of a construction company. A project groups `obra`. The name `Obras` names a module of the application. The name `obra` names an entity of the domain.
 
-An `obra` holds work units. An `obra` holds no money. A project declares the currency of every amount.
+An `obra` holds the tree of work units. An `obra` holds no money. A project declares the currency of every amount.
 
 ## Rules
 
-### L1-04 — One unit of work
+### L1-05 — One unit of work
 
 An `obra` must name one unit of work.
 
-### L1-05 — Name of an obra
+### L1-06 — Name of an obra
 
 An `obra` must declare one name.
 
-### L1-06 — One project per obra
+### L1-07 — One project per obra
 
 An `obra` must belong to exactly one project.
 
 ## Notes
 
-A project can hold several `obra`. A project holds one `obra` in the MVP. The document `docs/product/mvp.mdx` states the scope of the MVP.
+A project can hold several `obra`. A project holds one `obra` in the MVP. The document `docs/product/mvp.mdx` states that scope.
 
-The term `obra` names a work site. The term also names the industry. The MVP serves the construction industry only. The document `docs/execution/roadmap.mdx` holds the work for the other industries.
+The work unit tree is the structure of the `obra`. The document `docs/domain/work-units.mdx` holds that tree.

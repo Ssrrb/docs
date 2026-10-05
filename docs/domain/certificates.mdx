@@ -1,74 +1,135 @@
-# Certificates
+# Advance certificate
 
 *Domain · draft*
 
 ## Purpose
 
-An internal advance measures work that the project has done. The name `avance interno` names this entity. A payment certificate asks a supplier for money. The name `certificado de pago` names this entity.
+An advance certificate measures the work that the project executed during one period. The name `certificado de avance` names this entity. The ECMS owns the certificate. The ECMS owns the measurement.
 
-The ECMS issues an internal advance. The ERP issues a payment certificate. An internal advance belongs to one work unit. A payment certificate pays approved internal advances.
+An advance certificate holds one period, at least one measurement line, and the evidence of each line. A measurement line names one budget line, the quantity of the period, the unit price of that budget line, and the amount.
+
+An advance certificate can name a subcontract contract. Without a contract the certificate is the internal control of the project. With a contract the certificate also consumes the ceiling of that contract.
+
+One document measures the work. The application holds no second document for the same fact.
 
 ## Rules
 
-### L1-77 — Creation of an internal advance
+### L1-104 — Creation of an advance certificate
 
-Only the ECMS must issue an internal advance.
+Only the ECMS must issue an advance certificate.
 
-### L1-78 — Work unit of an internal advance
+### L1-105 — Work unit of an advance certificate
 
-An internal advance must belong to exactly one work unit.
+An advance certificate must belong to exactly one work unit.
 
-### L1-79 — Content of an internal advance
+### L1-106 — Contract of an advance certificate
 
-An internal advance must measure at least one budget line.
+An advance certificate must name at most one subcontract contract.
 
-### L1-80 — State of an internal advance
+### L1-107 — The named contract must be current
 
-An internal advance must declare exactly one state.
+An advance certificate must name a subcontract contract that is in the state `vigente`.
 
-### L1-81 — Creation of a payment certificate
+### L1-108 — Period of an advance certificate
 
-Only the ERP must issue a payment certificate.
+An advance certificate must declare exactly one period. A period must declare one start and one end. The end of a period must be later than its start.
 
-### L1-82 — Content of a payment certificate
+### L1-109 — Lines of an advance certificate
 
-A payment certificate must hold at least one approved internal advance.
+An advance certificate must hold at least one measurement line.
 
-### L1-83 — State of a payment certificate
+### L1-110 — Budget line of a measurement line
 
-A payment certificate must declare exactly one state.
+A measurement line must name exactly one budget line of the project.
 
-### L1-84 — Payment of a payment certificate
+### L1-111 — Covered line
 
-The payment of a payment certificate must close the payment certificate.
+Every measurement line of an advance certificate that names a contract must name a budget line that the contract covers.
 
-### L1-85 — No payment before approval
+### L1-112 — Period quantity of a measurement line
 
-A payment certificate that is not approved must not be paid.
+A measurement line must declare exactly one period quantity.
+
+### L1-113 — Unit price of a measurement line
+
+The unit price of a measurement line must equal the unit price of the budget line that the line names.
+
+### L1-114 — Amount of a measurement line
+
+The amount of a measurement line must equal the period quantity of the line multiplied by the unit price of the line.
+
+### L1-115 — Amount of an advance certificate
+
+The amount of an advance certificate must equal the sum of the amounts of its measurement lines.
+
+### L1-116 — Certified quantity of a contract line
+
+The certified quantity of a subcontract contract over a budget line must equal the sum of the period quantities of the approved advance certificates of that contract that measure that line.
+
+### L1-117 — Evidence of a measurement line
+
+A measurement line must hold zero evidence files or more.
+
+### L1-118 — State of an advance certificate
+
+An advance certificate must declare exactly one state.
+
+### L1-119 — Effect of a rejection
+
+The rejection of an advance certificate must return the certificate to the state `borrador`.
+
+### L1-120 — Record of a rejection
+
+The rejection of an advance certificate must record the account that rejected it and the moment of the rejection.
+
+### L1-121 — No deletion outside the draft
+
+The application must not delete an advance certificate that is not in the state `borrador`.
+
+### L1-122 — Effect of the approval on a contract
+
+The approval of an advance certificate that names a contract must add its amount to the certified amount of that contract.
+
+### L1-123 — Tax in the total
+
+The total of an advance certificate must include the tax rate of the project.
 
 ## Example
 
-The states of an internal advance follow this order.
+The states of an advance certificate follow this order.
 
 | State | Meaning |
 |---|---|
-| Draft | The user edits the internal advance. |
-| Issued | The user issued the internal advance to the work. |
-| Approved | The user confirmed the measurement of the internal advance. |
+| Draft | The user edits the certificate and its lines. |
+| Issued | The user issued the certificate to the work. |
+| Approved | The user confirmed the measurement. The certificate measures the budget and certifies its contract. |
+| Rejected | The user refused the measurement. The certificate returns to `borrador`. |
 
-The states of a payment certificate follow this order.
+## Example
 
-| State | Meaning |
-|---|---|
-| Draft | The user edits the payment certificate. |
-| Issued | The user issued the payment certificate to the supplier. |
-| Approved | The user confirmed the payment certificate. |
-| Paid | The user paid the payment certificate. |
+One certificate holds the measurement of one period. The accumulated quantity of a line comes from the approved certificates.
+
+| Budget line | Unit price | Previous | Period | Accumulated |
+|---|---|---|---|---|
+| 2.1 Hormigón en losas | 180,000.00 | 20.00 | 12.00 | 32.00 |
+| 2.3 Armadura de losas | 95,000.00 | 4.00 | 3.00 | 7.00 |
+
+The previous quantity holds the measured quantity of the budget line. The accumulated quantity holds the measured quantity of the budget line after this certificate is approved.
+
+## Example
+
+One budget line can receive work from the crew of the project and from a subcontractor. Two accumulated quantities answer two different questions.
+
+| Budget line | Measured quantity | Certified against the contract of Hormigón del Sur |
+|---|---|---|
+| 2.1 Hormigón en losas | 32.00 | 20.00 |
+
+The measured quantity belongs to the budget line. The certified quantity belongs to the relation between the contract and the budget line.
 
 ## Notes
 
-The application holds no separation of duties. One user account issues and approves. The document `docs/product/mvp.mdx` states the scope of the MVP. The document `docs/execution/roadmap.mdx` holds the work for a second role.
+The previous quantity and the accumulated quantity of a measurement line are derived. The application must not store them. The document `docs/system/persistence.mdx` holds that rule.
 
-The states of a purchase request are not defined. The document `docs/execution/roadmap.mdx` holds that work as pending.
+The approval of a certificate refuses to pass the ceiling of its contract. The document `docs/domain/subcontracts.mdx` holds that rule.
 
-The approval of an internal advance adds its measured amount to the budget. The document `docs/domain/budgets.mdx` holds that rule.
+The ERP reads an approved certificate that names a contract as an obligation that can be paid. The ERP creates no second certification. The document `docs/domain/payments.mdx` holds that payment.

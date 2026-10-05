@@ -10,27 +10,27 @@ An input declares a unit of measure and a price. A project holds a price list. T
 
 ## Rules
 
-### L1-51 — Owner of an input
+### L1-66 — Owner of an input
 
 An input must belong to exactly one project.
 
-### L1-52 — Name of an input
+### L1-67 — Name of an input
 
 An input must declare one name.
 
-### L1-53 — Unit of measure of an input
+### L1-68 — Unit of measure of an input
 
 An input must declare exactly one unit of measure.
 
-### L1-54 — Price of an input
+### L1-69 — Price of an input
 
 An input must declare exactly one price.
 
-### L1-55 — Currency of the price of an input
+### L1-70 — Currency of the price of an input
 
 The price of an input must use the currency of the project of the input.
 
-### L1-56 — Price list of a project
+### L1-71 — Price list of a project
 
 A project must hold exactly one price list. The price list of a project must hold one price per input of the project.
 
@@ -40,11 +40,11 @@ A project buys cement and sand. The price list of the project gives the price of
 
 | Input | Unit of measure | Price |
 |---|---|---|
-| Cement | bag | 38,000 |
-| Sand | cubic metre | 92,000 |
+| Cement | bag | 38,000.00 |
+| Sand | cubic metre | 92,000.00 |
 
 The prices use the currency of the project and the tax rate of the project.
 
 ## Notes
 
-A supplier does not declare the price of an input. The document `docs/domain/suppliers.mdx` holds that rule. The prices come from the user. The application does not fetch a price from outside.
+A `proveedor` does not declare the price of an input. The document `docs/domain/suppliers.mdx` holds that rule. The prices come from the user. The application does not fetch a price from outside.

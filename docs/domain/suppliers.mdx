@@ -1,31 +1,53 @@
-# Supplier
+# Proveedor
 
 *Domain · draft*
 
 ## Purpose
 
-A supplier is a company that sells inputs. A project holds a list of suppliers. A purchase order names one supplier.
+A `proveedor` (supplier) is a company that the project buys from or signs a subcontract with. A project holds a list of `proveedor`. A `proveedor` holds no category.
 
-The price of an input belongs to a project. The price does not belong to a supplier. A supplier declares no price.
+The name `proveedor` names the record. The record has no kind. The document that names a `proveedor` gives its role. A `proveedor` acts as a supplier when a purchase order names it. A `proveedor` acts as a subcontractor when a subcontract contract names it.
+
+The same record carries both roles. A company that sells cement and that builds foundations is one `proveedor` in the list of the project.
 
 ## Rules
 
-### L1-57 — Name of a supplier
+### L1-60 — Name of a proveedor
 
-A supplier must declare one name.
+A `proveedor` must declare one name.
 
-### L1-58 — List of suppliers
+### L1-61 — List of proveedores
 
-A project must hold exactly one list of suppliers.
+A project must hold exactly one list of `proveedor`.
 
-### L1-59 — Supplier of a purchase order
+### L1-62 — No category
 
-A purchase order of a project must name exactly one supplier of the list of that project.
+A `proveedor` must not declare a category. A `proveedor` must not declare a kind.
 
-### L1-60 — No price at a supplier
+### L1-63 — Role in a purchase order
 
-A supplier must not declare the price of an input. The price list of a project holds the price of an input.
+A purchase order of a project must name exactly one `proveedor` of the list of that project.
+
+### L1-64 — Role in a subcontract contract
+
+A subcontract contract of a project must name exactly one `proveedor` of the list of that project.
+
+### L1-65 — No price at a proveedor
+
+A `proveedor` must not declare the price of an input. The price list of a project holds the price of an input.
+
+## Example
+
+One record carries both roles.
+
+| Proveedor | Named by a purchase order | Named by a subcontract contract |
+|---|---|---|
+| Hormigón del Sur | Yes | Yes |
+| acero Paraguayo | Yes | No |
+| Fundación SRL | No | Yes |
 
 ## Notes
 
-The application holds no integration with a supplier. The user enters a supplier. The document `docs/execution/roadmap.mdx` holds the work for an integration with a price catalog.
+The document `docs/domain/inputs.mdx` holds the price list of a project.
+
+The application holds no integration with a `proveedor`. The user enters a `proveedor`. The document `docs/execution/roadmap.mdx` holds the work for an integration with a price catalog.
