@@ -9,6 +9,7 @@ Documentation for Obra Studio. The application is open to modular extensions for
 | Know the project and its principles | [`docs/foundations/principles.mdx`](docs/foundations/principles.mdx) |
 | Know what the first delivery does | [`docs/product/mvp.mdx`](docs/product/mvp.mdx) |
 | Know what an entity means | [`docs/domain/`](docs/domain/) |
+| Know how the application stores and notifies | [`docs/system/`](docs/system/) |
 | Know what a term means | [`AGENTS.md`](AGENTS.md) |
 | Know what work is pending | [`docs/execution/roadmap.mdx`](docs/execution/roadmap.mdx) |
 | Know why the team chose something | [`docs/decisions/`](docs/decisions/) |

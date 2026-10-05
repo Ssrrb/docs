@@ -6,46 +6,103 @@
 
 The application stores every record on the local disk of the device. The application sends no record to a network service. The document `docs/execution/roadmap.mdx` holds the work for cloud storage.
 
-A project is a folder on the local disk. The folder of a project holds the budget of the project. The application shows that folder in the file explorer of the window.
+A project is a folder on the local disk. The folder of a project holds the budget of the project and the evidence of its documents. The application shows that folder in the file explorer of the window.
+
+The folder of a project is portable. A copy of that folder holds every record of the project.
 
 ## Rules
 
-### L2-06 — Local storage
+### L2-11 — Local storage
 
 The application must store every record on the local disk of the device.
 
-### L2-07 — No network storage
+### L2-12 — No network storage
 
 The application must not send a record to a network service.
 
-### L2-08 — One folder per project
+### L2-13 — One folder per project
 
 The application must store the records of a project in exactly one folder.
 
-### L2-09 — Visible folder
+### L2-14 — Visible folder
 
 The application must show the folder of a project in the file explorer of the window.
 
-### L2-10 — Budget file
+### L2-15 — One budget file
 
 The application must store the budget of a project in exactly one file of the folder of that project.
 
-### L2-11 — Credential storage
+### L2-16 — No derived amount
 
-The application must store a credential on the local disk of the device. The application must not send the credential to a network service.
+The application must not store a derived amount.
+
+### L2-17 — No stored allocation
+
+The application must not store the allocated indirect of a work unit.
+
+### L2-18 — No stored accumulation
+
+The application must not store the previous quantity or the accumulated quantity of a measurement line.
+
+### L2-19 — Evidence inside the project folder
+
+The application must store every evidence file inside the folder of the project.
+
+### L2-20 — Relative reference to evidence
+
+The application must store a reference to an evidence file as a path relative to the folder of the project.
+
+### L2-21 — No absolute path
+
+The application must not store an absolute path to an evidence file.
+
+### L2-22 — No embedded file content
+
+The application must not store the content of an evidence file inside another file.
+
+### L2-23 — Folder of the evidence
+
+The application must store the evidence of a document in the folder `attachments` of the project.
+
+### L2-24 — Accepted formats of evidence
+
+The application must accept only the formats JPG, PNG, and WebP for an evidence file.
+
+### L2-25 — Maximum size of evidence
+
+The application must declare one maximum size for an evidence file.
+
+### L2-26 — Credential storage
+
+The application must store a credential on the local disk of the device.
+
+### L2-27 — No credential over the network
+
+The application must not send a credential to a network service.
 
 ## Example
 
-The folder of a project holds one budget file. The name of the folder is the name of the project.
+The folder of a project holds one budget file and the evidence of its documents. The name of the folder is the name of the project.
 
 ```
 Presupuesto Zapote
 ├── budget.ifcCalc
-└── obras
+└── attachments
+    ├── certificates
+    │   └── 7f3a-21c4
+    │       ├── losa-norte.jpg
+    │       └── losa-sur.webp
+    └── payments
+        └── 0c19-8be2
+            └── transferencia.pdf
 ```
+
+The path `attachments/certificates/7f3a-21c4/losa-norte.jpg` is relative to the folder of the project.
 
 ## Notes
 
 The budget file is a format of the calculation engine. The document `docs/decisions/motor-integration.mdx` holds the decision about the engine.
 
-The application holds no second copy of a record. A record has one file. The document `docs/execution/roadmap.mdx` holds the work for cloud copies.
+The value of the maximum size of an evidence file is not defined. The document `docs/execution/roadmap.mdx` holds that work as pending.
+
+The application holds no second copy of a record. A record has one file.

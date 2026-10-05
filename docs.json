@@ -57,7 +57,7 @@
           "icon": "box"
         },
         {
-          "title": "Supplier",
+          "title": "Proveedor",
           "href": "/domain/suppliers",
           "icon": "truck"
         },
@@ -72,9 +72,19 @@
           "icon": "file-check"
         },
         {
-          "title": "Certificates",
+          "title": "Subcontract contract",
+          "href": "/domain/subcontracts",
+          "icon": "signature"
+        },
+        {
+          "title": "Advance certificate",
           "href": "/domain/certificates",
           "icon": "award"
+        },
+        {
+          "title": "Payment",
+          "href": "/domain/payments",
+          "icon": "banknote"
         }
       ]
     },
@@ -90,6 +100,11 @@
           "title": "Persistence",
           "href": "/system/persistence",
           "icon": "hard-drive"
+        },
+        {
+          "title": "Events",
+          "href": "/system/events",
+          "icon": "bell"
         }
       ]
     },
@@ -110,6 +125,11 @@
           "title": "Calculation engine integration",
           "href": "/decisions/motor-integration",
           "icon": "git-merge"
+        },
+        {
+          "title": "Certificate chain",
+          "href": "/decisions/certificate-chain",
+          "icon": "file-badge"
         }
       ]
     },

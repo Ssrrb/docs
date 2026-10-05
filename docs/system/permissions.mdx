@@ -4,15 +4,17 @@
 
 ## Purpose
 
-A capability is a permission to use one engine. The application holds two capabilities: the capability to use the ECMS and the capability to use the ERP. The domain separates the two engines. The document `docs/domain/work-units.mdx` shows the rule.
+A capability is a permission to use one engine. The application holds two capabilities: the capability to use the ECMS and the capability to use the ERP.
 
-The application grants every capability by default. A user account can hold one capability and not the other. The document `docs/domain/projects.mdx` and the document `docs/domain/certificates.mdx` state which engine owns each entity.
+The application holds no role. A role would be a set of capabilities that differs between accounts. Every account holds every capability.
+
+The application holds several accounts. Each account has its own authentication and its own inbox.
 
 ## Rules
 
 ### L2-01 — Identity of a user
 
-The application must require a local login before it opens a project.
+The application must require a local login before it creates a project or opens a project.
 
 ### L2-02 — Number of capabilities
 
@@ -30,10 +32,41 @@ The application must grant every capability to a user account by default.
 
 The application must hide the interface of an engine when a user account holds no capability for that engine.
 
-## Notes
+### L2-06 — No role
 
-The application holds no role. A role would be a set of capabilities. The application grants all of them.
+The application must not define a role.
+
+### L2-07 — The first account
+
+The application must create the first account when the application holds no account.
+
+### L2-08 — No login before the first account
+
+The application must not require a login while it holds no account.
+
+### L2-09 — Any account creates another
+
+Any account must be able to create another account.
+
+### L2-10 — Record of a state change
+
+The application must record the account and the moment of every state change of a document.
+
+## Example
+
+Two accounts of one company hold the same capabilities and separate inboxes.
+
+| Account | Capabilities | Inbox |
+|---|---|---|
+| Ana | ECMS, ERP | Ana |
+| Bruno | ECMS, ERP | Bruno |
+
+Both accounts approve documents. The application holds no rule that separates the accounts that issue a document from the accounts that approve it.
+
+## Notes
 
 The application holds no server for the login. The document `docs/system/persistence.mdx` holds the storage of a credential.
 
-The application serves one user with full capabilities in the MVP. The document `docs/product/mvp.mdx` states the scope of the MVP. The document `docs/execution/roadmap.mdx` holds the work for a second role.
+A role is a deferred need. The document `docs/execution/roadmap.mdx` holds that work.
+
+The read state of an inbox item belongs to an account. The document `docs/system/events.mdx` holds that rule.
