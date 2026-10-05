@@ -1,0 +1,49 @@
+# Purchase request
+
+*Domain · draft*
+
+## Purpose
+
+A purchase request asks for inputs. The name `partida` names this entity. The ECMS raises a purchase request. The ERP converts a purchase request into a purchase order.
+
+A purchase request belongs to one work unit. A purchase request exists only in a project that requires one. The document `docs/product/mvp.mdx` states the default purchasing flow policy.
+
+## Rules
+
+### L1-61 — Creation of a purchase request
+
+Only the ECMS must raise a purchase request.
+
+### L1-62 — Work unit of a purchase request
+
+A purchase request must belong to exactly one work unit.
+
+### L1-63 — Content of a purchase request
+
+A purchase request must hold at least one input.
+
+### L1-64 — Quantity of an input
+
+A purchase request must declare exactly one quantity per input.
+
+### L1-65 — Purchasing flow policy
+
+A purchase request must exist only in a project whose purchasing flow policy requires a purchase request.
+
+### L1-66 — State of a purchase request
+
+A purchase request must declare exactly one state.
+
+## Example
+
+The states of a purchase request follow this order.
+
+| State | Meaning |
+|---|---|
+| Draft | The user edits the purchase request. |
+| Approved | The user confirmed the purchase request. |
+| Issued | The user sent the purchase request. A purchase order can come from it. |
+
+## Notes
+
+The approval of a purchase request does not commit the budget. The approval of a purchase order commits the budget. The document `docs/domain/purchase-orders.mdx` holds that rule.

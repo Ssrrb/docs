@@ -1,0 +1,39 @@
+# Permissions
+
+*System · draft*
+
+## Purpose
+
+A capability is a permission to use one engine. The application holds two capabilities: the capability to use the ECMS and the capability to use the ERP. The domain separates the two engines. The document `docs/domain/work-units.mdx` shows the rule.
+
+The application grants every capability by default. A user account can hold one capability and not the other. The document `docs/domain/projects.mdx` and the document `docs/domain/certificates.mdx` state which engine owns each entity.
+
+## Rules
+
+### L2-01 — Identity of a user
+
+The application must require a local login before it opens a project.
+
+### L2-02 — Number of capabilities
+
+The application must define exactly two capabilities: one for the ECMS and one for the ERP.
+
+### L2-03 — Assignment of a capability
+
+The application must assign each capability to a user account.
+
+### L2-04 — Default grant
+
+The application must grant every capability to a user account by default.
+
+### L2-05 — Effect on the interface
+
+The application must hide the interface of an engine when a user account holds no capability for that engine.
+
+## Notes
+
+The application holds no role. A role would be a set of capabilities. The application grants all of them.
+
+The application holds no server for the login. The document `docs/system/persistence.mdx` holds the storage of a credential.
+
+The application serves one user with full capabilities in the MVP. The document `docs/product/mvp.mdx` states the scope of the MVP. The document `docs/execution/roadmap.mdx` holds the work for a second role.

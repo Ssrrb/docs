@@ -1,0 +1,31 @@
+# Supplier
+
+*Domain · draft*
+
+## Purpose
+
+A supplier is a company that sells inputs. A project holds a list of suppliers. A purchase order names one supplier.
+
+The price of an input belongs to a project. The price does not belong to a supplier. A supplier declares no price.
+
+## Rules
+
+### L1-57 — Name of a supplier
+
+A supplier must declare one name.
+
+### L1-58 — List of suppliers
+
+A project must hold exactly one list of suppliers.
+
+### L1-59 — Supplier of a purchase order
+
+A purchase order of a project must name exactly one supplier of the list of that project.
+
+### L1-60 — No price at a supplier
+
+A supplier must not declare the price of an input. The price list of a project holds the price of an input.
+
+## Notes
+
+The application holds no integration with a supplier. The user enters a supplier. The document `docs/execution/roadmap.mdx` holds the work for an integration with a price catalog.

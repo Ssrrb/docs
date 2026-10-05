@@ -1,0 +1,58 @@
+# Project
+
+*Domain · draft*
+
+## Purpose
+
+A project is a group of `obra`. A project is the root of the work. A project declares the money of the work. A project declares how the work buys its inputs.
+
+A project holds a budget. A project holds a price list. A project holds suppliers.
+
+## Rules
+
+### L1-07 — Name of a project
+
+A project must declare one name.
+
+### L1-08 — Currency of a project
+
+A project must declare one currency.
+
+### L1-09 — Currency of every amount
+
+Every amount of a project must use the currency of the project.
+
+### L1-10 — Tax rate of a project
+
+A project must declare one tax rate.
+
+### L1-11 — Tax rate of a purchase order
+
+Every purchase order of a project must use the tax rate of the project.
+
+### L1-12 — Tax rate of a payment certificate
+
+Every payment certificate of a project must use the tax rate of the project.
+
+### L1-13 — Purchasing flow policy
+
+A project must declare exactly one purchasing flow policy.
+
+### L1-14 — Content of a purchasing flow policy
+
+A purchasing flow policy must state whether the project uses a purchase request.
+
+## Example
+
+The purchasing flow policy names the steps that the work follows. The application offers these policies.
+
+| Policy | Steps |
+|---|---|
+| `con-partida` | Budget, purchase request, purchase order, receipt |
+| `sin-partida` | Budget, purchase order, receipt |
+
+The document `docs/product/mvp.mdx` states which policy the application offers as the default.
+
+## Notes
+
+A project declares its money. A project does not declare the industry. The work of a project changes with the industry. The document `docs/execution/roadmap.mdx` holds the work for a project type.

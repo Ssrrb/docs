@@ -14,13 +14,23 @@ Use the Chrome translation service to read this site in another language.
 | Document | Content |
 |---|---|
 | [Principles](/foundations/principles) | Invariants and permanent rules. |
-| [Roadmap](/execution/roadmap) | Scope by layer and pending work. |
+| [Minimum viable product](/product/mvp) | What the first delivery does. |
+| [Roadmap](/execution/roadmap) | The pending work and the blockers. |
+| [Calculation engine integration](/decisions/motor-integration) | Why the team embeds the budget engine. |
 | [Tools and references](/references/tools) | The tools, books, and links of the team. |
 
 `AGENTS.md` in the repository root holds the terms of the project. It holds the guide for writing a document.
 
 ## Layers
 
-Authority descends. `foundations/` has the highest authority.
+Authority descends. `docs/foundations/` has the highest authority.
 
-The folders `domain/`, `system/`, and `product/` have no documents yet. The [Roadmap](/execution/roadmap) holds the expected scope.
+| Layer | Folder | Documents |
+|---|---|---|
+| L0 | `docs/foundations/` | [Principles](/foundations/principles) |
+| L1 | `docs/domain/` | [Budget](/domain/budgets), [Work unit](/domain/work-units), [Project](/domain/projects), [Obra](/domain/obra), [Construction company](/domain/companies), [Input](/domain/inputs), [Supplier](/domain/suppliers), [Purchase request](/domain/purchase-requests), [Purchase order](/domain/purchase-orders), [Certificates](/domain/certificates) |
+| L2 | `docs/system/` | [Permissions](/system/permissions), [Persistence](/system/persistence) |
+| L3 | `docs/product/` | [Minimum viable product](/product/mvp) |
+| L4 | `docs/execution/` | [Roadmap](/execution/roadmap) |
+
+The folders `docs/references/` and `docs/decisions/` hold no rule.

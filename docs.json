@@ -14,12 +14,102 @@
       ]
     },
     {
+      "group": "Product",
+      "pages": [
+        {
+          "title": "Minimum viable product",
+          "href": "/product/mvp",
+          "icon": "package"
+        }
+      ]
+    },
+    {
+      "group": "Domain",
+      "pages": [
+        {
+          "title": "Budget",
+          "href": "/domain/budgets",
+          "icon": "table"
+        },
+        {
+          "title": "Work unit",
+          "href": "/domain/work-units",
+          "icon": "layers"
+        },
+        {
+          "title": "Project",
+          "href": "/domain/projects",
+          "icon": "folder"
+        },
+        {
+          "title": "Obra",
+          "href": "/domain/obra",
+          "icon": "hard-hat"
+        },
+        {
+          "title": "Construction company",
+          "href": "/domain/companies",
+          "icon": "building"
+        },
+        {
+          "title": "Input",
+          "href": "/domain/inputs",
+          "icon": "box"
+        },
+        {
+          "title": "Supplier",
+          "href": "/domain/suppliers",
+          "icon": "truck"
+        },
+        {
+          "title": "Purchase request",
+          "href": "/domain/purchase-requests",
+          "icon": "file-plus"
+        },
+        {
+          "title": "Purchase order",
+          "href": "/domain/purchase-orders",
+          "icon": "file-check"
+        },
+        {
+          "title": "Certificates",
+          "href": "/domain/certificates",
+          "icon": "award"
+        }
+      ]
+    },
+    {
+      "group": "System",
+      "pages": [
+        {
+          "title": "Permissions",
+          "href": "/system/permissions",
+          "icon": "lock"
+        },
+        {
+          "title": "Persistence",
+          "href": "/system/persistence",
+          "icon": "hard-drive"
+        }
+      ]
+    },
+    {
       "group": "Execution",
       "pages": [
         {
           "title": "Roadmap",
           "href": "/execution/roadmap",
           "icon": "map"
+        }
+      ]
+    },
+    {
+      "group": "Decisions",
+      "pages": [
+        {
+          "title": "Calculation engine integration",
+          "href": "/decisions/motor-integration",
+          "icon": "git-merge"
         }
       ]
     },

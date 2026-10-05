@@ -6,7 +6,7 @@
 
 This roadmap groups planned work into themes and initiatives. It gives an overview of work across the project.
 
-The roadmap reflects current understanding. Feedback and new information can change, add, or defer initiatives.
+The scope of the first delivery sits in `docs/product/mvp.mdx`. This roadmap holds the work that that document leaves out. This roadmap holds the work that a document of the domain states as pending.
 
 ## Status
 
@@ -14,26 +14,183 @@ The roadmap reflects current understanding. Feedback and new information can cha
 |---|---|
 | Candidate | The work needs more definition. |
 | Exploring | The team is learning about the problem and possible solutions. |
+| Blocked | The work cannot start until another party acts. |
 | Planned | The team has selected the work, but has not started it. |
 | In progress | The team is working on the initiative. |
 | Done | The team has completed the initiative. |
 | Deferred | The team has moved the initiative out of the current focus. |
 
+## Blockers
+
+The MVP cannot ship until these two items close. Neither is code.
+
+| Blocker | Why | Status |
+|---|---|---|
+| The license text of the engine | Neither the engine nor its report library holds a `LICENSE` file. MIT requires the notice and the name of the copyright holder. | Blocked |
+| The spike of the webview | Nobody has proved that the engine package loads inside a VS Code webview with WebAssembly enabled. | Planned |
+
+The document `docs/decisions/motor-integration.mdx` holds the detail of both items.
+
 ## Themes
 
-Themes group related initiatives. Add themes as the roadmap takes shape.
+### Engine
 
-### [Theme name]
+The engine is external code. The team consumes it and does not change it. The work below keeps the application safe against the engine and correct in Paraguay.
 
-[One sentence that describes the theme and its intended outcome.]
+#### License of the engine
 
-#### [Initiative name]
+- Outcome: The team holds the MIT text and the name of the copyright holder.
+- Status: Blocked
+- GitHub issue: none yet
 
-- Outcome: [Describe the result for the user or the project.]
+#### Spike of the embedded engine
+
+- Outcome: A branch of the fork loads the budget grid in a webview, with WebAssembly, at an acceptable load time.
+- Status: Planned
+- GitHub issue: none yet
+
+#### Vulnerable and copyleft dependencies
+
+- Outcome: The bundle takes `xlsx` from its vendor, and the importer that needs `7z-wasm` is gone.
+- Status: Planned
+- GitHub issue: none yet
+
+#### Printed report in dollars
+
+- Outcome: A printed budget shows the currency of the project. The engine prints euros today.
+- Status: Planned
+- GitHub issue: none yet
+
+### Domain debt
+
+The engine holds a Dutch domain. The application needs a Paraguayan one. The work below replaces the terms and the concepts.
+
+#### Surcharge chain of Paraguay
+
+- Outcome: The team writes the surcharges and the rates of the Paraguayan chain. The structure of the chain exists. The values do not.
 - Status: Candidate
-- GitHub issue: [Link to the issue.]
-- Related work:
-  - [Related task or initiative.]
+- GitHub issue: none yet
+- Related work: `docs/domain/budgets.mdx` holds these rates as pending. `docs/product/mvp.mdx` holds the rule that stops the Dutch chain.
+
+#### Glossary of terms
+
+- Outcome: A table holds every Dutch term of the engine beside its Paraguayan term.
+- Status: Candidate
+- GitHub issue: none yet
+
+#### Precision of an amount
+
+- Outcome: A rule states the decimals and the rounding of every amount of the application.
+- Status: Done
+- Related work: `docs/domain/budgets.mdx` holds the rules L1-49 and L1-50.
+
+#### Library of Paraguayan prices
+
+- Outcome: The application offers Paraguayan prices for the common inputs. The library of the engine holds Dutch prices.
+- Status: Candidate
+- GitHub issue: none yet
+
+### Unfinished domain rules
+
+The documents of the domain name these rules as pending. The team must write them before the domain is approved.
+
+#### States of a purchase request
+
+- Outcome: A rule states the states of a purchase request.
+- Status: Done
+- Related work: `docs/domain/purchase-requests.mdx` holds the rule L1-66.
+
+#### Cancellation of a purchase order
+
+- Outcome: A rule states whether a purchase order can be cancelled after its approval, and what happens to the budget.
+- Status: Candidate
+- Related work: `docs/domain/purchase-orders.mdx`
+
+#### The relation between a budget line and a work unit
+
+- Outcome: A second file holds the relation. The engine writes the reference in the field `resourceLibraryId`. Nobody has proved that the relation survives a copy and paste.
+- Status: Exploring
+- Related work: `docs/domain/budgets.mdx`, `docs/decisions/motor-integration.mdx`
+
+### Access
+
+One user account holds every capability. The capabilities exist. The work below puts a second account in front of them.
+
+#### A second role
+
+- Outcome: One account issues a document and another approves it. The separation of duties applies to the purchase order and to the certificate.
+- Status: Candidate
+- Related work: `docs/system/permissions.mdx`, `docs/domain/certificates.mdx`
+
+### The scope after the MVP
+
+`docs/product/mvp.mdx` holds these items as non-goals. The work below brings them in.
+
+#### Documents of the work
+
+- Outcome: A project holds plans, photos, requests for information, and inspections.
+- Status: Deferred
+
+#### Stock of inputs
+
+- Outcome: A project holds a warehouse and the movements of the inputs.
+- Status: Deferred
+- Related work: `docs/domain/inputs.mdx`
+
+#### Accounting
+
+- Outcome: The ERP keeps an accounting module.
+- Status: Deferred
+
+#### Cloud storage
+
+- Outcome: The application stores records on a network service and syncs them between devices.
+- Status: Deferred
+- Related work: `docs/system/persistence.mdx`
+
+#### A second company
+
+- Outcome: The application serves several construction companies, and a login belongs to one company.
+- Status: Deferred
+- Related work: `docs/domain/companies.mdx`
+
+#### Another industry
+
+- Outcome: A project declares its industry, and a module supplies the process of that industry.
+- Status: Deferred
+- Related work: `docs/domain/obra.mdx`
+
+#### A type of project
+
+- Outcome: A project type groups projects, and the purchasing flow policy belongs to the type.
+- Status: Candidate
+- Related work: `docs/domain/projects.mdx`
+
+#### Several obras in one project
+
+- Outcome: A project holds more than one `obra`.
+- Status: Candidate
+- Related work: `docs/domain/obra.mdx`
+
+#### A gallery of modules
+
+- Outcome: The application offers a gallery of modules, and a user installs a module.
+- Status: Deferred
+- Related work: `docs/foundations/principles.mdx` holds the rules L0-05 and L0-06
+
+#### Payment of the subscription
+
+- Outcome: The application charges for a subscription.
+- Status: Deferred
+
+## Release
+
+| Milestone | Date |
+|---|---|
+| Endgame starts | 3 October 2026 |
+| Launch | 3 November 2026 |
+
+The endgame covers the two blockers, the spike, and the rules that the domain holds as pending.
 
 ## GitHub coordination
 

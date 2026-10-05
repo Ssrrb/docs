@@ -1,5 +1,7 @@
 # Tools and references
 
+*References · none*
+
 This file is the internal wiki of the team. The file lists the tools and the references that the team uses. Each entry states which tool answers which need.
 
 This file creates no rule. This file does not replace `AGENTS.md`. This file does not replace the knowledge folders of the project.
@@ -17,13 +19,51 @@ This file creates no rule. This file does not replace `AGENTS.md`. This file doe
 | Consult the code of VS Code | [DeepWiki](https://deepwiki.com/microsoft/vscode) |
 | Consult the code of VS Code offline | [Local DeepWiki export](#local-deepwiki-export) |
 | Change the application | [VS Code fork](#vs-code-fork) |
+| Calculate a budget | [Open Calc Studio](#open-calc-studio) |
+| Learn the concepts of a work | [Legacy prototype](#legacy-prototype) |
 
 ## Sources
 
-A source provides evidence. A source creates no rule. These sources came from `foundations/terminology.md`, which no longer exists.
+A source provides evidence. A source creates no rule. These sources came from `docs/foundations/terminology.md`, which no longer exists.
 
 | Source | Contribution |
 |---|---|
 | *Designing Data-Intensive Applications*, Martin Kleppmann | A first-class engineering process. The code must stay extensible and clean. A team must update a module. A team must extend a module. A team must change a module for one project. The change must not break the system. |
 | W. Ross Ashby, the law of requisite variety | Only variety absorbs variety. The current rule is L0-06. |
 | [Visual Studio Code roadmap wiki](https://github.com/microsoft/vscode/wiki/Roadmap) | Example of a roadmap grouped by themes and initiatives, with status annotations and nested work. |
+
+## Anchors
+
+### Open Calc Studio
+
+[Open Calc Studio](https://github.com/OpenAEC-Foundation/open-calc-studio) is the calculation engine of the application. It calculates a budget. It holds a Dutch domain model. The application embeds it and does not change it.
+
+The document `docs/decisions/motor-integration.mdx` holds the decision and the reason.
+
+### VS Code fork
+
+The application is a fork of Visual Studio Code. The fork is the base of the application. The application adds the two engines as modules.
+
+### Legacy prototype
+
+The repository `SISTEMA-DE-CONTROL-OBRAS` is an earlier prototype. It was built to learn the problem. Its concepts and its module logic are useful. Its data model is wrong and the application reuses none of it.
+
+### Figma
+
+Figma designs the interface of a function.
+
+### Sentry
+
+Sentry will hold error telemetry. The application has no integration yet.
+
+### docs.page
+
+[docs.page](https://docs.page) publishes this wiki.
+
+### Local DeepWiki export
+
+The export of DeepWiki for Visual Studio Code sits in the folder `deepwiki-vscode-export`. It answers a question about the code of VS Code without a network service.
+
+### Designing Data-Intensive Applications
+
+*Designing Data-Intensive Applications* by Martin Kleppmann teaches application architecture and data systems.

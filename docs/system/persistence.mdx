@@ -1,0 +1,51 @@
+# Persistence
+
+*System · draft*
+
+## Purpose
+
+The application stores every record on the local disk of the device. The application sends no record to a network service. The document `docs/execution/roadmap.mdx` holds the work for cloud storage.
+
+A project is a folder on the local disk. The folder of a project holds the budget of the project. The application shows that folder in the file explorer of the window.
+
+## Rules
+
+### L2-06 — Local storage
+
+The application must store every record on the local disk of the device.
+
+### L2-07 — No network storage
+
+The application must not send a record to a network service.
+
+### L2-08 — One folder per project
+
+The application must store the records of a project in exactly one folder.
+
+### L2-09 — Visible folder
+
+The application must show the folder of a project in the file explorer of the window.
+
+### L2-10 — Budget file
+
+The application must store the budget of a project in exactly one file of the folder of that project.
+
+### L2-11 — Credential storage
+
+The application must store a credential on the local disk of the device. The application must not send the credential to a network service.
+
+## Example
+
+The folder of a project holds one budget file. The name of the folder is the name of the project.
+
+```
+Presupuesto Zapote
+├── budget.ifcCalc
+└── obras
+```
+
+## Notes
+
+The budget file is a format of the calculation engine. The document `docs/decisions/motor-integration.mdx` holds the decision about the engine.
+
+The application holds no second copy of a record. A record has one file. The document `docs/execution/roadmap.mdx` holds the work for cloud copies.

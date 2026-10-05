@@ -1,0 +1,149 @@
+# Budget
+
+*Domain · draft*
+
+## Purpose
+
+A budget is the contract of a project. A budget is a tree of budget lines. The budget holds one surcharge chain. The budget holds the amounts that control the spending.
+
+The name `presupuesto` names this entity. The calculation engine holds the arithmetic of the budget. The document `docs/decisions/motor-integration.mdx` holds that decision.
+
+A budget line names at most one work unit. The work unit tree and the budget tree are two structures. The application holds no rule that translates one structure into the other.
+
+## Rules
+
+### L1-23 — One budget per project
+
+A project must hold exactly one budget.
+
+### L1-24 — Content of a budget
+
+A budget must hold at least one budget line.
+
+### L1-25 — Root budget line
+
+A budget must hold at least one root budget line.
+
+### L1-26 — Kind of a budget line
+
+A budget line must declare exactly one kind. The kinds are `rubro`, `subrubro`, and `línea`.
+
+### L1-27 — Parent of a budget line
+
+A budget line must have exactly one parent, or no parent when it is a root budget line.
+
+### L1-28 — No cycle
+
+The parent of a budget line must not be the budget line itself.
+
+### L1-29 — Code of a budget line
+
+A budget line must declare exactly one code.
+
+### L1-30 — Unique code
+
+The codes of the budget lines of a budget must be unique.
+
+### L1-31 — Description of a budget line
+
+A budget line must declare one description.
+
+### L1-32 — Unit of measure of a budget line
+
+A budget line must declare exactly one unit of measure.
+
+### L1-33 — Quantity of a budget line
+
+A budget line must declare one quantity.
+
+### L1-34 — Unit price of a budget line
+
+A budget line must declare one unit price.
+
+### L1-35 — Amount of a budget line
+
+The amount of a budget line must equal the quantity of the line multiplied by the unit price of the line.
+
+### L1-36 — Work unit of a budget line
+
+A budget line must name at most one work unit.
+
+### L1-37 — Total of a work unit
+
+A work unit must total the amounts of the budget lines that name that work unit.
+
+### L1-38 — Surcharge chain of a budget
+
+A budget must declare exactly one surcharge chain. The surcharge chain must apply to the whole budget.
+
+### L1-39 — Tax line of a surcharge chain
+
+A surcharge chain must hold exactly one tax line. The tax line must apply the tax rate of the project.
+
+### L1-40 — Committed amount of a budget line
+
+The committed amount of a budget line must equal the sum of the approved purchase orders that name that line.
+
+### L1-41 — Executed amount of a budget line
+
+The executed amount of a budget line must equal the sum of the received purchase orders that name that line.
+
+### L1-42 — Measured amount of a budget line
+
+The measured amount of a budget line must equal the sum of the approved internal advances that measure that line.
+
+### L1-43 — Available amount of a budget line
+
+The available amount of a budget line must equal the amount of the line minus the committed amount of the line.
+
+### L1-44 — Total of the contract amount of a budget
+
+The contract amount of a budget must equal the sum of the amounts of the root budget lines. The contract amount of a budget must include the surcharge chain.
+
+### L1-45 — Origin of the surcharge chain
+
+The surcharge chain of a budget must come from the project of that budget.
+
+### L1-46 — Rates of a surcharge chain
+
+Every surcharge of a surcharge chain must declare exactly one rate.
+
+### L1-47 — Order of a surcharge chain
+
+A surcharge chain must apply its surcharges in the declared order.
+
+### L1-48 — Rate of a tax line
+
+The rate of a tax line must be the tax rate of the project of the budget.
+
+### L1-49 — Precision of an amount
+
+Every amount of the application must hold exactly two decimals.
+
+### L1-50 — One rounded amount
+
+A budget must hold exactly one rounded amount. That amount must be the contract amount of the budget.
+
+## Example
+
+A budget line names its work unit. The amount of the work unit is the sum of the lines that name it.
+
+| Code | Description | Work unit | Amount | Committed | Executed | Measured | Available |
+|---|---|---|---|---|---|---|---|
+| 1.1 | Cement | Cimentación | 12,000,000.00 | 3,000,000.00 | 0.00 | 5,000,000.00 | 9,000,000.00 |
+| 1.2 | Arena | Cimentación | 4,000,000.00 | 0.00 | 0.00 | 0.00 | 4,000,000.00 |
+| 2.1 | Acero | Losas | 8,000,000.00 | 0.00 | 0.00 | 0.00 | 8,000,000.00 |
+
+The total of the work unit `Cimentación` is 16,000,000.00.
+
+Every amount holds two decimals. Only the contract amount of the budget is rounded.
+
+## Notes
+
+The surcharges of a chain are not defined. The rates of a chain are not defined. The document `docs/execution/roadmap.mdx` holds that work as pending.
+
+The application must not use a chain that the project did not declare. The document `docs/product/mvp.mdx` holds that rule.
+
+The application calculates a budget with the external engine. The engine writes a default chain when a budget holds no chain. That default chain applies 21% tax and 9% profit. It is a Dutch chain. It is not a chain of Obra Studio.
+
+The document `docs/decisions/motor-integration.mdx` holds the relation between the kinds `rubro`, `subrubro`, and `línea` and the record kinds of the engine.

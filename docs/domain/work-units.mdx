@@ -1,0 +1,60 @@
+# Work unit
+
+*Domain · draft*
+
+## Purpose
+
+A work unit is a node of the tree of an `obra`. The name `unidad de trabajo` names this entity. The ECMS owns the work unit. The ECMS creates it, changes it, and deletes it.
+
+A work unit is a physical part of the work: a site, a zone, or a section. A work unit holds the advances that measure the work. A work unit names the budget lines that the work spends. The document `docs/domain/budgets.mdx` holds that rule.
+
+The structure of a work unit differs from the structure of a budget line. The application holds no rule that translates one structure into the other.
+
+## Rules
+
+### L1-15 — Root work unit
+
+An `obra` must hold exactly one root work unit.
+
+### L1-16 — Parent of a work unit
+
+A work unit must have exactly one parent.
+
+### L1-17 — Parent kind
+
+The parent of a work unit must be a work unit or the root work unit of the `obra`.
+
+### L1-18 — No cycle
+
+The parent of a work unit must not be the work unit itself.
+
+### L1-19 — Name of a work unit
+
+A work unit must declare one name.
+
+### L1-20 — Creation of a work unit
+
+Only the ECMS must create a work unit.
+
+### L1-21 — Change of a work unit
+
+Only the ECMS must change a work unit.
+
+### L1-22 — Deletion of a work unit
+
+Only the ECMS must delete a work unit.
+
+## Example
+
+The tree of an `obra` holds its root work unit. Each work unit holds its children.
+
+```
+Obra
+└── Cimentación
+    ├── Pilares
+    └── Losas
+```
+
+## Notes
+
+The name of a work unit is not a budget code. The budget codes belong to the budget. The document `docs/domain/budgets.mdx` holds the rules of a budget code.

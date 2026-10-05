@@ -1,0 +1,74 @@
+# Certificates
+
+*Domain · draft*
+
+## Purpose
+
+An internal advance measures work that the project has done. The name `avance interno` names this entity. A payment certificate asks a supplier for money. The name `certificado de pago` names this entity.
+
+The ECMS issues an internal advance. The ERP issues a payment certificate. An internal advance belongs to one work unit. A payment certificate pays approved internal advances.
+
+## Rules
+
+### L1-77 — Creation of an internal advance
+
+Only the ECMS must issue an internal advance.
+
+### L1-78 — Work unit of an internal advance
+
+An internal advance must belong to exactly one work unit.
+
+### L1-79 — Content of an internal advance
+
+An internal advance must measure at least one budget line.
+
+### L1-80 — State of an internal advance
+
+An internal advance must declare exactly one state.
+
+### L1-81 — Creation of a payment certificate
+
+Only the ERP must issue a payment certificate.
+
+### L1-82 — Content of a payment certificate
+
+A payment certificate must hold at least one approved internal advance.
+
+### L1-83 — State of a payment certificate
+
+A payment certificate must declare exactly one state.
+
+### L1-84 — Payment of a payment certificate
+
+The payment of a payment certificate must close the payment certificate.
+
+### L1-85 — No payment before approval
+
+A payment certificate that is not approved must not be paid.
+
+## Example
+
+The states of an internal advance follow this order.
+
+| State | Meaning |
+|---|---|
+| Draft | The user edits the internal advance. |
+| Issued | The user issued the internal advance to the work. |
+| Approved | The user confirmed the measurement of the internal advance. |
+
+The states of a payment certificate follow this order.
+
+| State | Meaning |
+|---|---|
+| Draft | The user edits the payment certificate. |
+| Issued | The user issued the payment certificate to the supplier. |
+| Approved | The user confirmed the payment certificate. |
+| Paid | The user paid the payment certificate. |
+
+## Notes
+
+The application holds no separation of duties. One user account issues and approves. The document `docs/product/mvp.mdx` states the scope of the MVP. The document `docs/execution/roadmap.mdx` holds the work for a second role.
+
+The states of a purchase request are not defined. The document `docs/execution/roadmap.mdx` holds that work as pending.
+
+The approval of an internal advance adds its measured amount to the budget. The document `docs/domain/budgets.mdx` holds that rule.
