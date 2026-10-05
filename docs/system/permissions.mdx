@@ -52,6 +52,14 @@ Any account must be able to create another account.
 
 The application must record the account and the moment of every state change of a document.
 
+### L2-39 — Refusal at the capability
+
+The application must refuse an operation on a document when the account holds no capability for the engine that owns that document.
+
+### L2-40 — No refusal at the interface
+
+The application must not refuse an operation through a state of the interface. A refusal must not depend on a hidden panel.
+
 ## Example
 
 Two accounts of one company hold the same capabilities and separate inboxes.
@@ -63,10 +71,25 @@ Two accounts of one company hold the same capabilities and separate inboxes.
 
 Both accounts approve documents. The application holds no rule that separates the accounts that issue a document from the accounts that approve it.
 
+An account holds no capability for the ECMS. The account opens a work unit of a project that the account can read. The application refuses to change the work unit. The work unit keeps its values.
+
+| Capability of the account | The interface shows | The application does |
+|---|---|---|
+| ECMS, ERP | The panel of the work unit | The account changes the work unit. |
+| ERP | No panel of the work unit | The application refuses. The work unit keeps its values. |
+
+The second row states the rule L2-39. The rule L2-40 holds the refusal when the interface shows the panel.
+
 ## Notes
 
 The application holds no server for the login. The document `docs/system/persistence.mdx` holds the storage of a credential.
 
 A role is a deferred need. The document `docs/execution/roadmap.mdx` holds that work.
+
+The rule L2-05 states a courtesy. The rule L2-39 states the refusal. The courtesy must not replace the refusal. The rule L2-40 holds the refusal when the courtesy fails.
+
+The rule L2-40 lets a team drop a gate of the interface without opening a hole in the application. The team repairs the gate as a defect of the interface. The refusal stands without that repair.
+
+The rule L0-07 of `docs/foundations/principles.mdx` states the refusal at the layer of the engines. The rule L2-39 applies that rule to a user account.
 
 The read state of an inbox item belongs to an account. The document `docs/system/events.mdx` holds that rule.

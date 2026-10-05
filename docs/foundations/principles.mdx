@@ -84,6 +84,14 @@ An application with a small module reserve has a small variety. An application w
 
 The core must stay stable in its set of extension points. To add a module, do not change the core.
 
+### L0-07 — Refusal of the application
+
+An application can refuse an operation. An application must refuse an operation that the owner of the document does not allow.
+
+A hidden interface must not hold the only refusal. An operation that the owner of the document does not allow must leave the record unchanged.
+
+The `docs/domain/` folder names the owner of each document. The `docs/system/` folder holds the rules that refuse. A refusal must not depend on a state of the interface.
+
 ## Change control
 
 An approved rule in this folder must change only through an explicit amendment from the author.
