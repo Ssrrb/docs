@@ -15,7 +15,7 @@
   },
   "border": {
     "subtle": { "$type": "color", "$value": "#2a2e34" },
-    "control": { "$type": "color", "$value": "#646971" }
+    "control": { "$type": "color", "$value": "#656a72" }
   },
   "accent": {
     "solid": { "$type": "color", "$value": "#75aef5" },

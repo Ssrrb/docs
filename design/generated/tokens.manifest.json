@@ -61,7 +61,7 @@
   },
   "border.control": {
     "type": "color",
-    "dark": "#646971",
+    "dark": "#656a72",
     "light": "#7c8186",
     "vscode": null
   },
