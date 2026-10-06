@@ -80,6 +80,14 @@ The application must store a credential on the local disk of the device.
 
 The application must not send a credential to a network service.
 
+### L2-43 — Index of the projects
+
+The application must store one index file on the local disk. The index file must hold the path of every project of the construction company.
+
+### L2-44 — Addition to the index
+
+The application must add the path of a new project to the index file when the application creates the project.
+
 ## Example
 
 The folder of a project holds one budget file and the evidence of its documents. The name of the folder is the name of the project.
@@ -92,6 +100,9 @@ Presupuesto Zapote
     │   └── 7f3a-21c4
     │       ├── losa-norte.jpg
     │       └── losa-sur.webp
+    ├── collections
+    │   └── b3d7-05e1
+    │       └── comprobante.jpg
     └── payments
         └── 0c19-8be2
             └── transferencia.pdf
