@@ -262,5 +262,233 @@
       "lineHeight": "16px"
     },
     "vscode": null
+  },
+  "space.xxs": {
+    "type": "dimension",
+    "value": "2px",
+    "vscode": null
+  },
+  "space.xs": {
+    "type": "dimension",
+    "value": "4px",
+    "vscode": null
+  },
+  "space.sm": {
+    "type": "dimension",
+    "value": "8px",
+    "vscode": null
+  },
+  "space.md": {
+    "type": "dimension",
+    "value": "12px",
+    "vscode": null
+  },
+  "space.lg": {
+    "type": "dimension",
+    "value": "16px",
+    "vscode": null
+  },
+  "space.xl": {
+    "type": "dimension",
+    "value": "24px",
+    "vscode": null
+  },
+  "space.2xl": {
+    "type": "dimension",
+    "value": "32px",
+    "vscode": null
+  },
+  "space.3xl": {
+    "type": "dimension",
+    "value": "48px",
+    "vscode": null
+  },
+  "radius.xs": {
+    "type": "borderRadius",
+    "value": "4px",
+    "vscode": null
+  },
+  "radius.sm": {
+    "type": "borderRadius",
+    "value": "6px",
+    "vscode": null
+  },
+  "radius.md": {
+    "type": "borderRadius",
+    "value": "8px",
+    "vscode": null
+  },
+  "radius.lg": {
+    "type": "borderRadius",
+    "value": "10px",
+    "vscode": null
+  },
+  "radius.xl": {
+    "type": "borderRadius",
+    "value": "12px",
+    "vscode": null
+  },
+  "radius.full": {
+    "type": "borderRadius",
+    "value": "999px",
+    "vscode": null
+  },
+  "font.line-height.tight": {
+    "type": "dimension",
+    "value": "16px",
+    "vscode": null
+  },
+  "font.line-height.normal": {
+    "type": "dimension",
+    "value": "18px",
+    "vscode": null
+  },
+  "font.line-height.relaxed": {
+    "type": "dimension",
+    "value": "24px",
+    "vscode": null
+  },
+  "font.line-height.title-lg": {
+    "type": "dimension",
+    "value": "26px",
+    "vscode": null
+  },
+  "font.line-height.display": {
+    "type": "dimension",
+    "value": "30px",
+    "vscode": null
+  },
+  "shadow.sm": {
+    "type": "shadow",
+    "value": {
+      "color": "rgba(0, 0, 0, 0.10)",
+      "offsetX": "0px",
+      "offsetY": "1px",
+      "blur": "2px",
+      "spread": "0px"
+    },
+    "vscode": null
+  },
+  "shadow.md": {
+    "type": "shadow",
+    "value": {
+      "color": "rgba(0, 0, 0, 0.16)",
+      "offsetX": "0px",
+      "offsetY": "4px",
+      "blur": "12px",
+      "spread": "-2px"
+    },
+    "vscode": null
+  },
+  "shadow.lg": {
+    "type": "shadow",
+    "value": {
+      "color": "rgba(0, 0, 0, 0.24)",
+      "offsetX": "0px",
+      "offsetY": "16px",
+      "blur": "32px",
+      "spread": "-8px"
+    },
+    "vscode": null
+  },
+  "motion.duration.press": {
+    "type": "dimension",
+    "value": "120ms",
+    "vscode": null
+  },
+  "motion.duration.fast": {
+    "type": "dimension",
+    "value": "150ms",
+    "vscode": null
+  },
+  "motion.duration.base": {
+    "type": "dimension",
+    "value": "200ms",
+    "vscode": null
+  },
+  "motion.duration.slow": {
+    "type": "dimension",
+    "value": "280ms",
+    "vscode": null
+  },
+  "motion.press-scale": {
+    "type": "number",
+    "value": 0.96,
+    "vscode": null
+  },
+  "layout.frame-width": {
+    "type": "dimension",
+    "value": "1440px",
+    "vscode": null
+  },
+  "layout.frame-height": {
+    "type": "dimension",
+    "value": "900px",
+    "vscode": null
+  },
+  "asset.chip.height": {
+    "type": "dimension",
+    "value": "24px",
+    "vscode": null
+  },
+  "asset.chip.padding-x": {
+    "type": "dimension",
+    "value": "8px",
+    "vscode": null
+  },
+  "asset.row.height": {
+    "type": "dimension",
+    "value": "26px",
+    "vscode": null
+  },
+  "asset.row.gap-icon": {
+    "type": "dimension",
+    "value": "8px",
+    "vscode": null
+  },
+  "asset.target.min": {
+    "type": "dimension",
+    "value": "24px",
+    "vscode": null
+  },
+  "asset.target.comfortable": {
+    "type": "dimension",
+    "value": "40px",
+    "vscode": null
+  },
+  "layout.activity-bar": {
+    "type": "dimension",
+    "value": "48px",
+    "vscode": null
+  },
+  "layout.sidebar": {
+    "type": "dimension",
+    "value": "260px",
+    "vscode": null
+  },
+  "layout.status-bar": {
+    "type": "dimension",
+    "value": "24px",
+    "vscode": null
+  },
+  "layout.toolbar": {
+    "type": "dimension",
+    "value": "40px",
+    "vscode": null
+  },
+  "layout.tabs": {
+    "type": "dimension",
+    "value": "36px",
+    "vscode": null
+  },
+  "layout.chat": {
+    "type": "dimension",
+    "value": "270px",
+    "vscode": null
+  },
+  "layout.content-padding": {
+    "type": "dimension",
+    "value": "24px",
+    "vscode": null
   }
 }

@@ -186,6 +186,16 @@ for (const [name, node] of semantic) {
   }
 }
 
+// Mode-neutral tokens: dimension, borderRadius, shadow, number from any file.
+const neutralTypes = new Set(['dimension', 'borderRadius', 'shadow', 'number']);
+for (const [name, node] of flat) {
+  if (!neutralTypes.has(node.$type)) continue;
+  if (manifest[name]) continue;
+  const resolved = resolveValue(node.$value);
+  if (resolved === undefined) continue;
+  manifest[name] = { type: node.$type, value: resolved, vscode: null };
+}
+
 // ---- write ----------------------------------------------------------------
 
 mkdirSync(outDir, { recursive: true });
