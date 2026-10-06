@@ -1,0 +1,113 @@
+# Collection
+
+*Domain · draft*
+
+## Purpose
+
+The name `cobro` names this entity. A collection records the money that a client pays a project for the work that an approved advance certificate certifies. The ERP owns the collection.
+
+A collection cancels all or part of the amount of one approved advance certificate. A collection records the client, the method, the reference, the date, and the evidence of the transfer.
+
+A registered collection never changes. A mistake is corrected by cancelling the collection with a reason and registering another one.
+
+## Rules
+
+### L1-154 — Creation of a collection
+
+Only the ERP must register a collection.
+
+### L1-155 — Client of a collection
+
+A collection must name exactly one client of the list of its project.
+
+### L1-156 — Certificate of a collection
+
+A collection must name exactly one advance certificate.
+
+### L1-157 — The named certificate must be approved
+
+A collection must name an advance certificate that is in the state `aprobado`.
+
+### L1-158 — Project of a collection
+
+A collection must belong to the same project as its advance certificate.
+
+### L1-159 — Amount of a collection
+
+A collection must declare exactly one amount. The amount of a collection must be greater than zero.
+
+### L1-160 — Method of a collection
+
+A collection must declare exactly one method. The methods are `transferencia`, `cheque`, and `efectivo`.
+
+### L1-161 — Reference of a collection
+
+A collection must declare exactly one reference.
+
+### L1-162 — Date of a collection
+
+A collection must declare exactly one date.
+
+### L1-163 — Evidence of a collection
+
+A collection must hold zero evidence files or more.
+
+### L1-164 — State of a collection
+
+A collection must declare exactly one state.
+
+### L1-165 — A registered collection never changes
+
+A collection in the state `registrado` must not change.
+
+### L1-166 — No deletion of a registered collection
+
+The application must not delete a collection in the state `registrado`.
+
+### L1-167 — Reason of a cancellation
+
+The cancellation of a collection must record one reason.
+
+### L1-168 — Hard ceiling on a collection
+
+The application must not register a collection that would make the collected amount of an advance certificate greater than the amount of that certificate.
+
+### L1-169 — Partial collection
+
+A collection must cancel all or part of the amount of its advance certificate.
+
+### L1-170 — A cancelled collection does not count
+
+A cancelled collection must not contribute to the collected amount of an advance certificate.
+
+### L1-171 — Collected amount of an advance certificate
+
+The collected amount of an advance certificate must equal the sum of the registered collections that name that certificate.
+
+## Example
+
+The states of a collection follow this order.
+
+| State | Meaning |
+|---|---|
+| Draft | The user edits the collection. |
+| Registered | The money entered the project. The collection counts. |
+| Cancelled | The collection was wrong. It keeps its record and stops counting. |
+
+## Example
+
+A certificate of 8,000,000.00 accepts collections until the collected amount reaches that amount.
+
+| Collection | Amount | Collected amount of the certificate | Available to collect |
+|---|---|---|---|
+| First | 5,000,000.00 | 5,000,000.00 | 3,000,000.00 |
+| Second | 3,000,000.00 | 8,000,000.00 | 0.00 |
+| Third | 1.00 | 8,000,000.00 | 0.00 |
+
+The application refuses the third collection.
+
+## Notes
+
+A collection records the money that enters a project. A payment records the money that leaves a project. The document `docs/domain/payments.mdx` holds the payment.
+
+The cashflow report shows the registered collections and the registered payments of every currency. The document `docs/product/mvp.mdx` holds the report. The document `docs/domain/companies.mdx` holds the sums of the two.
