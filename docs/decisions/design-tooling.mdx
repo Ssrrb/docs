@@ -1,0 +1,70 @@
+# Design tooling
+
+*Decisions · none*
+
+## Purpose
+
+Obra Studio needs to design the interface of its functions and to keep a direct
+path from the design to the fork of VS Code. This document holds the reason for
+the tool decision. This document holds the options that the team rejected. This
+document creates no rule.
+
+## The decision
+
+The design tool is [Penpot](https://penpot.app). The team connects to the open
+design file through the Penpot MCP server and drives it with the design agents
+in `.opencode/agents/`. The design tokens are DTCG JSON files in `design/tokens/`
+under `design/` of the docs repository. The sync scripts read those files and
+write the token sets of Penpot and the CSS and TypeScript of the fork.
+
+The design loop is fixed: a spec states the screen, the builder agent creates
+the frame through the MCP, the auditor agent reads the result back and reports,
+the reviewer agent checks the report against `checklist.md`. No agent generates
+application code from pixels. The fork consumes tokens and component mappings,
+not exported markup.
+
+## Why
+
+| Option | Cost | Outcome |
+|---|---|---|
+| Penpot with its MCP server | An open-source tool that an agent can read and write | Chosen |
+| Stay with Figma | A per-seat subscription, and an MCP bridge that the team would have to build first | Rejected |
+| Design only in code | Fast to start, but no reviewable visual model of the states and the copy | Rejected for the MVP |
+| Generated-from-pixels UI | The generator cannot infer the keyboard semantics of the workbench | Rejected |
+
+Penpot holds components, variants, shared libraries, design tokens, flex and
+grid layouts, prototypes and an inspect panel. Its MCP server exposes those
+objects to the agents. The file format and the token model are open. The MCP
+plugin runs in the browser and costs no additional seat.
+
+The fork inherits the workbench of VS Code. The designs extend that shell for
+construction workflows. The interaction language stays native: tree views,
+quick picks, notifications and menus follow the workbench. Material or
+component packs stay outside the decision.
+
+## The relation to the fork
+
+The chain is design → tokens → code:
+
+1. The specs in `design/` state content, states, copy and rule citations.
+2. The Penpot file holds the visual model and the component library.
+3. The token files in `design/tokens/` hold the canonical values.
+4. The mapping registry `design/mapping/penpot-vscode.json` holds, per
+   component, its variants, tokens and implementation target in the fork:
+   native workbench control, webview, or a core change.
+5. The fork consumes the tokens through the generated CSS. A webview uses the
+   variables of the theme with the prefix `--vscode-` before a brand variable.
+
+The workbench CSS of the fork stays authoritative for inherited UI. The design
+file holds no power over the shell.
+
+## Consequences
+
+- The specs, the tokens and the mappings are version controlled. The Penpot
+  file is not the source of truth; the repository is.
+- Every agent write to the design file is preceded and followed by a version
+  save in Penpot. The history of Penpot is the audit trail.
+- The design-system version, the fork version and the upstream baseline are
+  three independent versions; a release manifest records all three.
+- The design tool can change again without a second rename of the specs, since
+  the folder `design/` and the token format are tool-neutral.

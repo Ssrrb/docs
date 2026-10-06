@@ -25,3 +25,7 @@ if [ "$count" -gt "$limit" ]; then
 fi
 
 printf 'check: %s holds %s words. The limit is %s.\n' "$file" "$count" "$limit"
+
+# The design contract holds its own checks.
+dir=$(cd "$(dirname "$0")" && pwd)
+sh "$dir/check-design.sh"

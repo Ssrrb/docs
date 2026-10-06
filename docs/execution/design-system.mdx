@@ -1,0 +1,157 @@
+# Design system
+
+*Execution · draft*
+
+## Purpose
+
+This document holds the plan that moves the design work from Figma to Penpot
+and that connects the design to the implementation in the fork of VS Code. The
+decision and the reason sit in `docs/decisions/design-tooling.mdx`. The specs
+sit in `design/` of the repository root. This file holds the work, not the
+rules.
+
+## Status
+
+| Status | Meaning |
+|---|---|
+| Candidate | The work needs more definition. |
+| Planned | The work is selected, but has not started. |
+| In progress | The team is working on the initiative. |
+| Done | The team has completed the initiative. |
+| Deferred | The team moved the initiative out of the current focus. |
+
+## Themes
+
+### The design loop
+
+#### Penpot file and connection
+
+- Outcome: The file `Obra Studio · MVP` is open in Penpot with the four pages
+  `01 · Empresa`, `02 · Proyecto`, `03 · Componentes`, `04 · Impresos`, and the
+  MCP plugin is connected.
+- Status: In progress
+- Related work: `design/manifest.json`
+
+#### Baseline version
+
+- Outcome: The file holds a saved version labeled `baseline before agents`.
+- Status: In progress
+
+#### The five agents
+
+- Outcome: The agents `penpot-builder`, `penpot-auditor`, `design-reviewer`,
+  `token-engineer` and `component-mapper` exist in `.opencode/agents/`.
+- Status: Planned
+
+#### Vertical slice CV-01
+
+- Outcome: The frame `CV-01 · Proyectos` exists in both modes with its five
+  variants from tokens and library components only, and passes audit and
+  checklist.
+- Status: Planned
+
+#### Frames CV-02 to CV-06
+
+- Outcome: The six company-view frames reach `reviewed`.
+- Status: Planned
+
+#### Frames PV-00 to PV-12
+
+- Outcome: The project-view frames and the print frames reach `reviewed`.
+- Status: Planned
+
+### The token contract
+
+#### DTCG token files
+
+- Outcome: The canonical tokens sit in `design/tokens/` as primitives, semantic
+  tokens and theme files, with the measured contrast report preserved.
+- Status: Planned
+
+#### Token sync to Penpot
+
+- Outcome: The script `scripts/tokens-penpot.mjs` writes the token sets and
+  themes of the design file from the canonical files.
+- Status: Planned
+
+#### Token build for the fork
+
+- Outcome: The script `scripts/tokens-build.mjs` emits CSS custom properties
+  and TypeScript constants under `design/generated/`, with the `--vscode-*`
+  variables as runtime fallbacks for webviews. CI repeats the build and fails
+  on a dirty tree.
+- Status: Planned
+
+### The mapping registry
+
+#### Component-to-code mapping
+
+- Outcome: The file `design/mapping/penpot-vscode.json` maps every component to
+  its variants, tokens and implementation target, and the check validates the
+  schema.
+- Status: Planned
+
+### The fork
+
+#### Product identity
+
+- Outcome: The fork holds a product name, an icon, application identifiers, a
+  data folder and a URL protocol of its own; `product.json` is no longer
+  `Code - OSS`.
+- Status: Planned
+
+#### First-party extension
+
+- Outcome: The extension `extensions/obra-studio/` holds the native
+  contributions, the webviews and the bridge to the engines.
+- Status: Planned
+
+#### Webview spike with tokens
+
+- Outcome: The spike that loads the engine in a webview consumes the generated
+  token CSS from day one. This work pairs with the roadmap blocker.
+- Status: Planned
+
+#### Patch ledger
+
+- Outcome: Every change under `src/vs/` holds a ledger entry that states the
+  reason and the merge cost, and the ledger is reviewed at every upstream
+  merge.
+- Status: Planned
+
+### Quality and release
+
+#### Design regression suite
+
+- Outcome: The key screens of the fork match the reviewed frames; the suite
+  runs after every design-system change and after every upstream merge.
+- Status: Planned
+
+#### Accessibility gate
+
+- Outcome: The keyboard paths, the focus states and the contrast of the new
+  surfaces pass the checklist before a frame reaches `approved`.
+- Status: Planned
+
+#### Release manifest
+
+- Outcome: Each release records the design-system version, the fork version
+  and the upstream baseline.
+- Status: Planned
+
+## Order of work
+
+1. Connect the Penpot file and save the baseline version.
+2. Land the agents and the vertical slice CV-01.
+3. Build the component library and the remaining frames.
+4. Land the token contract and the sync scripts.
+5. Land the mapping registry.
+6. Start the fork work with the product identity and the extension skeleton.
+7. Implement per the mapping registry with the native-first rule.
+8. Close with the QA gates and the release manifest.
+
+## Relation to the roadmap
+
+This work runs in parallel with `docs/execution/roadmap.mdx`. It blocks no MVP
+item. The webview spike appears in both documents; the token contract feeds it.
+The launch date of 3 November 2026 stays untouched by this plan.
