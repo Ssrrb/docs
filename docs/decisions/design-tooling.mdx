@@ -14,8 +14,9 @@ document creates no rule.
 The design tool is [Penpot](https://penpot.app). The team connects to the open
 design file through the Penpot MCP server and drives it with the design agents
 in `.opencode/agents/`. The design tokens are DTCG JSON files in `design/tokens/`
-under `design/` of the docs repository. The sync scripts read those files and
-write the token sets of Penpot and the CSS and TypeScript of the fork.
+under `design/` of the docs repository. The build script emits the CSS and the
+sync manifest from those files, and the token-engineer agent writes the token
+sets of Penpot through the MCP from that manifest.
 
 The design loop is fixed: a spec states the screen, the builder agent creates
 the frame through the MCP, the auditor agent reads the result back and reports,

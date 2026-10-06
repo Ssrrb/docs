@@ -47,9 +47,12 @@ paper layout. Login uses the inherited controls without requiring a project.
   `better-ui`, `better-writing`, `emil-design-eng`, `penpot-uiux-design`,
   `penpot-audit-tokens`, `penpot-build-from-code`.
 - `design/tokens/` holds the canonical token files. Penpot receives token sets
-  and themes through the sync in `scripts/tokens-penpot.mjs`. The build in
-  `scripts/tokens-build.mjs` emits CSS variables and TypeScript constants.
-  Workbench CSS in `vscode/` stays authoritative for inherited UI.
+  and themes through the token-engineer agent, which reads the generated sync
+  manifest and runs the payload in `design/tools/penpot-token-sync.template.js`
+  over the Penpot MCP. The build in `scripts/tokens-build.mjs` emits the CSS
+  variables, the `--vscode-*` fallback layer and the sync manifest under
+  `design/generated/`. Workbench CSS in `vscode/` stays authoritative for
+  inherited UI.
 - `components.md` lists the required components. Build the library once and
   instance it everywhere.
 - `mapping/penpot-vscode.json` maps every component to its implementation
