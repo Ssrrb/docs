@@ -44,3 +44,11 @@ never enters this repository.
   definitions deny `webfetch` and `websearch`; a run that fetches docs dies on
   a DNS failure and wastes the task. Nothing on the network carries design
   decisions.
+
+## Known catalog limits
+
+- Penpot shadow tokens reject a negative spread. The canonical DTCG files keep
+  the negative spread (the CSS build uses it verbatim); the Penpot token holds
+  the clamped 0px value. The generated CSS stays authoritative for the fork.
+- Penpot holds no token type for durations or scale factors, so the motion
+  tokens stay canonical-only and apply to the CSS build, never to frames.
