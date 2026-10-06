@@ -1,6 +1,6 @@
 ---
 id: PV-10
-figmaName: "PV-10 · Insumos"
+frameName: "PV-10 · Insumos"
 page: "02 · Proyecto"
 status: draft
 rules: [L1-70, L1-71, L1-72, L1-73, L1-75]
@@ -47,7 +47,7 @@ The list and the editor of the inputs of the project and their price list. Each 
 | error.name | Escribe un nombre para el insumo. |
 
 ## Notes for designers
-- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `design/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - Every control is keyboard reachable with a visible focus ring; the editor traps focus and returns it to the row that opened it.
 - Money uses tabular numbers and two decimals; the price never converts to another currency.
 - Motion stays restrained: no entry animation on the list; keyboard-initiated interactions do not animate.

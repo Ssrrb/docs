@@ -1,6 +1,6 @@
 ---
 id: PV-08
-figmaName: "PV-08 · Cobros"
+frameName: "PV-08 · Cobros"
 page: "02 · Proyecto"
 status: draft
 rules: [L1-154, L1-160, L1-165, L1-167, L1-168]
@@ -57,7 +57,7 @@ The list and the editor of the collections of the project. A collection records 
 | error.action | Reintentar |
 
 ## Notes for designers
-- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `design/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - The state never travels by color alone; every control is keyboard reachable with a visible focus ring, and the cancel reason field keeps its visible label.
 - Money uses two decimals and the currency of the project; the reference and the date stay visible after registration.
 - Motion stays restrained: no entry animation on the list or the rows; keyboard-initiated interactions do not animate.

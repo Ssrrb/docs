@@ -1,6 +1,6 @@
 ---
 id: CV-06
-figmaName: "CV-06 · Nuevo proyecto"
+frameName: "CV-06 · Nuevo proyecto"
 page: "01 · Empresa"
 status: draft
 rules: [L3-21, L3-22, L3-23, L3-08, L3-24]
@@ -57,7 +57,7 @@ The template that creates a project. It asks exactly the seven questions of L3-2
 | error.file | Elige un archivo para importar. |
 
 ## Notes for designers
-- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `design/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - The template must not ask for anything else (L3-21); do not add fields.
 - The recommended values are suggestions; the user can change them (L3-08).
 

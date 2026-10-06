@@ -1,6 +1,6 @@
 ---
 id: PV-11
-figmaName: "PV-11 · Socios"
+frameName: "PV-11 · Socios"
 page: "02 · Proyecto"
 status: draft
 rules: [L1-60, L1-61, L1-62, L1-63, L1-64]
@@ -47,7 +47,7 @@ The list and the editor of the socios of the project. A socio is a neutral recor
 | error.action | Reintentar |
 
 ## Notes for designers
-- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `design/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - Every control is keyboard reachable with a visible focus ring; the editor traps focus and returns it to the row that opened it.
 - Long names and identifiers wrap or truncate with a way to reach the full value.
 - Motion stays restrained: no entry animation on the list; keyboard-initiated interactions do not animate.

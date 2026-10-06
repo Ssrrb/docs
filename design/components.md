@@ -1,9 +1,9 @@
 # Component library
 
 Build these on the page `03 · Componentes` and publish them. Screens instance
-them; never detach. Reuse the VS Code fork controls, CSS, Codicons and theme tokens. Figma library
+them; never detach. Reuse the VS Code fork controls, CSS, Codicons and theme tokens. Penpot library
 components represent those inherited controls. Add domain components where the
-workbench has no equivalent. Resolve values through `tokens.json` and use the design skills:
+workbench has no equivalent. Resolve values through `design/tokens/` and use the design skills:
 `better-interface`, `better-ui`, `better-accessibility`. Below is the inventory
 and what each component must carry.
 

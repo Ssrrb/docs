@@ -1,6 +1,6 @@
 ---
 id: PV-06
-figmaName: "PV-06 · Certificados"
+frameName: "PV-06 · Certificados"
 page: "02 · Proyecto"
 status: draft
 rules: [L1-108, L1-112, L1-121, L1-123, L1-127, L3-16, L3-17, L3-18]
@@ -57,7 +57,7 @@ The list and the editor of the advance certificates of the project. One certific
 | error.action | Reintentar |
 
 ## Notes for designers
-- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `design/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - The state never travels by color alone; every control is keyboard reachable with a visible focus ring, and the evidence viewer closes with Escape. Money uses two decimals and the currency of the project; derived quantities and amounts are read-only.
 - Motion stays restrained: no entry animation on the list or the lines; keyboard-initiated interactions do not animate.
 

@@ -12,6 +12,7 @@ Documentation for Obra Studio. The application is open to modular extensions for
 | Know how the application stores and notifies | [`docs/system/`](docs/system/) |
 | Know what a term means | [`AGENTS.md`](AGENTS.md) |
 | Know what work is pending | [`docs/execution/roadmap.mdx`](docs/execution/roadmap.mdx) |
+| Know how the design work runs | [`docs/execution/design-system.mdx`](docs/execution/design-system.mdx) |
 | Know why the team chose something | [`docs/decisions/`](docs/decisions/) |
 | Know which tools the team uses | [`docs/references/tools.mdx`](docs/references/tools.mdx) |
 | Write or change a document | [`AGENTS.md`](AGENTS.md) |

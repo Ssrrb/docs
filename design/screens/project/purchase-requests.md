@@ -1,6 +1,6 @@
 ---
 id: PV-03
-figmaName: "PV-03 · Partidas"
+frameName: "PV-03 · Partidas"
 page: "02 · Proyecto"
 status: draft
 rules: [L1-76, L1-80, L1-81, L1-82]
@@ -54,7 +54,7 @@ The partidas of the project. The ECMS raises a partida (L1-76) only in a project
 
 ## Notes for designers
 
-- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `design/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - When the policy does not require a partida, the screen and its entry points do not exist; the interface never shows a disabled version of them (L1-80).
 - The list, the editor and every state action have a keyboard path, with a visible focus indicator.
 - The approval note stays visible while the partida is not issued (L1-82).

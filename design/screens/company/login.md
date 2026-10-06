@@ -1,6 +1,6 @@
 ---
 id: CV-05
-figmaName: "CV-05 · Acceso"
+frameName: "CV-05 · Acceso"
 page: "01 · Empresa"
 status: draft
 rules: [L3-01, L3-02, L2-07, L2-08]
@@ -37,7 +37,7 @@ The local login of the application. The application asks for a login before it c
 | error.credentials | El nombre o la contraseña no son correctos. |
 
 ## Notes for designers
-- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `design/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - After the first account exists, the application requires the login before it creates or opens a project (L3-01).
 
 ## Done when

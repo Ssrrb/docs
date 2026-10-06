@@ -1,6 +1,6 @@
 ---
 id: CV-04
-figmaName: "CV-04 · Cuentas"
+frameName: "CV-04 · Cuentas"
 page: "01 · Empresa"
 status: draft
 rules: [L2-01, L2-02, L2-03, L2-04, L2-05, L2-07, L3-03, L3-34]
@@ -53,7 +53,7 @@ The accounts of the construction company and their capabilities (L3-34, L2-02, L
 | error.action | Reintentar |
 
 ## Notes for designers
-- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `design/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - Open question: rule L2-03 assigns each capability to an account. Confirm with the author that a user may change a capability after creation. Draw the Editar capacidades dialog only when the author confirms.
 
 ## Done when

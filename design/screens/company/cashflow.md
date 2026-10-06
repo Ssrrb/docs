@@ -1,6 +1,6 @@
 ---
 id: CV-03
-figmaName: "CV-03 · Flujo de caja"
+frameName: "CV-03 · Flujo de caja"
 page: "01 · Empresa"
 status: draft
 rules: [L3-32, L3-33, L1-144, L1-145, L1-146, L1-147, L1-148, L1-149]
@@ -47,7 +47,7 @@ The cashflow of the company for one period (L3-33). The company holds the inform
 | error.action | Reintentar |
 
 ## Notes for designers
-- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `design/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - The table is read-only; selecting a row does nothing.
 - The screen never offers a currency conversion (L1-147).
 

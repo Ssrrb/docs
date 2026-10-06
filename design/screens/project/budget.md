@@ -1,6 +1,6 @@
 ---
 id: PV-01
-figmaName: "PV-01 · Presupuesto"
+frameName: "PV-01 · Presupuesto"
 page: "02 · Proyecto"
 status: draft
 rules: [L3-09, L3-10, L3-11, L1-31, L1-53, L1-55, L1-57, L1-58, L1-59]
@@ -56,7 +56,7 @@ The budget of the project. A project holds exactly one budget (L1-31) and this s
 
 ## Notes for designers
 
-- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `design/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - Money columns use tabular figures and keep two decimals; only the contract amount is rounded (L1-59); an overcommitment travels with the minus sign and the label, never the color alone (L1-57).
 - The whole grid is editable by keyboard, with visible focus; a recompute rewrites values in place, without motion.
 

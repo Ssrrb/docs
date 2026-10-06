@@ -109,16 +109,6 @@
       ]
     },
     {
-      "group": "Execution",
-      "pages": [
-        {
-          "title": "Roadmap",
-          "href": "/execution/roadmap",
-          "icon": "map"
-        }
-      ]
-    },
-    {
       "group": "Decisions",
       "pages": [
         {
@@ -130,6 +120,26 @@
           "title": "Certificate chain",
           "href": "/decisions/certificate-chain",
           "icon": "file-badge"
+        },
+        {
+          "title": "Design tooling",
+          "href": "/decisions/design-tooling",
+          "icon": "palette"
+        }
+      ]
+    },
+    {
+      "group": "Execution",
+      "pages": [
+        {
+          "title": "Roadmap",
+          "href": "/execution/roadmap",
+          "icon": "map"
+        },
+        {
+          "title": "Design system",
+          "href": "/execution/design-system",
+          "icon": "palette"
         }
       ]
     },

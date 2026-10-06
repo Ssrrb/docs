@@ -11,7 +11,7 @@ This file creates no rule. This file does not replace `AGENTS.md`. This file doe
 | If you want to | Use |
 |---|---|
 | Verify a rule that a machine can verify | `scripts/check.sh` |
-| Design the interface of a function | [Figma](#figma) |
+| Design the interface of a function | [Penpot](#penpot) |
 | Learn application architecture and data systems | [*Designing Data-Intensive Applications*](#designing-data-intensive-applications) |
 | Add error telemetry | [Sentry](#sentry) — planned, not integrated |
 | Review production errors | [Sentry](#sentry) — planned, not integrated |
@@ -50,7 +50,16 @@ The repository `SISTEMA-DE-CONTROL-OBRAS` is an earlier prototype. It was built 
 
 ### Figma
 
-Figma designs the interface of a function.
+Figma was the former design tool. The design work moved to Penpot; the reason
+sits in `docs/decisions/design-tooling.mdx`. The old Figma file holds no
+authority; the specs in `design/` are the source.
+
+### Penpot
+
+[Penpot](https://penpot.app) designs the interface of a function. The team
+drives Penpot through its MCP server. The design agents in `.opencode/agents/`
+build, audit and review the file `Obra Studio · MVP`. The specifications sit in
+`design/`.
 
 ### Sentry
 

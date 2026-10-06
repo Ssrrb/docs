@@ -1,6 +1,6 @@
 ---
 id: PV-09
-figmaName: "PV-09 · Clientes"
+frameName: "PV-09 · Clientes"
 page: "02 · Proyecto"
 status: draft
 rules: [L1-150, L1-151, L1-152, L1-153]
@@ -47,7 +47,7 @@ The list and the editor of the clients of the project. A client is a person or a
 | error.name | Escribe el nombre del cliente. |
 
 ## Notes for designers
-- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `design/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - Every control is keyboard reachable with a visible focus ring; the editor traps focus and returns it to the row that opened it.
 - Long names and identifiers wrap or truncate with a way to reach the full value.
 - Motion stays restrained: no entry animation on the list; keyboard-initiated interactions do not animate.
