@@ -1,0 +1,189 @@
+{
+  "meta": {
+    "product": "Obra Studio",
+    "figmaFile": "Obra Studio · MVP",
+    "defaultMode": "dark",
+    "modes": ["dark", "light"],
+    "window": { "width": 1440, "height": 900 },
+    "source": "docs/ of the obra-studio repository, branch company-view"
+  },
+  "pages": [
+    { "id": "company", "name": "01 · Empresa" },
+    { "id": "project", "name": "02 · Proyecto" },
+    { "id": "library", "name": "03 · Componentes" },
+    { "id": "print", "name": "04 · Impresos" }
+  ],
+  "frames": [
+    {
+      "id": "CV-01",
+      "figmaName": "CV-01 · Proyectos",
+      "page": "company",
+      "spec": "screens/company/projects.md",
+      "order": 1,
+      "variants": ["Vacío · sin proyectos", "Vacío · sin terminados", "Sin resultados", "Cargando", "Error"],
+      "rules": ["L3-29", "L3-30", "L3-35", "L1-172", "L2-43"]
+    },
+    {
+      "id": "CV-02",
+      "figmaName": "CV-02 · Bandeja",
+      "page": "company",
+      "spec": "screens/company/inbox.md",
+      "order": 2,
+      "variants": ["Vacío", "Cargando", "Error"],
+      "rules": ["L3-31", "L3-13", "L3-14", "L3-15", "L2-33", "L2-36", "L2-37"]
+    },
+    {
+      "id": "CV-03",
+      "figmaName": "CV-03 · Flujo de caja",
+      "page": "company",
+      "spec": "screens/company/cashflow.md",
+      "order": 3,
+      "variants": ["Vacío", "Selector de período", "Cargando", "Error"],
+      "rules": ["L3-32", "L3-33", "L1-144", "L1-145", "L1-146", "L1-147", "L1-148", "L1-149"]
+    },
+    {
+      "id": "CV-04",
+      "figmaName": "CV-04 · Cuentas",
+      "page": "company",
+      "spec": "screens/company/accounts.md",
+      "order": 4,
+      "variants": ["Nueva cuenta", "Editar capacidades", "Error"],
+      "rules": ["L2-01", "L2-02", "L2-03", "L2-04", "L2-05", "L2-07", "L3-03", "L3-34"]
+    },
+    {
+      "id": "CV-05",
+      "figmaName": "CV-05 · Acceso",
+      "page": "company",
+      "spec": "screens/company/login.md",
+      "order": 5,
+      "variants": ["Iniciar sesión", "Primera cuenta", "Error de credenciales"],
+      "rules": ["L3-01", "L3-02", "L2-07", "L2-08"]
+    },
+    {
+      "id": "CV-06",
+      "figmaName": "CV-06 · Nuevo proyecto",
+      "page": "company",
+      "spec": "screens/company/new-project.md",
+      "order": 6,
+      "variants": ["Con importación", "Error de validación"],
+      "rules": ["L3-21", "L3-22", "L3-23", "L3-08", "L3-24"]
+    },
+    {
+      "id": "PV-00",
+      "figmaName": "PV-00 · Explorador del proyecto",
+      "page": "project",
+      "spec": "screens/project/explorer.md",
+      "order": 7,
+      "variants": ["Sin documento abierto", "Menú Nuevo", "Menú contextual de nodo"],
+      "rules": ["L2-13", "L2-14", "L3-06", "L3-27"]
+    },
+    {
+      "id": "PV-01",
+      "figmaName": "PV-01 · Presupuesto",
+      "page": "project",
+      "spec": "screens/project/budget.md",
+      "order": 8,
+      "variants": ["Cargando", "Error del motor", "Panel de recargos", "Sobrecompromiso"],
+      "rules": ["L3-09", "L3-10", "L3-11", "L1-31", "L1-53", "L1-55", "L1-57", "L1-58", "L1-59"]
+    },
+    {
+      "id": "PV-02",
+      "figmaName": "PV-02 · Unidades de trabajo",
+      "page": "project",
+      "spec": "screens/project/work-units.md",
+      "order": 9,
+      "variants": ["Vacío", "Vista económica expandida"],
+      "rules": ["L3-19", "L1-16", "L1-24", "L1-30"]
+    },
+    {
+      "id": "PV-03",
+      "figmaName": "PV-03 · Partidas",
+      "page": "project",
+      "spec": "screens/project/purchase-requests.md",
+      "order": 10,
+      "variants": ["Lista vacía", "Editor · borrador", "Editor · emitido"],
+      "rules": ["L1-76", "L1-80", "L1-81", "L1-82"]
+    },
+    {
+      "id": "PV-04",
+      "figmaName": "PV-04 · Órdenes de compra",
+      "page": "project",
+      "spec": "screens/project/purchase-orders.md",
+      "order": 11,
+      "variants": ["Lista vacía", "Editor · borrador", "Editor · recibido"],
+      "rules": ["L1-83", "L1-89", "L1-90", "L1-92"]
+    },
+    {
+      "id": "PV-05",
+      "figmaName": "PV-05 · Contratos",
+      "page": "project",
+      "spec": "screens/project/contracts.md",
+      "order": 12,
+      "variants": ["Lista vacía", "Editor · borrador", "Aumentar monto", "Editor · cerrado"],
+      "rules": ["L1-93", "L1-99", "L1-102", "L1-103", "L1-104", "L1-106", "L3-20"]
+    },
+    {
+      "id": "PV-06",
+      "figmaName": "PV-06 · Certificados",
+      "page": "project",
+      "spec": "screens/project/certificates.md",
+      "order": 13,
+      "variants": ["Lista vacía", "Editor · borrador", "Editor · aprobado", "Rechazo", "Evidencia ampliada"],
+      "rules": ["L1-108", "L1-112", "L1-121", "L1-123", "L1-127", "L3-16", "L3-17", "L3-18"]
+    },
+    {
+      "id": "PV-07",
+      "figmaName": "PV-07 · Pagos",
+      "page": "project",
+      "spec": "screens/project/payments.md",
+      "order": 14,
+      "variants": ["Lista vacía", "Editor · borrador", "Anulación"],
+      "rules": ["L1-128", "L1-133", "L1-138", "L1-140", "L1-141"]
+    },
+    {
+      "id": "PV-08",
+      "figmaName": "PV-08 · Cobros",
+      "page": "project",
+      "spec": "screens/project/collections.md",
+      "order": 15,
+      "variants": ["Lista vacía", "Editor · borrador", "Anulación"],
+      "rules": ["L1-154", "L1-160", "L1-165", "L1-167", "L1-168"]
+    },
+    {
+      "id": "PV-09",
+      "figmaName": "PV-09 · Clientes",
+      "page": "project",
+      "spec": "screens/project/clients.md",
+      "order": 16,
+      "variants": ["Vacío"],
+      "rules": ["L1-150", "L1-151", "L1-152", "L1-153"]
+    },
+    {
+      "id": "PV-10",
+      "figmaName": "PV-10 · Insumos",
+      "page": "project",
+      "spec": "screens/project/inputs.md",
+      "order": 17,
+      "variants": ["Vacío"],
+      "rules": ["L1-70", "L1-71", "L1-72", "L1-73", "L1-75"]
+    },
+    {
+      "id": "PV-11",
+      "figmaName": "PV-11 · Socios",
+      "page": "project",
+      "spec": "screens/project/socios.md",
+      "order": 18,
+      "variants": ["Vacío"],
+      "rules": ["L1-60", "L1-61", "L1-62", "L1-63", "L1-64"]
+    },
+    {
+      "id": "PV-12",
+      "figmaName": "PV-12 · Impresos",
+      "page": "print",
+      "spec": "screens/project/prints.md",
+      "order": 19,
+      "variants": ["Presupuesto A4", "Certificado A4 · portada", "Certificado A4 · medición", "Certificado A4 · evidencia"],
+      "rules": ["L3-11", "L3-18"]
+    }
+  ]
+}
