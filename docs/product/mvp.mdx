@@ -32,7 +32,7 @@ The application must show its interface in Spanish.
 
 ### L3-05 — One project at a time
 
-The application must open one project at a time.
+The application must open one project at a time. The application must show the project view of that project. The company view is not an open project.
 
 ### L3-06 — Project folder
 
@@ -94,6 +94,30 @@ The application must show the economic view of a work unit on the node of the wo
 
 The application must show the contract amount, the certified amount, the paid amount, and the available amounts of a subcontract contract.
 
+## The company view
+
+The company view is the interface that the user reaches when no project is open. The company view shows the information of every project of the construction company.
+
+### L3-28 — Reach the company view
+
+The application must let the user reach the company view. The company view must not open a project.
+
+### L3-29 — List of projects
+
+The application must show the projects of the construction company in the company view. The list must separate the active projects from the finished projects.
+
+### L3-30 — Open a project from the company view
+
+The application must open a project when the user selects it in the company view. The application must show the project view of that project.
+
+### L3-31 — Inbox in the company view
+
+The application must show the inbox in the company view. The inbox must show one item for every event of every project of the construction company. The inbox must show the events of the account that reads them.
+
+### L3-32 — Cashflow report
+
+The application must show a cashflow report in the company view. The report must show one row for every currency. The row must hold the money that entered, the money that left, and the net of that currency.
+
 ## The template
 
 The application creates a project from a template. The template asks the questions below. The template offers one recommended value for each question. The recommended values come from this table.
@@ -130,27 +154,29 @@ The application must not apply a surcharge chain that the project did not declar
 
 ## The workflow
 
-The workflow below proves that the MVP works. The user starts at an empty folder and ends with a paid certificate and a portable project folder.
+The workflow below proves that the MVP works. The user starts at the company view and ends with a paid certificate and a portable project folder.
 
 | Step | The user does |
 |---|---|
 | 1 | Creates the first account, or signs in. |
-| 2 | Creates a project from the template. |
-| 3 | Imports a budget from an Excel workbook, from a file of the engine, or from a BC3 file. |
-| 4 | Declares the surcharges of the project. |
-| 5 | Builds the tree of work units and names a work unit for the lines of the budget. |
-| 6 | Reads the economic view of each work unit. |
-| 7 | Raises a purchase request, when the policy requires one. |
-| 8 | Raises a purchase order from that request or from a line of the budget. |
-| 9 | Approves the purchase order and reads the committed amount of the line. |
-| 10 | Issues the purchase order and receives the inputs. |
-| 11 | Signs a subcontract contract that covers the lines of one kind of work. |
-| 12 | Issues an advance certificate for a period and attaches the evidence to each line. |
-| 13 | Approves the advance certificate. The budget shows the measured amount. The contract shows the certified amount. |
-| 14 | Registers the payment of the certificate. The contract shows the paid amount. |
-| 15 | Reads the inbox and opens the documents from it. |
-| 16 | Prints the budget and the certificate. |
-| 17 | Copies the folder of the project to another disk. |
+| 2 | Reads the company view and the cashflow of the company. |
+| 3 | Creates a project from the template. |
+| 4 | Imports a budget from an Excel workbook, from a file of the engine, or from a BC3 file. |
+| 5 | Declares the surcharges of the project. |
+| 6 | Builds the tree of work units and names a work unit for the lines of the budget. |
+| 7 | Reads the economic view of each work unit. |
+| 8 | Raises a purchase request, when the policy requires one. |
+| 9 | Raises a purchase order from that request or from a line of the budget. |
+| 10 | Approves the purchase order and reads the committed amount of the line. |
+| 11 | Issues the purchase order and receives the inputs. |
+| 12 | Signs a subcontract contract that covers the lines of one kind of work. |
+| 13 | Issues an advance certificate for a period and attaches the evidence to each line. |
+| 14 | Approves the advance certificate. The budget shows the measured amount. The contract shows the certified amount. |
+| 15 | Registers the payment of the certificate. The contract shows the paid amount. |
+| 16 | Returns to the company view and reads the inbox of every project. |
+| 17 | Reads the cashflow of the company. |
+| 18 | Prints the budget and the certificate. |
+| 19 | Copies the folder of the project to another disk. |
 
 ### L3-25 — Each step
 
@@ -182,15 +208,19 @@ The application does not do any of the following in the MVP.
 | Store plans, requests for information, or inspections | The roadmap holds that work. |
 | Run on a phone | The application runs on a desktop. |
 | Show a type of project | The policy belongs to the project. |
+| Convert one currency into another | The cashflow report holds one row for every currency. The rule L1-146 holds the conversion. |
+| Keep a store of the company view | The company view reads the folders of the projects. The rule L2-42 holds the store. |
 
 ## What proves that the MVP works
 
-The MVP works when the workflow above runs on a real budget of a real project of a real construction company, when the printed budget shows the amount, the committed amount, and the available amount of every line, when the printed certificate shows the measurement and the evidence of a real period, and when a copy of the project folder opens on another computer with the same data.
+The MVP works when the workflow above runs on a real budget of a real project of a real construction company, when the printed budget shows the amount, the committed amount, and the available amount of every line, when the printed certificate shows the measurement and the evidence of a real period, when the company view shows every project that the company runs with its inbox and its cashflow, and when a copy of the project folder opens on another computer with the same data.
 
 ## Notes
 
 The document `docs/domain/budgets.mdx` holds the rules of a budget. The document `docs/domain/work-units.mdx` holds the rules of a work unit. The documents `docs/domain/purchase-requests.mdx`, `docs/domain/purchase-orders.mdx`, `docs/domain/subcontracts.mdx`, `docs/domain/certificates.mdx`, and `docs/domain/payments.mdx` hold the rules of the documents of the workflow.
 
 The document `docs/system/permissions.mdx` holds the rules of the accounts. The document `docs/system/events.mdx` holds the rules of the inbox. The document `docs/system/persistence.mdx` holds the rules of the folder.
+
+The document `docs/domain/companies.mdx` holds the rules of an amount that crosses projects. The rules L1-143 to L1-146 keep the cashflow report in one currency per row. The rules L2-41 and L2-42 of `docs/system/events.mdx` keep the inbox of the company view inside the folder of each project.
 
 The document `docs/decisions/certificate-chain.mdx` holds the reason why one document measures the work.

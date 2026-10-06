@@ -54,6 +54,14 @@ The application must keep the read state of an event for every account separatel
 
 The application must not delete an event.
 
+### L2-41 — Events inside the project folder
+
+The application must store every event in the folder of the project that owns its document. The application must store the read state of an event in the folder of that project.
+
+### L2-42 — The company view reads without storing
+
+The company view must read the events of the folders of the projects of a construction company. The company view must not store an event. The company view must not store the read state of an event.
+
 ## Example
 
 One approval produces one event. The event names the document and nothing else.
@@ -77,3 +85,7 @@ A document that no longer exists leaves its events in the inbox. The item shows 
 The rule L2-29 and the rule L2-30 hold every event that the inbox shows. A new kind of document needs no change in the common infrastructure. The rule L0-06 of `docs/foundations/principles.mdx` requires that behaviour.
 
 The application records the account and the moment of every state change. The document `docs/system/permissions.mdx` holds that rule.
+
+The rule L2-41 keeps every event in the folder of the project that owns its document. The rule L2-42 lets the company view read the events of every project without a store of its own. The rule L2-13 of `docs/system/persistence.mdx` keeps those records portable.
+
+An event of a document that no longer sits in a folder that the company view reads stays out of the company view. The rule L2-38 holds the event.

@@ -6,7 +6,7 @@
 
 A construction company executes an `obra`. A construction company owns projects. A construction company owns user accounts.
 
-The name `construction company` names an entity of the domain. The company holds no rule about money. A project holds the rules about money.
+The name `construction company` names an entity of the domain. The company holds no rule about the money of one project. A project holds the rules about the money of that project. The company holds the rules about an amount that crosses projects.
 
 ## Rules
 
@@ -26,8 +26,37 @@ A user account must belong to exactly one construction company.
 
 A construction company must hold one user account or more.
 
+### L1-143 — Scope of the company
+
+A construction company must own the information that crosses its projects.
+
+### L1-144 — Currency of an amount that crosses projects
+
+An amount that crosses projects must keep the currency of the project that owns it.
+
+### L1-145 — Total of every currency
+
+A report that crosses projects must hold one total for every currency of the projects in the report.
+
+### L1-146 — No conversion
+
+A report that crosses projects must not convert an amount from one currency to another currency.
+
+## Example
+
+One construction company runs three projects. Two of them declare the dollar. One declares the guaraní. A cashflow report that crosses the three projects holds two rows.
+
+| Currency | Money that entered | Money that left | Net |
+|---|---|---|---|
+| Dollar | 1,240,000 | 980,500 | 259,500 |
+| Guaraní | 312,000,000 | 268,400,000 | 43,600,000 |
+
+The report holds no row that sums the two currencies. The rule L1-146 holds the report from converting an amount. The rule L1-10 holds every amount in the currency of its project.
+
 ## Notes
 
 The application serves one construction company in the MVP. The documents `docs/product/mvp.mdx` and `docs/execution/roadmap.mdx` state that scope.
 
 Every account of a company holds the same capabilities. The document `docs/system/permissions.mdx` holds that rule.
+
+The rule L1-143 gives the company the information that crosses its projects. The document `docs/product/mvp.mdx` shows that information in the company view.
