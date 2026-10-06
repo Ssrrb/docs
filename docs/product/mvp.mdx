@@ -118,6 +118,18 @@ The application must show the inbox in the company view. The inbox must show one
 
 The application must show a cashflow report in the company view. The report must show one row for every currency. The row must hold the money that entered, the money that left, and the net of that currency.
 
+### L3-33 — Period of the cashflow report
+
+The cashflow report must show one period. The application must let the user choose the period.
+
+### L3-34 — Accounts of the company
+
+The application must show the accounts of the construction company. The application must show the capability of each account.
+
+### L3-35 — Finished project
+
+The application must let the user mark a project finished.
+
 ## The template
 
 The application creates a project from a template. The template asks the questions below. The template offers one recommended value for each question. The recommended values come from this table.
@@ -173,10 +185,11 @@ The workflow below proves that the MVP works. The user starts at the company vie
 | 13 | Issues an advance certificate for a period and attaches the evidence to each line. |
 | 14 | Approves the advance certificate. The budget shows the measured amount. The contract shows the certified amount. |
 | 15 | Registers the payment of the certificate. The contract shows the paid amount. |
-| 16 | Returns to the company view and reads the inbox of every project. |
-| 17 | Reads the cashflow of the company. |
-| 18 | Prints the budget and the certificate. |
-| 19 | Copies the folder of the project to another disk. |
+| 16 | Registers the collection that the client pays. |
+| 17 | Returns to the company view and reads the inbox of every project. |
+| 18 | Reads the cashflow of the company. |
+| 19 | Prints the budget and the certificate. |
+| 20 | Copies the folder of the project to another disk. |
 
 ### L3-25 — Each step
 
@@ -208,19 +221,20 @@ The application does not do any of the following in the MVP.
 | Store plans, requests for information, or inspections | The roadmap holds that work. |
 | Run on a phone | The application runs on a desktop. |
 | Show a type of project | The policy belongs to the project. |
-| Convert one currency into another | The cashflow report holds one row for every currency. The rule L1-146 holds the conversion. |
-| Keep a store of the company view | The company view reads the folders of the projects. The rule L2-42 holds the store. |
+| Convert one currency into another | The cashflow report holds one row for every currency. The rule L1-147 holds the conversion. |
+| Keep a store of the company view | The company view reads the folders of the projects. The rule L2-42 holds the store. The index file holds the paths of the projects. |
+| Share one project between several users | The MVP runs on the local disk. The roadmap holds cloud storage. |
 
 ## What proves that the MVP works
 
-The MVP works when the workflow above runs on a real budget of a real project of a real construction company, when the printed budget shows the amount, the committed amount, and the available amount of every line, when the printed certificate shows the measurement and the evidence of a real period, when the company view shows every project that the company runs with its inbox and its cashflow, and when a copy of the project folder opens on another computer with the same data.
+The MVP works when the workflow above runs on a real budget of a real project of a real construction company, when the printed budget shows the amount, the committed amount, and the available amount of every line, when the printed certificate shows the measurement and the evidence of a real period, when the company view shows every project that the company runs with its inbox and the cashflow of the money that entered and the money that left of every currency, and when a copy of the project folder opens on another computer with the same data.
 
 ## Notes
 
-The document `docs/domain/budgets.mdx` holds the rules of a budget. The document `docs/domain/work-units.mdx` holds the rules of a work unit. The documents `docs/domain/purchase-requests.mdx`, `docs/domain/purchase-orders.mdx`, `docs/domain/subcontracts.mdx`, `docs/domain/certificates.mdx`, and `docs/domain/payments.mdx` hold the rules of the documents of the workflow.
+The document `docs/domain/budgets.mdx` holds the rules of a budget. The document `docs/domain/work-units.mdx` holds the rules of a work unit. The documents `docs/domain/purchase-requests.mdx`, `docs/domain/purchase-orders.mdx`, `docs/domain/subcontracts.mdx`, `docs/domain/certificates.mdx`, and `docs/domain/payments.mdx` hold the rules of the documents of the workflow. The documents `docs/domain/clients.mdx` and `docs/domain/collections.mdx` hold the rules of the client and the collection.
 
 The document `docs/system/permissions.mdx` holds the rules of the accounts. The document `docs/system/events.mdx` holds the rules of the inbox. The document `docs/system/persistence.mdx` holds the rules of the folder.
 
-The document `docs/domain/companies.mdx` holds the rules of an amount that crosses projects. The rules L1-143 to L1-146 keep the cashflow report in one currency per row. The rules L2-41 and L2-42 of `docs/system/events.mdx` keep the inbox of the company view inside the folder of each project.
+The document `docs/domain/companies.mdx` holds the rules of an amount that crosses projects. The rules L1-144 to L1-147 keep the cashflow report in one currency per row. The rules L2-41 and L2-42 of `docs/system/events.mdx` keep the inbox of the company view inside the folder of each project.
 
 The document `docs/decisions/certificate-chain.mdx` holds the reason why one document measures the work.

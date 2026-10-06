@@ -1,0 +1,40 @@
+# Client
+
+*Domain · draft*
+
+## Purpose
+
+The name `cliente` names this entity. A `cliente` is a person or a company that pays the work of a project. The ERP owns the record of the client. A project holds a list of clients. A collection names one client of that list.
+
+## Rules
+
+### L1-150 — Legal form of a client
+
+A client must declare exactly one legal form. The legal forms are `persona` and `empresa`.
+
+### L1-151 — Identifier of a client
+
+A client must declare exactly one identifier.
+
+### L1-152 — Name of a client
+
+A client must declare one name.
+
+### L1-153 — List of clients
+
+A project must hold exactly one list of clients.
+
+## Example
+
+A project holds two clients. One client pays a certificate.
+
+| Client | Legal form | Named by a collection |
+|---|---|---|
+| Helena Ruiz | `persona` | Yes |
+| Constructora del Este | `empresa` | No |
+
+A client is not a `socio`. The document `docs/domain/partners.mdx` holds the `socio` record.
+
+## Notes
+
+The list of clients belongs to the project. The document `docs/domain/collections.mdx` holds the collection that names a client.
