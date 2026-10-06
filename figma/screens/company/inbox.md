@@ -49,7 +49,7 @@ The inbox of the account. It shows one item for every event of every project of 
 | error.action | Reintentar |
 
 ## Notes for designers
-- Layout, density and visual treatment are the designer's work; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - Opening an item marks it read for the current account only (L3-15).
 - Filters by type and by read state are outside the MVP; do not draw them.
 

@@ -37,7 +37,7 @@ The local login of the application. The application asks for a login before it c
 | error.credentials | El nombre o la contraseña no son correctos. |
 
 ## Notes for designers
-- Layout, density and visual treatment are the designer's work; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - After the first account exists, the application requires the login before it creates or opens a project (L3-01).
 
 ## Done when

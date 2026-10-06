@@ -47,7 +47,7 @@ The cashflow of the company for one period (L3-33). The company holds the inform
 | error.action | Reintentar |
 
 ## Notes for designers
-- Layout, density and visual treatment are the designer's work; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - The table is read-only; selecting a row does nothing.
 - The screen never offers a currency conversion (L1-147).
 

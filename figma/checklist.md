@@ -2,13 +2,24 @@
 
 Run after every frame, before `reviewed` status.
 
+## Inherited workbench
+
+- [ ] Shell matches the current VS Code fork CSS, theme and control density.
+- [ ] Company navigation uses the activity bar; the primary sidebar shows only
+      the open project tree; screens and documents use the editor region.
+- [ ] Title bar, status bar, tabs, resize handles and optional chat remain native.
+- [ ] Reference-image annotation colors do not appear as application decoration.
+- [ ] Sidebar resize and collapse states preserve access to company navigation.
+- [ ] Inherited controls use Codicons and native hover, focus and selected states.
+
 ## Tokens
 
 - [ ] Variables and styles only. No raw color, size, radius or shadow in frames.
 - [ ] Both variable modes exist; dark is the default; the frame renders in both.
 - [ ] Text styles match `tokens.json → typography.roles`; money and quantity
       styles use tabular numbers.
-- [ ] Contrast pairs are the ones declared in `tokens.json → contrast.report`;
+- [ ] Contrast is measured for resolved workbench tokens and domain controls;
+      the draft palette report alone does not verify inherited themes;
       the focus ring stays visible on every background it crosses.
 
 ## Layout
@@ -40,10 +51,11 @@ Run after every frame, before `reviewed` status.
 ## Motion
 
 - [ ] Only `transform`, `opacity` and `filter` animate.
-- [ ] Durations come from `motion.values`; keyboard-initiated interactions do
+- [ ] New domain durations come from `motion.duration`; keyboard-initiated interactions do
       not animate.
 - [ ] Popovers scale from their trigger; dialogs scale from center.
-- [ ] Press feedback uses scale 0.96.
+- [ ] New domain press feedback uses scale 0.96; inherited controls keep native feedback.
+- [ ] Theme switches suppress transitions; frequent actions respond within 150ms.
 
 ## Copy
 

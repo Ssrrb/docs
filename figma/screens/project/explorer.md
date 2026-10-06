@@ -57,7 +57,7 @@ The explorer of the open project. It shows the single folder of the project in t
 
 ## Notes for designers
 
-- Layout, density and visual treatment are the designer's work; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - The tree and both menus are fully operable by keyboard, with a visible focus indicator; the context menu opens from the keyboard.
 - A long name wraps or truncates and keeps a way to reach the full value.
 - Opening a document, switching nodes and every state change update in place; no entry animation on the tree.

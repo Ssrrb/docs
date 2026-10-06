@@ -57,7 +57,7 @@ The purchase orders of the project. The ERP raises an order (L1-83); it buys inp
 
 ## Notes for designers
 
-- Layout, density and visual treatment are the designer's work; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - Approval and receipt change derived amounts; the state chip and the note carry the meaning, never the color alone; only the draft offers Eliminar.
 - The list, the editor and every state action have a keyboard path with a visible focus indicator; state changes and the amounts update in place, without animation.
 

@@ -59,7 +59,7 @@ The first screen of the company view. It lists the projects of the construction 
 | toast.undo | Deshacer |
 
 ## Notes for designers
-- Layout, density and visual treatment are the designer's work; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - Rule L1-172 holds exactly two states of a project: Activo and Terminado. Do not add another state.
 
 ## Done when

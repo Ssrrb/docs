@@ -57,7 +57,7 @@ The subcontract contracts of the project. The ERP raises a contract (L1-93) with
 
 ## Notes for designers
 
-- Layout, density and visual treatment are the designer's work; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - The list, the editor, the control and the increase flow have a keyboard path, with a visible focus indicator.
 - The control is derived; no control edits the certified, paid or available amounts, and a state change or a recomputed control updates in place, without motion.
 

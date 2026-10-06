@@ -53,7 +53,7 @@ The tree of work units of the obra with the economic view on the node itself (L3
 
 ## Notes for designers
 
-- Layout, density and visual treatment are the designer's work; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - The economic values are derived and read-only; no control edits them, and a recompute updates them in place.
 - The tree is fully operable by keyboard, with a visible focus indicator on the node and its actions.
 - Money keeps the application format; a negative available amount shows the minus sign plus its label, never the color alone.

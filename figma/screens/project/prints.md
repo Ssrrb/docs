@@ -53,7 +53,7 @@ The A4 outputs of the project: the printed budget (L3-11) and the printed advanc
 | error.action | Reintentar |
 
 ## Notes for designers
-- Layout, density and visual treatment are the designer's work; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - Both outputs are static paper pages: no interactive control, no entry animation and no motion.
 - Money uses tabular numbers and two decimals; the totals stay legible on paper in both color modes.
 - Each evidence section names the line and the file of the image it holds.

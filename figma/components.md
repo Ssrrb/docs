@@ -1,7 +1,9 @@
 # Component library
 
 Build these on the page `03 · Componentes` and publish them. Screens instance
-them; never detach. Visual values come from `tokens.json` and the design skills:
+them; never detach. Reuse the VS Code fork controls, CSS, Codicons and theme tokens. Figma library
+components represent those inherited controls. Add domain components where the
+workbench has no equivalent. Resolve values through `tokens.json` and use the design skills:
 `better-interface`, `better-ui`, `better-accessibility`. Below is the inventory
 and what each component must carry.
 
@@ -33,6 +35,21 @@ and what each component must carry.
   error content renders inside the table region.
 - **SummaryPanel** — label/value pairs for totals and control boxes: the
   economic view, the contract control, document totals.
+
+## Workbench baseline
+
+ActivityBar carries company navigation. The primary sidebar carries the open
+project tree. Tabs and document content use the central editor region. Keep the
+optional chat in the secondary sidebar. Reuse the title bar, status bar, resize
+handles, menus, focus indicators and selected markers from the fork.
+
+Use Codicons on workbench surfaces. Preserve their native geometry and weight.
+New domain icons use the same set and `currentColor`. Keep structural dividers;
+use elevation only for overlays. Preserve native control radii and density.
+Apply better-ui polish to new domain controls without restyling inherited ones.
+Keyboard actions have no animation. Frequent actions use instant feedback or
+opacity/color transitions of at most 150ms. Theme changes snap without a global
+crossfade. Every state change keeps a static cue.
 
 ## Structure
 

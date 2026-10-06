@@ -53,7 +53,7 @@ The accounts of the construction company and their capabilities (L3-34, L2-02, L
 | error.action | Reintentar |
 
 ## Notes for designers
-- Layout, density and visual treatment are the designer's work; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
+- Use the inherited VS Code workbench layout and CSS described in `docs/figma/README.md`. Design domain content within its regions; follow the project design skills: better-interface, better-layout, better-typography, better-colors, better-accessibility, better-ui, better-writing, emil-design-eng.
 - Open question: rule L2-03 assigns each capability to an account. Confirm with the author that a user may change a capability after creation. Draw the Editar capacidades dialog only when the author confirms.
 
 ## Done when
