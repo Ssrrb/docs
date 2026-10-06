@@ -84,6 +84,10 @@ This table gives the words that this file uses.
 
 An agent must not reinterpret an instruction. An agent must not ignore an instruction. An agent must not weaken an instruction.
 
+Design work follows `design/README.md`. The design agents build, audit and
+review the Penpot file through the MCP server. The plan of the design system
+sits in `docs/execution/design-system.mdx`.
+
 ## 4. Where a topic belongs
 
 Each folder sits under `docs/`. The site serves no document from another location.
