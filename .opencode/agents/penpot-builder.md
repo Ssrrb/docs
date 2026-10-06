@@ -9,6 +9,12 @@ permissions:
   - action: shell
     resource: "*"
     effect: deny
+  - action: webfetch
+    resource: "*"
+    effect: deny
+  - action: websearch
+    resource: "*"
+    effect: deny
   - action: penpot_execute_code
     resource: "*"
     effect: allow

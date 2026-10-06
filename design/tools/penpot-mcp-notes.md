@@ -37,3 +37,10 @@ never enters this repository.
   version before the first write and after the last write of every task, with
   a label that names the frame and the action.
 - Audit reports go to `design/reports/<frame-id>/` in the repository.
+
+## Network
+
+- Design-loop agents need only the repository and the plugin. Their agent
+  definitions deny `webfetch` and `websearch`; a run that fetches docs dies on
+  a DNS failure and wastes the task. Nothing on the network carries design
+  decisions.
