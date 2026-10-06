@@ -1,5 +1,5 @@
 ---
-description: Read-only audit of a Penpot frame or library: token bindings, hard-coded values, detached instances, missing states, copy exactness. Returns a structured JSON report.
+description: Read-only audit of a Penpot frame or library — token bindings, hard-coded values, detached instances, missing states, copy exactness. Returns a structured JSON report.
 mode: subagent
 permissions:
   - action: edit
