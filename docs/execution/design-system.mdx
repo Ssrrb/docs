@@ -41,7 +41,7 @@ rules.
 
 - Outcome: The agents `penpot-builder`, `penpot-auditor`, `design-reviewer`,
   `token-engineer` and `component-mapper` exist in `.opencode/agents/`.
-- Status: Planned
+- Status: Done
 
 #### Vertical slice CV-01
 
@@ -66,20 +66,21 @@ rules.
 
 - Outcome: The canonical tokens sit in `design/tokens/` as primitives, semantic
   tokens and theme files, with the measured contrast report preserved.
-- Status: Planned
+- Status: Done
 
 #### Token build for the fork
 
-- Outcome: The script `scripts/tokens-build.mjs` emits CSS custom properties
-  and TypeScript constants under `design/generated/`, with the `--vscode-*`
-  variables as runtime fallbacks for webviews. CI repeats the build and fails
-  on a dirty tree.
-- Status: Planned
+- Outcome: The script `scripts/tokens-build.mjs` emits the CSS custom
+  properties, the webview fallback layer and the sync manifest under
+  `design/generated/`, with the `--vscode-*` variables as runtime fallbacks
+  for webviews. The check repeats the build and fails on a dirty tree.
+- Status: Done
 
 #### Token sync to Penpot
 
 - Outcome: The token-engineer agent writes the token sets and themes of the
-  design file through the Penpot MCP from the canonical files.
+  design file through the Penpot MCP from the canonical files, with the
+  payload of `design/tools/penpot-token-sync.template.js`.
 - Status: Planned
 
 ### The mapping registry
@@ -89,7 +90,7 @@ rules.
 - Outcome: The file `design/mapping/penpot-vscode.json` maps every component to
   its variants, tokens and implementation target, and the check validates the
   schema.
-- Status: Planned
+- Status: Done
 
 ### The fork
 
