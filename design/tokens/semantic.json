@@ -1,0 +1,76 @@
+{
+  "$description": "Obra Studio semantic tokens. Product meaning; aliases primitives or theme colors. Colors resolve per mode through the theme files.",
+  "asset": {
+    "chip": {
+      "height": { "$type": "dimension", "$value": "{space.xl}" },
+      "padding-x": { "$type": "dimension", "$value": "{space.sm}" }
+    },
+    "row": {
+      "height": { "$type": "dimension", "$value": "26px" },
+      "gap-icon": { "$type": "dimension", "$value": "{space.sm}" }
+    },
+    "target": {
+      "min": { "$type": "dimension", "$value": "24px" },
+      "comfortable": { "$type": "dimension", "$value": "40px" }
+    }
+  },
+  "layout": {
+    "activity-bar": { "$type": "dimension", "$value": "48px" },
+    "sidebar": { "$type": "dimension", "$value": "260px" },
+    "status-bar": { "$type": "dimension", "$value": "24px" },
+    "toolbar": { "$type": "dimension", "$value": "40px" },
+    "tabs": { "$type": "dimension", "$value": "36px" },
+    "chat": { "$type": "dimension", "$value": "270px" },
+    "content-padding": { "$type": "dimension", "$value": "{space.xl}" }
+  },
+  "typography": {
+    "caption": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.family.ui}", "fontSize": "{font.size.caption}", "fontWeight": "{font.weight.regular}", "lineHeight": "{font.line-height.tight}" }
+    },
+    "caption-strong": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.family.ui}", "fontSize": "{font.size.caption}", "fontWeight": "{font.weight.medium}", "lineHeight": "{font.line-height.tight}" }
+    },
+    "body": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.family.ui}", "fontSize": "{font.size.body}", "fontWeight": "{font.weight.regular}", "lineHeight": "{font.line-height.normal}" }
+    },
+    "body-strong": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.family.ui}", "fontSize": "{font.size.body}", "fontWeight": "{font.weight.medium}", "lineHeight": "{font.line-height.normal}" }
+    },
+    "table-cell": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.family.ui}", "fontSize": "{font.size.body}", "fontWeight": "{font.weight.regular}", "lineHeight": "{font.line-height.normal}" }
+    },
+    "table-header": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.family.ui}", "fontSize": "{font.size.caption}", "fontWeight": "{font.weight.medium}", "lineHeight": "{font.line-height.tight}" }
+    },
+    "title-sm": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.family.ui}", "fontSize": "{font.size.title-sm}", "fontWeight": "{font.weight.medium}", "lineHeight": "{font.line-height.normal}" }
+    },
+    "title-md": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.family.ui}", "fontSize": "{font.size.title-md}", "fontWeight": "{font.weight.semibold}", "lineHeight": "{font.line-height.relaxed}" }
+    },
+    "title-lg": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.family.ui}", "fontSize": "{font.size.title-lg}", "fontWeight": "{font.weight.semibold}", "lineHeight": "{font.line-height.title-lg}" }
+    },
+    "display": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.family.ui}", "fontSize": "{font.size.display}", "fontWeight": "{font.weight.semibold}", "lineHeight": "{font.line-height.display}" }
+    },
+    "button": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.family.ui}", "fontSize": "{font.size.body}", "fontWeight": "{font.weight.medium}", "lineHeight": "{font.line-height.normal}" }
+    },
+    "mono": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.family.mono}", "fontSize": "{font.size.caption}", "fontWeight": "{font.weight.regular}", "lineHeight": "{font.line-height.tight}" }
+    }
+  }
+}

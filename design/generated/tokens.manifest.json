@@ -1,0 +1,266 @@
+{
+  "bg.app": {
+    "type": "color",
+    "dark": "#0e1217",
+    "light": "#f2f3f5",
+    "vscode": "editor.background"
+  },
+  "bg.surface": {
+    "type": "color",
+    "dark": "#15191e",
+    "light": "#fdfdfe",
+    "vscode": "sideBar.background"
+  },
+  "bg.raised": {
+    "type": "color",
+    "dark": "#1b2026",
+    "light": "#ffffff",
+    "vscode": "editorWidget.background"
+  },
+  "bg.inset": {
+    "type": "color",
+    "dark": "#090c11",
+    "light": "#ebedef",
+    "vscode": null
+  },
+  "bg.hover": {
+    "type": "color",
+    "dark": "#21262c",
+    "light": "#e6e8eb",
+    "vscode": "list.hoverBackground"
+  },
+  "bg.selected": {
+    "type": "color",
+    "dark": "#202f42",
+    "light": "#d8e6f9",
+    "vscode": "list.activeSelectionBackground"
+  },
+  "text.primary": {
+    "type": "color",
+    "dark": "#e6e8eb",
+    "light": "#20242a",
+    "vscode": "foreground"
+  },
+  "text.secondary": {
+    "type": "color",
+    "dark": "#b4b8bc",
+    "light": "#52565b",
+    "vscode": "descriptionForeground"
+  },
+  "text.muted": {
+    "type": "color",
+    "dark": "#8b9095",
+    "light": "#606368",
+    "vscode": "disabledForeground"
+  },
+  "border.subtle": {
+    "type": "color",
+    "dark": "#2a2e34",
+    "light": "#d8dbde",
+    "vscode": "sideBar.border"
+  },
+  "border.control": {
+    "type": "color",
+    "dark": "#646971",
+    "light": "#7c8186",
+    "vscode": null
+  },
+  "accent.solid": {
+    "type": "color",
+    "dark": "#75aef5",
+    "light": "#1f68bc",
+    "vscode": "button.background"
+  },
+  "accent.solid-hover": {
+    "type": "color",
+    "dark": "#69a1e8",
+    "light": "#0859ac",
+    "vscode": null
+  },
+  "accent.solid-press": {
+    "type": "color",
+    "dark": "#5d94da",
+    "light": "#004a9c",
+    "vscode": null
+  },
+  "accent.on": {
+    "type": "color",
+    "dark": "#080e16",
+    "light": "#fdfdfe",
+    "vscode": "button.foreground"
+  },
+  "focus.ring": {
+    "type": "color",
+    "dark": "#6fa7ee",
+    "light": "#1f68bc",
+    "vscode": "focusBorder"
+  },
+  "danger.solid": {
+    "type": "color",
+    "dark": "#ba2b28",
+    "light": "#a20711",
+    "vscode": null
+  },
+  "danger.on": {
+    "type": "color",
+    "dark": "#ffffff",
+    "light": "#ffffff",
+    "vscode": null
+  },
+  "danger.subtle-bg": {
+    "type": "color",
+    "dark": "#401d1a",
+    "light": "#ffeae5",
+    "vscode": null
+  },
+  "danger.subtle-text": {
+    "type": "color",
+    "dark": "#febab2",
+    "light": "#8d1b19",
+    "vscode": null
+  },
+  "success.subtle-bg": {
+    "type": "color",
+    "dark": "#102b17",
+    "light": "#dcf7e1",
+    "vscode": null
+  },
+  "success.subtle-text": {
+    "type": "color",
+    "dark": "#a0dcac",
+    "light": "#085023",
+    "vscode": null
+  },
+  "warning.subtle-bg": {
+    "type": "color",
+    "dark": "#362607",
+    "light": "#fff0d0",
+    "vscode": null
+  },
+  "warning.subtle-text": {
+    "type": "color",
+    "dark": "#f4ce90",
+    "light": "#694500",
+    "vscode": null
+  },
+  "typography.caption": {
+    "type": "typography",
+    "value": {
+      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontSize": "12px",
+      "fontWeight": 400,
+      "lineHeight": "16px"
+    },
+    "vscode": null
+  },
+  "typography.caption-strong": {
+    "type": "typography",
+    "value": {
+      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontSize": "12px",
+      "fontWeight": 500,
+      "lineHeight": "16px"
+    },
+    "vscode": null
+  },
+  "typography.body": {
+    "type": "typography",
+    "value": {
+      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontSize": "13px",
+      "fontWeight": 400,
+      "lineHeight": "18px"
+    },
+    "vscode": null
+  },
+  "typography.body-strong": {
+    "type": "typography",
+    "value": {
+      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontSize": "13px",
+      "fontWeight": 500,
+      "lineHeight": "18px"
+    },
+    "vscode": null
+  },
+  "typography.table-cell": {
+    "type": "typography",
+    "value": {
+      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontSize": "13px",
+      "fontWeight": 400,
+      "lineHeight": "18px"
+    },
+    "vscode": null
+  },
+  "typography.table-header": {
+    "type": "typography",
+    "value": {
+      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontSize": "12px",
+      "fontWeight": 500,
+      "lineHeight": "16px"
+    },
+    "vscode": null
+  },
+  "typography.title-sm": {
+    "type": "typography",
+    "value": {
+      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontSize": "14px",
+      "fontWeight": 500,
+      "lineHeight": "18px"
+    },
+    "vscode": null
+  },
+  "typography.title-md": {
+    "type": "typography",
+    "value": {
+      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontSize": "16px",
+      "fontWeight": 600,
+      "lineHeight": "24px"
+    },
+    "vscode": null
+  },
+  "typography.title-lg": {
+    "type": "typography",
+    "value": {
+      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontSize": "20px",
+      "fontWeight": 600,
+      "lineHeight": "26px"
+    },
+    "vscode": null
+  },
+  "typography.display": {
+    "type": "typography",
+    "value": {
+      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontSize": "24px",
+      "fontWeight": 600,
+      "lineHeight": "30px"
+    },
+    "vscode": null
+  },
+  "typography.button": {
+    "type": "typography",
+    "value": {
+      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontSize": "13px",
+      "fontWeight": 500,
+      "lineHeight": "18px"
+    },
+    "vscode": null
+  },
+  "typography.mono": {
+    "type": "typography",
+    "value": {
+      "fontFamily": "JetBrains Mono, ui-monospace, monospace",
+      "fontSize": "12px",
+      "fontWeight": 400,
+      "lineHeight": "16px"
+    },
+    "vscode": null
+  }
+}

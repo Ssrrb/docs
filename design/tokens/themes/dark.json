@@ -1,0 +1,41 @@
+{
+  "$description": "Obra Studio dark theme. Mode values for every semantic color role. Dark is the default mode.",
+  "bg": {
+    "app": { "$type": "color", "$value": "#0e1217" },
+    "surface": { "$type": "color", "$value": "#15191e" },
+    "raised": { "$type": "color", "$value": "#1b2026" },
+    "inset": { "$type": "color", "$value": "#090c11" },
+    "hover": { "$type": "color", "$value": "#21262c" },
+    "selected": { "$type": "color", "$value": "#202f42" }
+  },
+  "text": {
+    "primary": { "$type": "color", "$value": "#e6e8eb" },
+    "secondary": { "$type": "color", "$value": "#b4b8bc" },
+    "muted": { "$type": "color", "$value": "#8b9095" }
+  },
+  "border": {
+    "subtle": { "$type": "color", "$value": "#2a2e34" },
+    "control": { "$type": "color", "$value": "#646971" }
+  },
+  "accent": {
+    "solid": { "$type": "color", "$value": "#75aef5" },
+    "solid-hover": { "$type": "color", "$value": "#69a1e8" },
+    "solid-press": { "$type": "color", "$value": "#5d94da" },
+    "on": { "$type": "color", "$value": "#080e16" }
+  },
+  "focus": { "ring": { "$type": "color", "$value": "#6fa7ee" } },
+  "danger": {
+    "solid": { "$type": "color", "$value": "#ba2b28" },
+    "on": { "$type": "color", "$value": "#ffffff" },
+    "subtle-bg": { "$type": "color", "$value": "#401d1a" },
+    "subtle-text": { "$type": "color", "$value": "#febab2" }
+  },
+  "success": {
+    "subtle-bg": { "$type": "color", "$value": "#102b17" },
+    "subtle-text": { "$type": "color", "$value": "#a0dcac" }
+  },
+  "warning": {
+    "subtle-bg": { "$type": "color", "$value": "#362607" },
+    "subtle-text": { "$type": "color", "$value": "#f4ce90" }
+  }
+}

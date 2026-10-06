@@ -1,0 +1,70 @@
+/* Generated from design/tokens/. Do not edit. */
+:root {
+  --ds-bg-app: #0e1217;
+  --ds-bg-surface: #15191e;
+  --ds-bg-raised: #1b2026;
+  --ds-bg-inset: #090c11;
+  --ds-bg-hover: #21262c;
+  --ds-bg-selected: #202f42;
+  --ds-text-primary: #e6e8eb;
+  --ds-text-secondary: #b4b8bc;
+  --ds-text-muted: #8b9095;
+  --ds-border-subtle: #2a2e34;
+  --ds-border-control: #646971;
+  --ds-accent-solid: #75aef5;
+  --ds-accent-solid-hover: #69a1e8;
+  --ds-accent-solid-press: #5d94da;
+  --ds-accent-on: #080e16;
+  --ds-focus-ring: #6fa7ee;
+  --ds-danger-solid: #ba2b28;
+  --ds-danger-on: #ffffff;
+  --ds-danger-subtle-bg: #401d1a;
+  --ds-danger-subtle-text: #febab2;
+  --ds-success-subtle-bg: #102b17;
+  --ds-success-subtle-text: #a0dcac;
+  --ds-warning-subtle-bg: #362607;
+  --ds-warning-subtle-text: #f4ce90;
+}
+
+:root[data-mode="light"] {
+  --ds-bg-app: #f2f3f5;
+  --ds-bg-surface: #fdfdfe;
+  --ds-bg-raised: #ffffff;
+  --ds-bg-inset: #ebedef;
+  --ds-bg-hover: #e6e8eb;
+  --ds-bg-selected: #d8e6f9;
+  --ds-text-primary: #20242a;
+  --ds-text-secondary: #52565b;
+  --ds-text-muted: #606368;
+  --ds-border-subtle: #d8dbde;
+  --ds-border-control: #7c8186;
+  --ds-accent-solid: #1f68bc;
+  --ds-accent-solid-hover: #0859ac;
+  --ds-accent-solid-press: #004a9c;
+  --ds-accent-on: #fdfdfe;
+  --ds-focus-ring: #1f68bc;
+  --ds-danger-solid: #a20711;
+  --ds-danger-on: #ffffff;
+  --ds-danger-subtle-bg: #ffeae5;
+  --ds-danger-subtle-text: #8d1b19;
+  --ds-success-subtle-bg: #dcf7e1;
+  --ds-success-subtle-text: #085023;
+  --ds-warning-subtle-bg: #fff0d0;
+  --ds-warning-subtle-text: #694500;
+}
+
+:root {
+  /* semantic typography, mode-neutral */
+  --ds-typography-caption: 400 12px/16px Inter, system-ui, sans-serif;
+  --ds-typography-caption-strong: 500 12px/16px Inter, system-ui, sans-serif;
+  --ds-typography-body: 400 13px/18px Inter, system-ui, sans-serif;
+  --ds-typography-body-strong: 500 13px/18px Inter, system-ui, sans-serif;
+  --ds-typography-table-cell: 400 13px/18px Inter, system-ui, sans-serif;
+  --ds-typography-table-header: 500 12px/16px Inter, system-ui, sans-serif;
+  --ds-typography-title-sm: 500 14px/18px Inter, system-ui, sans-serif;
+  --ds-typography-title-md: 600 16px/24px Inter, system-ui, sans-serif;
+  --ds-typography-title-lg: 600 20px/26px Inter, system-ui, sans-serif;
+  --ds-typography-display: 600 24px/30px Inter, system-ui, sans-serif;
+  --ds-typography-button: 500 13px/18px Inter, system-ui, sans-serif;
+  --ds-typography-mono: 400 12px/16px JetBrains Mono, ui-monospace, monospace;
+}

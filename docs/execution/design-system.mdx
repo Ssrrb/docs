@@ -68,18 +68,18 @@ rules.
   tokens and theme files, with the measured contrast report preserved.
 - Status: Planned
 
-#### Token sync to Penpot
-
-- Outcome: The script `scripts/tokens-penpot.mjs` writes the token sets and
-  themes of the design file from the canonical files.
-- Status: Planned
-
 #### Token build for the fork
 
 - Outcome: The script `scripts/tokens-build.mjs` emits CSS custom properties
   and TypeScript constants under `design/generated/`, with the `--vscode-*`
   variables as runtime fallbacks for webviews. CI repeats the build and fails
   on a dirty tree.
+- Status: Planned
+
+#### Token sync to Penpot
+
+- Outcome: The token-engineer agent writes the token sets and themes of the
+  design file through the Penpot MCP from the canonical files.
 - Status: Planned
 
 ### The mapping registry

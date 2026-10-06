@@ -1,0 +1,29 @@
+/* Generated from design/tokens/. Do not edit.
+   Webview fallback layer: each --ds-* role falls back to its workbench theme
+   variable. Load after tokens.css. */
+:root {
+  --ds-bg-app: var(--vscode-editor-background, #0e1217);
+  --ds-bg-surface: var(--vscode-sideBar-background, #15191e);
+  --ds-bg-raised: var(--vscode-editorWidget-background, #1b2026);
+  --ds-bg-inset: #090c11;
+  --ds-bg-hover: var(--vscode-list-hoverBackground, #21262c);
+  --ds-bg-selected: var(--vscode-list-activeSelectionBackground, #202f42);
+  --ds-text-primary: var(--vscode-foreground, #e6e8eb);
+  --ds-text-secondary: var(--vscode-descriptionForeground, #b4b8bc);
+  --ds-text-muted: var(--vscode-disabledForeground, #8b9095);
+  --ds-border-subtle: var(--vscode-sideBar-border, #2a2e34);
+  --ds-border-control: #646971;
+  --ds-accent-solid: var(--vscode-button-background, #75aef5);
+  --ds-accent-solid-hover: #69a1e8;
+  --ds-accent-solid-press: #5d94da;
+  --ds-accent-on: var(--vscode-button-foreground, #080e16);
+  --ds-focus-ring: var(--vscode-focusBorder, #6fa7ee);
+  --ds-danger-solid: #ba2b28;
+  --ds-danger-on: #ffffff;
+  --ds-danger-subtle-bg: #401d1a;
+  --ds-danger-subtle-text: #febab2;
+  --ds-success-subtle-bg: #102b17;
+  --ds-success-subtle-text: #a0dcac;
+  --ds-warning-subtle-bg: #362607;
+  --ds-warning-subtle-text: #f4ce90;
+}

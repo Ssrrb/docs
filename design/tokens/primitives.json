@@ -1,0 +1,65 @@
+{
+  "$description": "Obra Studio primitives. Raw values only; no product meaning. Semantic tokens alias these.",
+  "space": {
+    "xxs": { "$type": "dimension", "$value": "2px" },
+    "xs": { "$type": "dimension", "$value": "4px" },
+    "sm": { "$type": "dimension", "$value": "8px" },
+    "md": { "$type": "dimension", "$value": "12px" },
+    "lg": { "$type": "dimension", "$value": "16px" },
+    "xl": { "$type": "dimension", "$value": "24px" },
+    "2xl": { "$type": "dimension", "$value": "32px" },
+    "3xl": { "$type": "dimension", "$value": "48px" }
+  },
+  "radius": {
+    "xs": { "$type": "borderRadius", "$value": "4px" },
+    "sm": { "$type": "borderRadius", "$value": "6px" },
+    "md": { "$type": "borderRadius", "$value": "8px" },
+    "lg": { "$type": "borderRadius", "$value": "10px" },
+    "xl": { "$type": "borderRadius", "$value": "12px" },
+    "full": { "$type": "borderRadius", "$value": "999px" }
+  },
+  "font": {
+    "family": {
+      "ui": { "$type": "fontFamilies", "$value": "Inter, system-ui, sans-serif" },
+      "mono": { "$type": "fontFamilies", "$value": "JetBrains Mono, ui-monospace, monospace" }
+    },
+    "size": {
+      "caption": { "$type": "fontSizes", "$value": "12px" },
+      "body": { "$type": "fontSizes", "$value": "13px" },
+      "title-sm": { "$type": "fontSizes", "$value": "14px" },
+      "title-md": { "$type": "fontSizes", "$value": "16px" },
+      "title-lg": { "$type": "fontSizes", "$value": "20px" },
+      "display": { "$type": "fontSizes", "$value": "24px" }
+    },
+    "weight": {
+      "regular": { "$type": "fontWeights", "$value": 400 },
+      "medium": { "$type": "fontWeights", "$value": 500 },
+      "semibold": { "$type": "fontWeights", "$value": 600 }
+    },
+    "line-height": {
+      "tight": { "$type": "dimension", "$value": "16px" },
+      "normal": { "$type": "dimension", "$value": "18px" },
+      "relaxed": { "$type": "dimension", "$value": "24px" },
+      "title-lg": { "$type": "dimension", "$value": "26px" },
+      "display": { "$type": "dimension", "$value": "30px" }
+    }
+  },
+  "shadow": {
+    "sm": { "$type": "shadow", "$value": { "color": "rgba(0, 0, 0, 0.10)", "offsetX": "0px", "offsetY": "1px", "blur": "2px", "spread": "0px" } },
+    "md": { "$type": "shadow", "$value": { "color": "rgba(0, 0, 0, 0.16)", "offsetX": "0px", "offsetY": "4px", "blur": "12px", "spread": "-2px" } },
+    "lg": { "$type": "shadow", "$value": { "color": "rgba(0, 0, 0, 0.24)", "offsetX": "0px", "offsetY": "16px", "blur": "32px", "spread": "-8px" } }
+  },
+  "motion": {
+    "duration": {
+      "press": { "$type": "dimension", "$value": "120ms" },
+      "fast": { "$type": "dimension", "$value": "150ms" },
+      "base": { "$type": "dimension", "$value": "200ms" },
+      "slow": { "$type": "dimension", "$value": "280ms" }
+    },
+    "press-scale": { "$type": "number", "$value": 0.96 }
+  },
+  "layout": {
+    "frame-width": { "$type": "dimension", "$value": "1440px" },
+    "frame-height": { "$type": "dimension", "$value": "900px" }
+  }
+}

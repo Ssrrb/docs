@@ -1,0 +1,41 @@
+{
+  "$description": "Obra Studio light theme. Mode values for every semantic color role.",
+  "bg": {
+    "app": { "$type": "color", "$value": "#f2f3f5" },
+    "surface": { "$type": "color", "$value": "#fdfdfe" },
+    "raised": { "$type": "color", "$value": "#ffffff" },
+    "inset": { "$type": "color", "$value": "#ebedef" },
+    "hover": { "$type": "color", "$value": "#e6e8eb" },
+    "selected": { "$type": "color", "$value": "#d8e6f9" }
+  },
+  "text": {
+    "primary": { "$type": "color", "$value": "#20242a" },
+    "secondary": { "$type": "color", "$value": "#52565b" },
+    "muted": { "$type": "color", "$value": "#606368" }
+  },
+  "border": {
+    "subtle": { "$type": "color", "$value": "#d8dbde" },
+    "control": { "$type": "color", "$value": "#7c8186" }
+  },
+  "accent": {
+    "solid": { "$type": "color", "$value": "#1f68bc" },
+    "solid-hover": { "$type": "color", "$value": "#0859ac" },
+    "solid-press": { "$type": "color", "$value": "#004a9c" },
+    "on": { "$type": "color", "$value": "#fdfdfe" }
+  },
+  "focus": { "ring": { "$type": "color", "$value": "#1f68bc" } },
+  "danger": {
+    "solid": { "$type": "color", "$value": "#a20711" },
+    "on": { "$type": "color", "$value": "#ffffff" },
+    "subtle-bg": { "$type": "color", "$value": "#ffeae5" },
+    "subtle-text": { "$type": "color", "$value": "#8d1b19" }
+  },
+  "success": {
+    "subtle-bg": { "$type": "color", "$value": "#dcf7e1" },
+    "subtle-text": { "$type": "color", "$value": "#085023" }
+  },
+  "warning": {
+    "subtle-bg": { "$type": "color", "$value": "#fff0d0" },
+    "subtle-text": { "$type": "color", "$value": "#694500" }
+  }
+}

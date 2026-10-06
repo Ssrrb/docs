@@ -95,6 +95,20 @@ while (stack.length) {
 console.log(`check-design: ${count} token files parse`);
 ' "$root" || fail=1
 
+# The canonical tokens validate: aliases resolve, themes are complete.
+if [ -d "$design/tokens" ] && [ -n "$(ls -A "$design/tokens" 2>/dev/null)" ]; then
+  node "$root/scripts/tokens-validate.mjs" "$root" || fail=1
+
+  # The generated artifacts must reproduce with a clean tree.
+  node "$root/scripts/tokens-build.mjs" "$root" >/dev/null || fail=1
+  if git -C "$root" ls-files --error-unmatch design/generated/tokens.css >/dev/null 2>&1; then
+    if ! git -C "$root" diff --quiet -- design/generated; then
+      printf 'check-design: design/generated is stale. Run node scripts/tokens-build.mjs and commit.\n' >&2
+      fail=1
+    fi
+  fi
+fi
+
 # The mapping registry holds one entry per component in the inventory.
 node -e '
 const fs = require("fs");
