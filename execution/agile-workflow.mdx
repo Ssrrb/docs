@@ -1,0 +1,80 @@
+# Flujo de trabajo ágil para 2 personas
+
+*Execution · draft*
+
+## Enfoque
+
+Scrum ligero con tablero Kanban. Sprints de 2 semanas.
+
+Con 2 personas no hay Scrum Master ni Product Owner dedicados. Los roles se reparten:
+
+| Persona | Rol | Responsabilidad |
+|---|---|---|
+| A | Product Owner + dev | Prioriza el backlog. Escribe historias y criterios de aceptación. |
+| B | Facilitador + dev | Cuida el proceso, el tablero, el CI y la Definición de Terminado. |
+
+Las dos personas programan. Toda historia pasa por la revisión de la otra persona (PR review).
+
+## Orden cronológico
+
+### Fase 0 — Preparación (semana 0, de 3 a 5 días)
+
+1. Definir la visión y el alcance del MVP: una empresa constructora, varios proyectos, Paraguay.
+2. Acordar la Definición de Terminado: código revisado, tests pasan, wiki actualizada, desplegado en staging.
+3. Preparar herramientas: repositorio con `main` y una rama por historia, tablero (GitHub Projects), CI básico.
+4. Crear el backlog inicial: una épica por módulo ECMS y ERP del wiki.
+5. Estimar las épicas por talla (S, M, L) y ordenarlas por valor y dependencia.
+
+### Fase 1 — Cimientos (sprints 1 y 2)
+
+- Core: auth, catálogos (Material, Partner), proyectos y `obra (work site)`.
+- Persistencia (Prisma + PostgreSQL) y esqueleto de API y frontend.
+- Entregable: login, alta de obra y catálogo navegable.
+
+### Fase 2 — Presupuesto (sprints 3 y 4)
+
+- `budgets`: importación desde Excel e ítems.
+- `acu`: biblioteca y copia por obra.
+- Entregable: presupuesto de obra con ACU visible.
+
+### Fase 3 — Medición y certificación (sprints 5 y 6)
+
+- `certifications`: medición oficial en terreno, independiente de los partes diarios.
+- Subcontratos con modalidad `PRODUCCION` o `JORNAL`, y retenciones configurables por proyecto.
+- Entregable: certificado aprobado, exportable a PDF y Excel.
+
+### Fase 4 — Puente ERP (sprints 7 y 8)
+
+- Evento `certificate-approved` crea la factura al cliente.
+- Evento `subcontractor-cert-approved` crea el pago al subcontratista.
+- Material Requests crean órdenes de compra. Caja chica.
+- Entregable: los cuatro flujos del puente funcionan de punta a punta.
+
+### Fase 5 — Costos y control (sprints 9 y 10)
+
+- Motor de costos: vías A y B por ACU × cantidad certificada; vía C con partes de máquina.
+- Dashboard de desvíos y alertas.
+
+### Fase 6 — Estabilización y release del MVP (sprint 11)
+
+- Pruebas con el usuario real.
+- Corrección de errores.
+- Despliegue a producción.
+
+## Ciclo de cada sprint
+
+| Momento | Actividad | Duración |
+|---|---|---|
+| Día 1 (lunes) | Sprint Planning: elegir historias y fijar el objetivo del sprint | 1 a 1,5 h |
+| Cada día | Daily: qué hice, qué haré, qué me bloquea | 10 min |
+| Mitad del sprint | Refinamiento del backlog del sprint siguiente | 45 min |
+| Día 10 (viernes) | Sprint Review: demo al usuario | 30 a 45 min |
+| Día 10 (viernes) | Retrospectiva: qué mantener, qué cambiar | 30 min |
+
+## Reglas de trabajo
+
+- Límite de trabajo en curso: una historia por persona.
+- Repartir el trabajo por módulo para evitar conflictos.
+- Programar en pareja las partes críticas: motor de costos y puente ERP-ECMS.
+- Una historia dura de uno a tres días. Si no entra en un sprint, se divide.
+- Medir la velocidad desde el sprint 3 y planificar con ese dato.
