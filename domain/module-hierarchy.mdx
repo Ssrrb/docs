@@ -1,0 +1,269 @@
+# Jerarquía de módulos
+
+*Domain · approved*
+
+## Visión general
+
+Obra Studio organiza **28 módulos** en dos motores con responsabilidades claras.
+
+## ERP — Motor Financiero-Comercial
+
+**Propósito**: Gestionar dinero, compras, documentos legales y tesorería.
+
+### Módulos ERP
+
+| Módulo | Responsabilidad | Entidades principales |
+|---|---|---|
+| **auth** | Autenticación y autorización | User, Role, Permission |
+| **catalogs** | Catálogos compartidos | Material, Partner, LaborCategory |
+| **purchase-orders** | Órdenes de compra a proveedores | PurchaseOrder, PurchaseOrderDetail |
+| **invoices** | Facturas legales (inbound/outbound) | Invoice, InvoiceItem |
+| **payments** | Pagos a proveedores | Payment, Cheque, Transferencia |
+| **petty-cash** | Caja chica y gastos menores | PettyCashFund, PettyCashExpense |
+| **finance** | Tesorería y contabilidad | CuentaFinanciera, MovimientoCuenta, Anticipo, RetencionFondo |
+| **dashboard** | Tablero financiero (cash flow) | [Reportes, no tablas] |
+
+### Flujo de dinero ERP
+
+```
+ECMS: Material Request (compromete presupuesto)
+  ↓
+ERP: Purchase Order (ejecuta la compra)
+  ↓
+ERP: Receipt → Invoice
+  ↓
+Committed Amount → Executed Amount → Facturado
+  ↓
+Pagos (Cheque/Transferencia) → Accounting
+  ↓
+Tesorería (Cash flow actual)
+```
+
+### Entidades transversales ERP
+
+- **Partner** (Socio/Proveedor): quién vende
+- **Material** (Insumo): qué se compra
+- **Price**: cuánto cuesta (precio base)
+- **CuentaFinanciera** (Banco): dónde sale el dinero
+
+---
+
+## ECMS — Motor de Ingeniería y Costos
+
+**Propósito**: Gestionar obra, presupuesto, costos reales, mediciones y certificaciones.
+
+### Módulos ECMS
+
+| Módulo | Responsabilidad | Entidades principales |
+|---|---|---|
+| **budgets** | Presupuesto e importación desde Excel | BudgetItem, BudgetMovement, BudgetImport |
+| **acu** | Análisis de Costo Unitario por ítem | AuxiliaryCalculation (ACU) |
+| **material-requests** | Solicitudes de materiales (comprometen presupuesto) | MaterialRequest, MaterialRequestDetail |
+| **cost-control** | Centro de costos vs presupuesto | [Reportes desde motor] |
+| **partes** | Partes diarios de máquina (solo equipos) | ParteMaquina, CargaCombustible, ViajeCamion |
+| **labor-prices** | Catálogo de precios de mano de obra | LaborPrice |
+| **certifications** | Certificados de avance y subcontratistas | Certification, CertificationItem, SubcontractorCertificate |
+| **subcontracts** | Contratos con contratistas especiales | SubcontractorContract |
+| **stock** | Almacén de la obra | WarehouseStock, StockMovement, ConteoInventario |
+| **rrhh** | Recursos Humanos, personal, asistencia | Empleado, Asistencia, LiquidacionPersonal, RRHHConfig |
+| **uploads** | Archivos adjuntos (evidencias, fotos) | DocumentAuditLog |
+
+### Flujo técnico ECMS
+
+```
+Presupuesto (BudgetItem)
+  ├─ ACU (cómo ejecutar)
+  ├─ K, IVA (parámetros obra)
+  ↓
+Medición Oficial (en terreno, por período, independiente)
+  ↓
+Motor de Costos (3 vías: materiales, MO, equipos)
+  ↑
+Partes de máquina (solo horas de equipo, alimentan Vía C)
+  ↓
+Certificaciones:
+  ├─ Avance (obra) → Factura al cliente
+  └─ Subcontratista → Pago a contratista
+  ↓
+Alertas: Desvíos vs presupuesto
+```
+
+### Entidades transversales ECMS
+
+- **Project** (Obra): unidad de ejecución
+- **Material** (Insumo): qué se ejecuta (compartido con ERP)
+- **BudgetItem** (Ítem): línea de presupuesto
+- **ParteMaquina** (Reporte): horas de equipo del día
+- **Certification** (Certificado): medición oficial
+- **SubcontractorContract** (Contrato): acuerdo con subcontratista
+
+---
+
+## Matriz de Responsabilidad
+
+¿Quién posee cada entidad?
+
+| Entidad | Motor | Módulo | Significado |
+|---|---|---|---|
+| Project | ECMS | budgets | La obra es la unidad de planeamiento ECMS |
+| BudgetItem | ECMS | budgets | Ítem del presupuesto |
+| ACU | ECMS | acu | Cómo se ejecuta cada ítem |
+| Material | Ambos | catalogs | Insumo compartido (compras + ejecución) |
+| MaterialRequest | ECMS | material-requests | Solicitud de material (ECMS la propone, compromete presupuesto) |
+| MaterialPrice | ERP | catalogs | Precio del material (decide ERP al comprar) |
+| ParteMaquina | ECMS | partes | Hecho de campo de equipos (ECMS lo registra) |
+| Certification | ECMS | certifications | Medición oficial en terreno (genera factura) |
+| SubcontractorContract | ERP | purchase-orders | Contrato es una compra (relación legal) |
+| SubcontractorCertificate | ECMS | certifications | Medición de subcontratista |
+| PurchaseOrder | ERP | purchase-orders | Orden de compra (documento legal) |
+| Invoice | ERP | invoices | Factura (documento legal) |
+| Payment | ERP | payments | Pago (realidad financiera) |
+| Partner | ERP | catalogs | Proveedor/contratista (relación comercial) |
+| Empleado | ECMS | rrhh | Personal (ejecuta obra) |
+| WarehouseStock | ECMS | stock | Almacén de la obra |
+
+**Regla**: Si la entidad es un hecho de campo (partes de máquina, medición) → ECMS. Si es un documento legal (PO, factura, pago) → ERP.
+
+---
+
+## Flujos Cross-Module Clave
+
+### Flujo 1: Presupuesto → Material Request → Orden de Compra
+
+```
+ECMS/budgets: Crea BudgetItem (100 m³ hormigón, $400/m³)
+  ↓
+ECMS/acu: Define ACU (materiales: 300 kg cemento, 150 ton arena, etc.)
+  ↓
+ECMS/budgets: Presupuesto total = $40.000
+  ↓
+ECMS/material-requests: Ingeniero crea MaterialRequest "300 kg cemento"
+  ↓
+ECMS/material-requests: Sistema calcula: "300 kg × $0,30/kg = $90 (compromete presupuesto)"
+  ↓
+ERP/purchase-orders: Aprueba y crea PO a proveedor
+  ↓
+ERP/catalogs: Valida Material y MaterialPrice
+  ↓
+ECMS/cost-control: Registra Committed Amount en línea de presupuesto
+```
+
+### Flujo 2: Medición → Factura
+
+```
+ECMS/certifications: Ingeniero mide en terreno y genera Certification (Medición Oficial, 100 m³)
+  ↓
+ECMS/cost-control: Motor de costos calcula costo de lo certificado ($38.500)
+  ↓
+ERP/invoices: Lee Certification, crea Invoice al cliente
+  ↓
+ERP/finance: Registra acreencia por cobrar
+  ↓
+Dashboard ECMS: Muestra medición acumulada, Ganancia estimada $1.500
+```
+
+### Flujo 3: Certificación de Subcontratista → Pago
+
+```
+Ingeniero mide en terreno lo ejecutado por el subcontratista
+  ↓
+ECMS/certifications: Ingeniero mide en terreno y genera SubcontractorCertificate
+  ↓
+ECMS/subcontracts: Valida que cantidad no exceda contrato
+  ↓
+ERP/payments: Lee certificate, crea Payment (con retenciones)
+  ↓
+ERP/finance: Cheque o transferencia
+```
+
+### Flujo 4: RRHH → Costo de Obra
+
+```
+ECMS/rrhh: Registra asistencia del personal
+  ↓
+ECMS/labor-prices: Define precio hora por tipo de personal
+  ↓
+ECMS/cost-control: Costo MO del ítem = horas del ACU × cantidad certificada × precio hora × cargas RRHH
+```
+
+---
+
+## Dependencias entre módulos
+
+```
+Nivel 0 (Sin dependencias)
+├─ auth
+├─ catalogs (materials, partners)
+└─ labor-prices
+
+Nivel 1 (Dependen de Nivel 0)
+├─ budgets (lee materials, partners)
+├─ acu (usa materials, partner prices)
+├─ purchase-orders (usa catalogs, partners)
+└─ subcontracts (usa partners)
+
+Nivel 2 (Dependen de Nivel 0-1)
+├─ partes (usa budgets)
+├─ certifications (usa budgets, subcontracts)
+├─ invoices (usa purchase-orders, partners)
+├─ payments (usa subcontracts, partners)
+└─ stock (usa materials, warehouses)
+
+Nivel 3 (Dependen de Nivel 0-2)
+├─ cost-control (usa budgets, partes, labor-prices, acu)
+├─ rrhh (usa labor-prices)
+└─ dashboard (lee cost-control, certifications)
+
+Nivel 4 (Reportes, sin cambios)
+└─ finance (lee invoices, payments, certifications)
+```
+
+---
+
+## Matrices de acceso
+
+### Quién puede leer qué
+
+| Módulo | Auditor | Enginering | Admin | Finance |
+|---|---|---|---|---|
+| budgets | ✓ | ✓ | ✓ | ✓ |
+| partes | ✓ | ✓ | ✓ | ✓ |
+| certifications | ✓ | ✓ | ✓ | ✓ |
+| cost-control | ✓ | ✓ | ✓ | ✓ |
+| purchase-orders | ✓ | ✓ | ✓ | ✓ |
+| invoices | ✓ | — | ✓ | ✓ |
+| payments | ✓ | — | ✓ | ✓ |
+| finance | ✓ | — | ✓ | ✓ |
+
+### Quién puede escribir qué
+
+| Módulo | Auditor | Engineering | Admin | Finance |
+|---|---|---|---|---|
+| budgets | — | ✓ | ✓ | — |
+| partes | — | ✓ | ✓ | — |
+| certifications | — | ✓ | ✓ | — |
+| acu | — | ✓ | ✓ | — |
+| purchase-orders | — | — | ✓ | — |
+| invoices | — | — | — | ✓ |
+| payments | — | — | — | ✓ |
+
+---
+
+## Configuración por proyecto
+
+Algunos módulos se pueden habilitar/deshabilitar por proyecto:
+
+```
+proyecto.features {
+  stock: enabled/disabled
+  rrhh: enabled/disabled
+  labor_prices: enabled/disabled
+  subcontracts: enabled/disabled
+  retenciones: ConfigRetencionesAnticipos (fondos por modalidad PRODUCCION / JORNAL)
+  finance: enabled/disabled
+  budget_movements: enabled/disabled
+  cost_variations: enabled/disabled
+}
+```
+
+Por defecto: todos habilitados. Un proyecto MVP puede deshabilitar módulos complejos.

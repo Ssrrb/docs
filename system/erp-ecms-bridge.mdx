@@ -1,0 +1,384 @@
+# Puente ERP-ECMS
+
+*System · draft*
+
+## Introducción
+
+El **puente** conecta los dos motores. Define cómo fluyen datos, dinero y decisiones entre ERP y ECMS.
+
+**Principios:**
+- ECMS propone; ERP ejecuta
+- ECMS mide; ERP registra
+- ECMS costea; ERP factura
+
+---
+
+## Flujo 1: Presupuesto → Material Request → Orden de Compra
+
+**Escenario**: ECMS crea MaterialRequest (compromete presupuesto con desglose de ACU); ERP emite OC.
+
+```
+1. Presupuesto ECMS
+   ├─ Ítem 5: 100 m³ hormigón
+   ├─ Presupuesto: 100 × $400 = $40.000
+   └─ ACU: 300 kg cemento, 500 kg arena, 800 kg piedra
+
+2. Ingeniero ECMS (módulo material-requests)
+   └─ Crea MaterialRequest: "300 kg Cemento Pórtland (ACU Ítem 5)"
+   
+3. Sistema ECMS (material-requests)
+   ├─ Busca Material "Cemento Pórtland" en catálogo
+   ├─ Presupuesto vigente: $40.000
+   ├─ Ya comprometido: $0
+   ├─ Disponible: $40.000
+   ├─ Valida: "300 kg entra en ACU del Ítem 5"
+   └─ MaterialRequest.status = PENDING_APPROVAL
+
+4. Sistema ERP (purchase-orders)
+   ├─ Lee MaterialRequest de ECMS
+   ├─ Aprueba commitment
+   ├─ Busca Proveedores que venden "Cemento"
+   ├─ Selecciona mejor precio: $0,32/kg
+   ├─ Calcula: 300 kg × $0,32 = $96
+   └─ Crea Purchase Order
+
+5. Base de Datos
+   ├─ BudgetItem.committed += $96
+   ├─ BudgetItem.available = $40.000 - $96 = $39.904
+   └─ PurchaseOrder.amount = $96
+
+6. Sistema ECMS
+   ├─ Lee committed amount actualizado
+   ├─ Muestra en cost control: "Presupuesto: $40k, Comprometido: $96"
+   └─ % utilizado = 0,24%
+
+7. Resultado
+   ├─ Budget disponible: $39.904 (menos)
+   ├─ PO creada: enviada a proveedor
+   └─ ECMS sigue planeando con dinero restante
+```
+
+**Validaciones:**
+- No permitir commitment > presupuesto (alerta o rechazo configurables)
+- Material debe existir en catálogo
+- Precio ERP válida desde MaterialPrice o negociación
+
+**Estados:**
+```
+PurchaseOrder
+├─ Draft: se está editando
+├─ Approved: committed amount entra en cálculos
+├─ Issued: orden enviada a proveedor
+└─ Received: cantidad entra en stock/consumo
+```
+
+---
+
+## Flujo 2: Caja Chica / Gasto sin OC (Material que ya se compró)
+
+**Escenario**: Material se compró en efectivo/caja chica. ECMS crea MaterialRequest después; ERP carga factura que ya existe.
+
+```
+1. Campo (obra)
+   ├─ Encargado necesita 50 bolsas de adhesivo urgente
+   ├─ Compra en efectivo (caja chica): $500
+   └─ Recibe factura del proveedor
+
+2. ECMS (material-requests)
+   ├─ Ingeniero registra: "50 bolsas adhesivo, $500 (ACU Ítem 3)"
+   ├─ Sistema valida vs presupuesto: Disponible $40.000 ✓
+   ├─ Calcula: "$500 entra en ACU"
+   └─ MaterialRequest.status = PENDING_APPROVAL
+
+3. Sistema ERP
+   ├─ Lee MaterialRequest de ECMS
+   ├─ Recibe factura del proveedor (emitida hace 3 días)
+   ├─ Ingresa factura: "50 × $10 = $500"
+   ├─ Busca o crea comprobante de Caja Chica
+   └─ Asigna a BudgetItem "Adhesivos"
+
+4. Base de Datos
+   ├─ BudgetItem.executed += $500 (no committed, directo a ejecutado)
+   ├─ BudgetItem.available = $40.000 - $500 = $39.500
+   ├─ CajachicaGasto.status = Registered
+   └─ MaterialRequest.status = Approved
+
+5. Sistema ECMS
+   ├─ Lee executed amount actualizado
+   ├─ Muestra: "Presupuesto: $40k, Ejecutado: $500"
+   ├─ Motor de costos: usa ese adhesivo en costeo
+   └─ Ingenieros ven dinero consumido en tiempo real
+
+6. Resultado
+   ├─ Presupuesto utilizado: 1,25%
+   ├─ ECMS notificado DESPUÉS (pero sabe qué se gastó)
+   ├─ Stock de obra actualizado
+   └─ Auditoría: factura registrada con fecha original
+```
+
+**Diferencias vs Flujo 1:**
+- MaterialRequest se crea DESPUÉS de la compra (reactive, no proactive)
+- Factura ya existe (ERP solo carga)
+- Flujo más lento en aprobación pero ECMS siempre se entera
+- Riesgo mitificado: ECMS ve consumo, no compromiso
+
+**IMPORTANTE: ERP NUNCA puede comprometer presupuesto sin ECMS**
+- Si hubiera querido agilizar: ECMS crea MR primero → ERP aprueba → Caja chica ejecuta
+- Pero si ya pasó (emergencia): ERP carga factura → ECMS registra MaterialRequest post-hoc
+
+---
+
+## Flujo 3: Medición → Factura al Cliente
+
+**Escenario**: ECMS certifica la medición oficial de la obra; ERP emite factura. La medición oficial es independiente: no se calcula desde partes diarios de personal ni de materiales.
+
+```
+1. Medición en terreno (Ingeniero ECMS)
+   ├─ Ítem 5: hormigón (m³)
+   ├─ Cantidad medida del período: 95 m³
+   └─ Evidencias: planilla de medición, fotos
+
+2. Certificado ECMS (certifications)
+   ├─ Estado: Draft
+   ├─ Medición: 95 m³ (ingresada por el ingeniero)
+   ├─ Validación: 95 m³ no excede 100 m³ presupuestados ✓
+   ├─ Valor = 95 × $400/m³ = $38.000
+   └─ Usuario aprueba certificate
+
+3. Motor de Costos ECMS (costo de lo certificado)
+   ├─ Vía A (materiales): 95 m³ × coeficientes ACU × precios vigentes = $36.000
+   ├─ Vía B (MO): 95 m³ × horas ACU × precio hora con cargas = $2.500
+   ├─ Vía C (equipos): horas de máquina validadas en partes de máquina = $1.200
+   ├─ Costo de lo certificado: $39.700
+   └─ Resultado: $38.000 - $39.700 = -$700 (pérdida)
+
+4. Sistema ECMS
+   ├─ Certification.status = Approved
+   ├─ Alerta si el resultado es negativo: "Desvío de ganancia, revisar ACU"
+   └─ Envía evento: "Certificado aprobado"
+
+6. Sistema ERP
+   ├─ Lee evento de certificado aprobado
+   ├─ Extrae: cantidad 95, valor $38.000
+   ├─ Aplica configuración de obra:
+   │  ├─ IVA (10%): + $3.800
+   │  ├─ Fondo de reparo (5%): - $1.900 (retención)
+   │  └─ Total a cobrar: $38.000 + $3.800 - $1.900 = $39.900
+   ├─ Crea Invoice al cliente
+   ├─ Estado: Draft (para revisión)
+   └─ Línea de invoice: 95 unidades × $400 + IVA
+
+7. Base de Datos
+   ├─ BudgetItem.measured_quantity = 95 (desde ECMS)
+   ├─ Invoice.amount = $39.900
+   ├─ Invoice.status = Draft
+   └─ ECMS muestra: "Medición oficial 95 m³, facturado $39.900"
+
+8. Admin ERP
+   ├─ Revisa Invoice
+   ├─ Aprueba Invoice
+   ├─ Invoice.status = Issued
+   └─ Se envía al cliente (email + PDF)
+
+9. Tesorería ERP
+   ├─ Registra: acreencia $39.900 por cobrar
+   ├─ Cliente paga (transfer, cheque, etc.)
+   ├─ Registra: crédito cobrado
+   └─ Dashboard ERP: cash flow actualizado
+
+10. Resultado
+    ├─ ECMS: Medición oficial 95 m³, Resultado -$700
+    ├─ ERP: Factura emitida, dinero por cobrar
+    ├─ Finance: Acreencia registrada
+    └─ Próximo período: volver a medir
+```
+
+**Flujo de información:**
+```
+ECMS (mide en terreno) → Certifica → ECMS aprueba
+    ↓
+ERP (lee) → Crea invoice → ERP aprueba
+    ↓
+Cliente (recibe) → Paga
+    ↓
+Tesorería (registra) → Cash flow actualizado
+```
+
+**Validaciones:**
+- No permitir facturar más de lo medido
+- IVA debe estar configurado en proyecto
+- Fondo de reparo debe estar configurado
+- Retenciones solo si aplica por contrato
+
+---
+
+## Flujo 4: Certificación de Subcontratista → Pago
+
+**Escenario**: Subcontratista ejecuta trabajo; ECMS certifica; ERP paga.
+
+```
+1. Subcontrato ERP
+   ├─ Contratista: "Excavaciones X"
+   ├─ Alcance: hasta 500 m³ de excavación
+   ├─ Precio: $20/m³
+   ├─ Techo (hard ceiling): $10.000 total
+   └─ Estado: Vigente
+
+2. Trabajo en Obra ECMS
+   ├─ Subcontratista trabaja 2 semanas
+   ├─ Sin registros de partes de personal: la medición es independiente
+
+3. Ingeniero ECMS
+   ├─ Mide el trabajo ejecutado en terreno
+   ├─ Medición oficial del subcontratista: 380 m³
+   ├─ Certificado de Subcontratista:
+   │  ├─ Modalidad del contrato: PRODUCCION
+   │  ├─ Cantidad: 380 m³
+   │  ├─ Precio unitario: $20/m³
+   │  ├─ Monto bruto: 380 × $20 = $7.600
+   │  ├─ Fondos activos del proyecto para PRODUCCION:
+   │  │  └─ Garantía (5% sobre bruto): -$380
+   │  └─ Monto neto: $7.220
+   └─ Status: Draft
+
+4. Sistema ECMS
+   ├─ Valida vs contrato:
+   │  ├─ Techo: $10.000
+   │  ├─ Ya certificado: $0 (primera vez)
+   │  ├─ Nuevo: $7.600
+   │  └─ Total sería: $7.600 < $10.000 ✓ OK
+   ├─ Aprueba certificado
+   ├─ SubcontractorCertificate.status = Approved
+   └─ Envía evento: "Certificado subcontratista aprobado"
+
+5. Sistema ERP
+   ├─ Lee evento de certificado aprobado
+   ├─ Extrae: contratista "Excavaciones X", monto $7.220
+   ├─ Crea Payment:
+   │  ├─ Monto neto: $7.220
+   │  ├─ Retenciones: $380
+   │  ├─ Referencias: contrato + certificado
+   │  └─ Status: Draft
+   ├─ Propone pago via transferencia
+   └─ Admin revisa antes de ejecutar
+
+6. Base de Datos
+   ├─ SubcontractorContract.certified_amount = $7.600 (acumulado)
+   ├─ SubcontractorContract.available = $10.000 - $7.600 = $2.400
+   ├─ Payment.amount = $7.220 (neto)
+   ├─ RetencionFondo.amount = $380 (retención garantía)
+   └─ ECMS muestra: "Contrato $10k, Certificado $7.6k, Disponible $2.4k"
+
+7. Tesorería ERP
+   ├─ Aprueba Payment
+   ├─ Genera Cheque o Transferencia
+   ├─ Ejecuta pago (dinero sale)
+   ├─ Registra: egresos por contratista
+   └─ Retención se guarda (para futura devolución o compensación)
+
+8. Resultado
+   ├─ Subcontratista: Certificado $7.600, pagado $7.220 (neto)
+   ├─ Retención: $380 guardada (garantía)
+   ├─ Contrato: Disponible $2.400 para próxima certificación
+   ├─ ECMS: Medición de excavación 380 m³ registrada
+   └─ Finance: Pago registrado, retención guardada
+```
+
+**Flujo de dinero:**
+```
+Subcontrato (techo $10k)
+    ↓
+Certificado (mide 380 m³ @ $20 = $7.6k)
+    ↓ (valida vs techo)
+Aprobado ✓ (disponible $2.4k)
+    ↓
+Sistema propone pago $7.22k neto
+    ↓ (Admin aprueba)
+Cheque emitido
+    ↓
+Contabilidad registra
+```
+
+**Validaciones:**
+- Certificado no puede exceder techo del contrato
+- Payment no puede exceder certificado
+- Retenciones se toman de la configuración del proyecto, según la modalidad del contrato (PRODUCCION o JORNAL)
+- Un contrato JORNAL no recibe retención si el proyecto no tiene un fondo activo para JORNAL
+- Subcontratista debe estar vigente
+
+---
+
+## Eventos de sincronización
+
+El sistema usa **eventos** para mantener sincronía:
+
+| Evento | Originador | Destinatario | Acción |
+|---|---|---|---|
+| `budget-item-created` | ECMS | ERP | Crear línea de presupuesto en catalogo |
+| `purchase-order-approved` | ERP | ECMS | Actualizar committed amount |
+| `purchase-order-received` | ERP | ECMS | Actualizar executed amount |
+| `certificate-approved` | ECMS | ERP | Crear factura al cliente |
+| `subcontractor-cert-approved` | ECMS | ERP | Crear pago a subcontratista |
+| `project-config-updated` | Admin | ECMS + ERP | Actualizar K, IVA, retenciones |
+
+## Reglas de hard ceiling
+
+**Hard Ceiling 1: Contrato de Subcontratista**
+
+```
+SubcontractorContract.certified_amount ≤ SubcontractorContract.amount
+
+Lógica:
+- Sistema rechaza certificado si hace exceder techo
+- Mensaje: "Certificado de $7.600 haría exceder techo de $10.000 (disponible $2.400)"
+- Admin debe reducir cantidad certificada o aumentar techo (adicional)
+```
+
+**Hard Ceiling 2: Pago a Subcontratista**
+
+```
+SubcontractorContract.paid_amount ≤ SubcontractorContract.certified_amount
+
+Lógica:
+- Sistema rechaza pago si excede lo certificado
+- Mensaje: "No se puede pagar $5.000 si solo se certificaron $4.500"
+- Admin debe certificar más primero
+```
+
+**Hard Ceiling 3: Presupuesto (Soft)**
+
+```
+BudgetItem.committed_amount ≤ BudgetItem.amount + Tolerancia(%)
+
+Lógica:
+- Alerta si committed supera presupuesto
+- Permite overcommitment (seguimiento manual)
+- Admin puede configurar tolerancia por proyecto
+```
+
+## Resincronización
+
+Si ERP y ECMS se desincronizán (datos inconsistentes):
+
+```
+1. Auditor detecta inconsistencia
+   └─ "Budget shows committed $5k, pero PO suma $3.5k"
+
+2. Sistema calcula diferencia
+   └─ Delta = $1.5k
+
+3. Admin investiga
+   ├─ ¿PO borrado que no se notificó?
+   ├─ ¿Error en sincronización?
+   └─ ¿Admin cambió budget sin notificar?
+
+4. Solución
+   ├─ Opción A: Ejecutar script de resincronización
+   ├─ Opción B: Ajuste manual (registra quién y por qué)
+   └─ Opción C: Reversión a backup
+
+5. Auditoría
+   └─ Registrar qué pasó, quién arregló, cuándo
+```
+
+Es raro si el sistema es confiable.
