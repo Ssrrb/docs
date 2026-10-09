@@ -1,0 +1,521 @@
+# Workflow de Certificaciones
+
+*Product · draft*
+
+## Visión general
+
+La **certificación** es el acto de validar que algo se hizo y prepararlo para facturación/pago.
+
+Hay **dos tipos de certificación**, pero ambas siguen el mismo flujo:
+
+```
+1. SELECCIONAR período y alcance
+2. INGRESAR cantidades ejecutadas
+3. VALIDAR contra presupuesto y ACU
+4. CARGAR evidencias (fotos, documentos)
+5. REVISAR cálculos y alertas
+6. APROBAR o RECHAZAR
+7. IMPACTO: factura al cliente o pago a subcontratista
+```
+
+---
+
+## Tipo 1: Certificado de Avance (Obra)
+
+**Qué es**: Valida que ejecutamos X cantidad de trabajo e ingresa lo ejecutado en períodos.
+
+**Usuario**: Ingeniero de obra, supervisor
+
+**Resultado**: Factura al cliente, medición registrada en historial
+
+### Paso 1: Seleccionar período
+
+```
+Pantalla: "Nueva Certificación"
+
+┌────────────────────────────────────────┐
+│ Período: [Enero 2024 ▼]                │
+│ ├─ Rango: 01/01/2024 - 31/01/2024     │
+│ Desde que fecha mide: [01/01 ▼]       │
+│ Hasta que fecha mide: [31/01 ▼]       │
+│ Obra: [Construcción Centro ▼]         │
+│                                        │
+│ Presupuesto Total: $100.000            │
+│ Medido Acumulado Anterior: 40% ($40k) │
+│ Disponible a medir: 60% ($60k)         │
+└────────────────────────────────────────┘
+
+[Siguiente]
+```
+
+**Validaciones**:
+- No permitir períodos duplicados (solo 1 cert por período)
+- No permitir medir hacia atrás (período anterior al último cerrado)
+- Mostrar medición anterior para referencia
+
+### Paso 2: Seleccionar ítems a medir
+
+```
+Pantalla: "Ítems a Medir"
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ Ítem a certificar                         Presupuesto  Medido Anterior │
+├──────────────────────────────────────────────────────────────────────┤
+│ ☐ 1. Excavación (m³)                      500         300            │
+│ ☑ 2. Hormigonado (m³)                     100         0              │
+│ ☑ 3. Fierrería (kg)                       5.000       0              │
+│ ☐ 4. Revoque (m²)                         2.000       0              │
+│ ☐ 5. Pintura (m²)                         2.000       0              │
+│                                                                        │
+│ [✓ Seleccionar TODO]  [✗ Deseleccionar TODO]                        │
+│                                                                        │
+│ Ítems seleccionados: 3                                               │
+│ Total Presupuestado: $35.000                                         │
+└──────────────────────────────────────────────────────────────────────┘
+
+[Siguiente]
+```
+
+**Lógica**:
+- Mostrar todos los ítems del presupuesto
+- Permitir seleccionar cuáles se van a medir (no necesariamente todos)
+- Mostrar presupuesto y medido acumulado anterior
+
+### Paso 3: Ingresar cantidades medidas
+
+```
+Pantalla: "Medición Período Actual"
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ Período: Enero 2024 (01/01 - 31/01/2024)                            │
+│ Obra: Construcción Centro                                           │
+├──────────────────────────────────────────────────────────────────────┤
+│ Ítem: 2. Hormigonado (m³)                                            │
+│ Presupuesto total: 100 m³ × $400/m³ = $40.000                       │
+│ Medido anteriormente (acumulado): 0 m³                              │
+│ Disponible a medir: 100 m³                                          │
+│                                                                       │
+│ Cantidad en período: [95] m³                                        │
+│ (si es errónea, el ingeniero corrige aquí)                          │
+│                                                                       │
+│ Medición acumulada será: 0 + 95 = 95 m³ ✓ (dentro del presupuesto)  │
+│                                                                       │
+│ ACU de este ítem:                                                   │
+│ ├─ Materiales: 300 kg cemento, 500 kg arena, 800 kg piedra          │
+│ ├─ MO: 4 h capataz, 20 h obrero                                    │
+│ └─ Equipos: 2 h hormigonera, 20 h vibrador                         │
+│                                                                       │
+│ Costo Unitario Presupuestado: $400/m³                               │
+│ Costo Unitario Real (motor): $420/m³ (⚠ Desvío +5%)                │
+│                                                                       │
+│ ┌─────────────────────────────────────────┐                         │
+│ │ Evidencias (fotos, documentos)          │                         │
+│ │ ○ Seleccionar archivos...               │                         │
+│ │   [Seleccionar fotos]                   │                         │
+│ │                                         │                         │
+│ │ Archivos: 3 fotos                       │                         │
+│ │ ├─ hormigon-01.jpg (245 KB)             │                         │
+│ │ ├─ hormigon-02.jpg (312 KB)             │                         │
+│ │ └─ hormigon-03.jpg (189 KB)             │                         │
+│ └─────────────────────────────────────────┘                         │
+│                                                                       │
+│ Observaciones (opcional):                                           │
+│ [Completado sin inconvenientes, buenas condiciones climáticas]     │
+└──────────────────────────────────────────────────────────────────────┘
+
+[Agregar siguiente ítem]  [Siguiente]
+```
+
+**Campos**:
+- Cantidad en período (editable)
+- Visualización de presupuesto y medido anterior (no editable)
+- ACU del ítem (referencia)
+- Costo unitario presupuestado vs real (alerta si desvío)
+- Carga de evidencias (fotos, PDF)
+- Observaciones (comentarios)
+
+**Validaciones**:
+- No permitir cantidad > disponible
+- Alertar si no hay fotos/evidencias
+- Mostrar desvío de precio unitario
+
+### Paso 4: Revisar totales y alertas
+
+```
+Pantalla: "Resumen de Certificación"
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ RESUMEN DE CERTIFICACIÓN — Enero 2024                               │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                       │
+│ Ítems Medidos:                                                      │
+│ ┌─────────────────────────────────────────────────────────────────┐ │
+│ │ Ítem                      Cantidad  Precio Unit  Total        │ │
+│ ├─────────────────────────────────────────────────────────────────┤ │
+│ │ 2. Hormigonado (m³)        95        $400/m³     $38.000     │ │
+│ │ 3. Fierrería (kg)         4.500      $1,50/kg    $6.750      │ │
+│ ├─────────────────────────────────────────────────────────────────┤ │
+│ │ TOTAL A COBRAR                                    $44.750     │ │
+│ └─────────────────────────────────────────────────────────────────┘ │
+│                                                                       │
+│ CÁLCULO DE FACTURA:                                                 │
+│ Medición Oficial:              $44.750                             │
+│ + IVA (10%):                   $4.475                              │
+│ - Fondo Reparo (5%):           -$2.238 (retención)                │
+│ ────────────────────────────────────────                           │
+│ = TOTAL FACTURA:               $46.987                             │
+│                                                                       │
+│ ANÁLISIS DE COSTOS:                                                 │
+│ Costo Real (motor):            $43.200                             │
+│ Ganancia en período:           $44.750 - $43.200 = $1.550         │
+│ Ganancia acumulada:            $8.200 (desde inicio obra)         │
+│                                                                       │
+│ ⚠ ALERTAS:                                                         │
+│ • Ítem 2: Desvío de precio +5% (revisar ACU)                     │
+│ • Stock de arena baja (15 m³ restantes en almacén)                │
+│                                                                       │
+│ ✓ VALIDACIONES PASADAS:                                            │
+│ • Cantidad no excede presupuesto                                  │
+│ • Evidencias cargadas (3 fotos)                                   │
+│ • ACU disponible para todos los ítems                             │
+└──────────────────────────────────────────────────────────────────────┘
+
+[Guardar como Borrador]  [Emitir Certificado]  [Cancelar]
+```
+
+**Muestra**:
+- Tabla de ítems medidos con totales
+- Cálculo de factura (medición + IVA - retenciones)
+- Análisis de costos (costo real vs medición)
+- Alertas (desvíos, stock bajo, etc.)
+- Botones: Borrador, Emitir, Cancelar
+
+### Paso 5: Emitir certificado
+
+```
+Acción: [Emitir Certificado]
+
+Sistema:
+├─ Validaciones finales (cantidad, evidencias, ACU)
+├─ Si hay errores → Mostrar y pedir corrección
+├─ Si está OK:
+│  ├─ Crea Certification.status = ISSUED
+│  ├─ Crea CertificationItem por cada ítem medido
+│  ├─ Congelados: cantidades, evidencias, ACU usado
+│  └─ Genera número de certificado: CERT-2024-01-0001
+│
+└─ Mensaje: "Certificado emitido. Número: CERT-2024-01-0001"
+```
+
+**Estados post-emisión**:
+- ISSUED: emitido, listo para revisar
+- Puede ser APPROVED (aprobado) o REJECTED (rechazado)
+
+### Paso 6: Aprobación
+
+```
+Pantalla: "Revisar Certificado" (para supervisor o PM)
+
+Usuario diferente (Supervisor) revisa:
+├─ Cantidades medidas en terreno (¿están bien medidas?)
+├─ Evidencias (¿son suficientes?)
+├─ Cálculos (¿el motor costó correctamente?)
+├─ Alertas (¿hay desvíos importantes?)
+
+Opciones:
+├─ [✓ Aprobar] → Certification.status = APPROVED
+│               → Crea evento para ERP
+│               → ERP crea Invoice automáticamente
+│
+├─ [✗ Rechazar] → Vuelve a DRAFT
+│                → Pide observaciones del rechazo
+│                → Ingeniero corrige y reemite
+│
+└─ [⚠ Requiere cambios] → Vuelve a ISSUED
+                         → Comentarios especiales
+                         → Ingeniero puede responder
+```
+
+**Impactos al aprobar**:
+- CertificationItem.quantity = cantidad certificada (congelado)
+- BudgetItem.measured_quantity += cantidad (acumulado)
+- Evento → ERP crea Invoice
+- Dashboard actualiza medición acumulada
+
+---
+
+## Tipo 2: Certificado de Subcontratista
+
+**Qué es**: Valida que el subcontratista ejecutó X cantidad y prepara el pago.
+
+**Usuario**: Supervisor de subcontratista, capataz
+
+**Resultado**: Pago a subcontratista
+
+### Flujo similar pero con diferencias
+
+```
+Paso 1: Seleccionar subcontratista y período
+   ├─ Subcontratista: [Excavaciones X ▼]
+   ├─ Contrato: Excavación 500 m³ @ $20/m³ = $10.000 techo
+   ├─ Ya certificado: $0 (primera vez)
+   └─ Disponible: $10.000
+
+Paso 2: Ingresar cantidad ejecutada
+   ├─ Cantidad en período: [380] m³
+   └─ Acumulado sería: 380 m³ ✓ (dentro de $10k techo)
+
+Paso 3: Calcular retenciones
+   ├─ Modalidad del contrato: PRODUCCION
+   ├─ Monto bruto: 380 × $20 = $7.600
+   ├─ Fondos activos del proyecto para PRODUCCION (configurados en el proyecto):
+   │  ├─ Retención garantía (5%): -$380
+   │  └─ Retención fondo reparo (3%): -$228
+   └─ Monto neto: $6.992
+
+   Si el contrato es JORNAL y el proyecto no tiene fondos para JORNAL:
+   ├─ Monto bruto: jornales × precio
+   ├─ Retenciones: ninguna
+   └─ Monto neto = monto bruto
+
+Paso 4: Cargar evidencias
+   └─ Fotos de excavación: 5 fotos
+
+Paso 5: Revisar
+   ├─ Cantidad: 380 m³ (OK)
+   ├─ Techo: disponible $2.400
+   ├─ Retenciones: $608 total
+   └─ A pagar: $6.992
+
+Paso 6: Emitir
+   └─ SubcontractorCertificate.status = ISSUED
+
+Paso 7: Aprobación (Supervisor)
+   ├─ [✓ Aprobar] → status = APPROVED
+   │              → Evento a ERP
+   │              → ERP crea Payment
+   │
+   └─ [✗ Rechazar] → vuelve a DRAFT
+```
+
+**Diferencias vs Certificado de Avance**:
+- Vinculado a un contrato (subcontratista específico)
+- Hard ceiling: no puede exceder contrato.amount
+- Retenciones específicas del subcontratista (fondo reparo, garantía)
+- Resultado: Payment, no Invoice
+
+---
+
+## Impactos del Certificado Aprobado
+
+### En ECMS
+
+```
+Medición:
+├─ CertificationItem.quantity queda congelado
+├─ Certificación.status = APPROVED
+├─ Período queda "medido" para ese ítem
+└─ Puede reabrirse si hay error (con aprobación)
+
+Cost Control:
+├─ CostEngine recalcula costo real
+├─ Compara: medición vs presupuesto
+├─ Calcula ganancia/pérdida en período
+├─ Alerta si desvío > tolerancia
+└─ Dashboard actualiza
+
+Budgets:
+├─ BudgetItem.measured_quantity += cantidad
+├─ Presupuesto disponible se ajusta (si hay overrun)
+└─ Alertas si excede total
+```
+
+### En ERP
+
+```
+Certificado de Avance:
+├─ Crea Invoice al cliente
+├─ Invoice.amount = medición × precio + IVA - retenciones
+├─ Marca línea de presupuesto como "facturada"
+└─ Tesorería: acreencia por cobrar
+
+Certificado de Subcontratista:
+├─ Crea Payment al subcontratista
+├─ Payment.amount = medición × precio - retenciones
+├─ Retenciones guardadas (garantía, fondo reparo)
+└─ Tesorería: egresos por pagar
+```
+
+---
+
+## Estados y transiciones
+
+```
+Certificado de Avance
+
+      ┌──────┐
+      │Draft │◄─────────┐
+      └──┬───┘           │
+         │               │ [Rechazar]
+         │ [Emitir]      │
+         ▼               │
+      ┌──────┐           │
+      │Issued│─────────────┘
+      └──┬───┘
+         │
+         │ [Aprobar]
+         ▼
+      ┌──────────┐
+      │Approved  │
+      └──────────┘
+         │
+         │ [Cerrar período]
+         ▼
+      ┌──────────┐
+      │Closed    │ ◄─ No se puede modificar
+      └──────────┘
+
+Certificado de Subcontratista
+
+      ┌──────┐
+      │Draft │◄─────────┐
+      └──┬───┘           │
+         │               │ [Rechazar]
+         │ [Emitir]      │
+         ▼               │
+      ┌──────────┐       │
+      │Presented │────────┘
+      └──┬───────┘
+         │
+         │ [Aprobar]
+         ▼
+      ┌──────────┐
+      │Approved  │
+      └──┬───────┘
+         │
+         │ [Pagar]
+         ▼
+      ┌──────────┐
+      │Paid      │ ◄─ Finalizado
+      └──────────┘
+```
+
+---
+
+## Reportes exportables
+
+### Desde Certificado de Avance
+
+```
+[Exportar a Excel]
+└─ Planilla con:
+   ├─ Encabezado (obra, período, fecha)
+   ├─ Tabla de ítems medidos
+   ├─ Totales y cálculos
+   ├─ Tabla de medición acumulada por ítem
+   ├─ Tabla de costos (presupuesto vs real)
+   ├─ Evidencias (fotos, si caben)
+   └─ Firma de responsables (espacios en blanco)
+
+[Exportar PDF]
+└─ Documento listo para imprimir y enviar
+   ├─ Logo de obra
+   ├─ Número de certificado
+   ├─ Datos legales (cliente, contrato, etc.)
+   ├─ Detalles de medición
+   ├─ Monto facturado
+   └─ Espacio para sellos/firmas
+```
+
+### Desde Certificado de Subcontratista
+
+```
+[Exportar a Excel]
+└─ Planilla simplificada:
+   ├─ Subcontratista
+   ├─ Cantidad medida
+   ├─ Precio unitario
+   ├─ Monto bruto
+   ├─ Retenciones detalladas
+   ├─ Monto neto a pagar
+   └─ Firma contratista
+
+[Exportar PDF]
+└─ Documento para entregar al subcontratista
+   ├─ Datos del contrato
+   ├─ Medición detallada
+   ├─ Cálculo de retenciones
+   ├─ Monto final
+   └─ Espacio para firma y aclaración
+```
+
+---
+
+## Validaciones clave
+
+| Validación | Nivel | Efecto |
+|---|---|---|
+| **Cantidad > Presupuesto** | Hard | Rechaza, no permite guardar |
+| **Cantidad < 0** | Hard | Rechaza |
+| **Sin evidencias** | Soft | Alerta, pero permite guardar como borrador |
+| **Desvío precio > 10%** | Soft | Alerta, pero permite aprobar |
+| **Contrato sin vigencia** | Hard | Rechaza certificado de subcontratista |
+| **Hard ceiling contrato** | Hard | Rechaza si sería > techo |
+| **Período duplicado** | Hard | Rechaza segunda certificación de mismo período |
+
+---
+
+## Casos de uso avanzados
+
+### Reapertura de período cerrado
+
+```
+Situación: Se descubre que cantidad medida fue errónea
+Proceso:
+├─ Admin abre "Reapertura de período"
+├─ Selecciona certificado cerrado
+├─ Modifica cantidad
+├─ Sistema recalcula:
+│  ├─ Monto de factura (si fue emitida, crea nota de crédito)
+│  ├─ Costo real
+│  └─ Medición acumulada
+├─ Genera auditoría de cambio
+│  ├─ Quién: admin
+│  ├─ Cuándo: timestamp
+│  ├─ Qué: cantidad anterior → nueva
+│  └─ Por qué: [comentario del admin]
+└─ Cierra período de nuevo (con nueva marca de fecha)
+```
+
+### Certificación parcial
+
+```
+Situación: Ítem se mide a lo largo de varios períodos
+Ejemplo:
+├─ Período 1: 100 m³ de 200 presupuestados → Medido acumulado 50%
+├─ Período 2: 80 m³ de 200 presupuestados → Medido acumulado 90%
+├─ Período 3: 20 m³ de 200 presupuestados → Medido acumulado 100%
+
+Sistema:
+├─ Acumula automáticamente
+├─ No permite medir más del presupuesto total
+└─ Cada período se certifica por separado
+```
+
+### Rechazo y reemisión
+
+```
+Situación: Supervisor rechaza certificado
+Flujo:
+├─ Certificado vuelve a DRAFT
+├─ Sistema preserva cantidad, evidencias, etc.
+├─ Supervisor agrega comentario: "Revisar fotografías, foto 3 no se ve bien"
+├─ Ingeniero corrige:
+│  ├─ Puede cambiar cantidad (si supervisor lo aprobó)
+│  ├─ Agrega fotos mejores
+│  └─ Responde comentario: "Fotos reemplazadas, mejor calidad"
+├─ Reemite
+├─ Supervisor aprueba
+└─ Sistema actualiza auditoría (2 intentos registrados)
+```
+
