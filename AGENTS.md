@@ -43,6 +43,8 @@ This table holds the one meaning of each term. No other document states a second
 | Construction company | A company that executes an `obra`. |
 | Obra (work site) | The unit of work of a construction company. |
 | Project | A group of `obra`. |
+| Company view | The interface that shows the information of every project of a construction company. |
+| Project view | The interface that shows the information of one open project. |
 
 The name `obra` names an entity of the domain. The name `Obras` names a module of the application. The `docs/domain/` folder holds the rules for the three domain terms when that folder appears. The `docs/domain/` folder will hold budgets, unit price analysis, M.O. (labor), inputs, subcontractors, suppliers, and certificates.
 
