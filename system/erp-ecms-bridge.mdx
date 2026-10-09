@@ -232,10 +232,12 @@ Tesorería (registra) → Cash flow actualizado
    ├─ Mide el trabajo ejecutado en terreno
    ├─ Medición oficial del subcontratista: 380 m³
    ├─ Certificado de Subcontratista:
+   │  ├─ Modalidad del contrato: PRODUCCION
    │  ├─ Cantidad: 380 m³
    │  ├─ Precio unitario: $20/m³
    │  ├─ Monto bruto: 380 × $20 = $7.600
-   │  ├─ Retención garantía (5%): -$380
+   │  ├─ Fondos activos del proyecto para PRODUCCION:
+   │  │  └─ Garantía (5% sobre bruto): -$380
    │  └─ Monto neto: $7.220
    └─ Status: Draft
 
@@ -300,7 +302,8 @@ Contabilidad registra
 **Validaciones:**
 - Certificado no puede exceder techo del contrato
 - Payment no puede exceder certificado
-- Retenciones deben estar configuradas
+- Retenciones se toman de la configuración del proyecto, según la modalidad del contrato (PRODUCCION o JORNAL)
+- Un contrato JORNAL no recibe retención si el proyecto no tiene un fondo activo para JORNAL
 - Subcontratista debe estar vigente
 
 ---

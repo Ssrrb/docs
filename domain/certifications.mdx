@@ -123,20 +123,23 @@ Total a Cobrar = $50.000 + $5.000 - $2.500 = $52.500
 ```
 Monto = Σ(Medición Oficial × Precio Unitario del Subcontratista)
 Menos: Retenciones aplicables
-  - % de garantía (e.g., 5% del monto)
-  - Fondo de reparo
-  - Otros fondos (si aplica)
+  - Fondos activos del proyecto cuya aplica_a incluye la modalidad del contrato
+  - Cada fondo se calcula sobre su base, según su porcentaje
 Monto Neto a Pagar = Monto - Retenciones
 ```
 
-Ejemplo:
+Ejemplos (la configuración del proyecto decide qué fondos aplican):
 ```
-Medición: 50 m² de excavación
+Contrato PRODUCCION, medición 50 m² de excavación
 Precio Subcontratista: $30/m²
 Monto Bruto = 50 × $30 = $1.500
-Retención Garantía (5%) = $75
-Retención Fondo Reparo (3%) = $45
+Retención Garantía (5%, aplica_a PRODUCCION) = $75
+Retención Fondo Reparo (3%, aplica_a PRODUCCION) = $45
 Monto Neto = $1.500 - $75 - $45 = $1.380
+
+Contrato JORNAL, 50 jornales × $30 = $1.500
+Retención Garantía (5%, aplica_a PRODUCCION) = no aplica
+Monto Neto = $1.500 (sin retención)
 ```
 
 ## Integración con el Motor de Costos
@@ -191,9 +194,18 @@ Configurables por obra:
 | IVA | Impuesto de valor agregado | 10% | Nosotros al cliente (agregamos) |
 | Retención Laboral | Adelanto de impuestos | 2-8% | Nosotros al subcontratista |
 
-Configuración por obra:
-- `ConfigRetencionesAnticipos`: define % de cada retención
-- Se aplica automáticamente al emitir certificado
+Configuración por proyecto:
+- `ConfigRetencionesAnticipos`: lista de fondos del proyecto. Cada fondo tiene:
+  - `nombre`: por ejemplo Garantía, Fondo de Reparo, Retención Laboral
+  - `porcentaje`: el porcentaje a retener
+  - `base`: sobre qué monto se calcula (bruto del certificado)
+  - `aplica_a`: modalidad del contrato a la que se aplica: `PRODUCCION`, `JORNAL` o `AMBAS`
+  - `activo`: sí o no
+- Cada `SubcontractorContract` tiene una modalidad: `PRODUCCION` (pago por cantidad ejecutada) o `JORNAL` (pago por jornales trabajados).
+- Un fondo se aplica al certificado solo si está activo y su `aplica_a` incluye la modalidad del contrato.
+- Sin fondos activos para la modalidad, el certificado no tiene retenciones. Un contrato por jornal sin fondo configurado para `JORNAL` no tiene retención.
+- Los fondos se configuran por proyecto; no hay porcentajes fijos del sistema.
+- Se aplica automáticamente al emitir certificado.
 
 ## Reportes desde Certificación
 

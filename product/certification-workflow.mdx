@@ -266,10 +266,17 @@ Paso 2: Ingresar cantidad ejecutada
    └─ Acumulado sería: 380 m³ ✓ (dentro de $10k techo)
 
 Paso 3: Calcular retenciones
+   ├─ Modalidad del contrato: PRODUCCION
    ├─ Monto bruto: 380 × $20 = $7.600
-   ├─ Retención garantía (5%): -$380
-   ├─ Retención fondo reparo (3%): -$228
+   ├─ Fondos activos del proyecto para PRODUCCION (configurados en el proyecto):
+   │  ├─ Retención garantía (5%): -$380
+   │  └─ Retención fondo reparo (3%): -$228
    └─ Monto neto: $6.992
+
+   Si el contrato es JORNAL y el proyecto no tiene fondos para JORNAL:
+   ├─ Monto bruto: jornales × precio
+   ├─ Retenciones: ninguna
+   └─ Monto neto = monto bruto
 
 Paso 4: Cargar evidencias
    └─ Fotos de excavación: 5 fotos
