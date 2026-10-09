@@ -1,0 +1,270 @@
+# 🏗️ Obra Studio Architecture
+
+Welcome to the complete documentation of **Obra Studio's ERP-ECMS integrated system** for construction project management.
+
+This wiki explains **how money flows, how work is measured, how costs are calculated, and how everything connects**.
+
+---
+
+## 📖 Start Here
+
+### 1️⃣ What are ERP and ECMS?
+
+**[→ Read: ERP vs ECMS Architecture](foundations/erp-ecms-architecture)**
+
+In 5 minutes, understand:
+- What the **ERP** manages (money, purchases, invoices, payments)
+- What the **ECMS** manages (work, budgets, measurements, costs)
+- How they **communicate** (the bridge)
+- The **golden rule**: "ECMS measures; ERP records"
+
+### 2️⃣ How Does the System Work?
+
+**[→ Read: Architecture Overview](system/architecture-overview)**
+
+In 10 minutes, see:
+- System layers (Application, Engines, Persistence)
+- 4 main data flows
+- Who is responsible for what
+- Complete example: budgeting → purchasing → execution → invoicing
+
+### 3️⃣ How Do Systems Integrate?
+
+**[→ Read: ERP-ECMS Bridge](system/erp-ecms-bridge)**
+
+In 15 minutes, follow 4 real flows:
+1. **Budget → Purchase Order** (ECMS identifies need, ERP buys)
+2. **Direct Purchase** (ERP buys without ECMS intermediation)
+3. **Measurement → Invoice** (ECMS certifies, ERP invoices client)
+4. **Subcontractor → Payment** (ECMS certifies work, ERP pays)
+
+Each flow shows step-by-step what happens in databases and systems.
+
+---
+
+## 🎯 Choose Your Path
+
+### 💰 For Finance/Admin: "How does money flow?"
+
+```
+Read in this order:
+1. ERP vs ECMS Architecture (5 min)
+2. ERP-ECMS Bridge (15 min)
+3. Certifications (10 min) — how invoices and payments start
+```
+
+### 👷 For Engineers/Site Managers: "How do we measure work?"
+
+```
+Read in this order:
+1. ERP vs ECMS Architecture (5 min)
+2. Architecture Overview (10 min)
+3. Budgets (10 min) — the plan
+4. Certification Workflow (15 min) — how to issue certificates
+```
+
+### 🏢 For Project Managers: "How do we control costs?"
+
+```
+Read in this order:
+1. ERP vs ECMS Architecture (5 min)
+2. Module Hierarchy (10 min) — know all 28 modules
+3. Cost Engine (15 min) — how real costs are calculated
+4. Budgets (10 min) — budget vs actual
+```
+
+### 💻 For Developers/Architects: "Tell me everything"
+
+```
+Read ALL documents in order:
+1. Foundations (5 min)
+2. System (30 min) 
+3. Domain (60 min) — the meaty part
+4. Product (15 min)
+5. Execution (5 min)
+= Total: 2 hours to full understanding
+```
+
+### 🤖 For AI Systems: "Help me understand construction processes"
+
+```
+This entire wiki is designed to be read by AI systems.
+Start with Foundations, then proceed to System, then Domain.
+By the end, you will understand:
+- How construction budgets work
+- How costs are calculated (3 simultaneous methods)
+- How work is measured on site
+- How payments are made
+- How certifications work
+- How 28 different modules integrate
+```
+
+---
+
+## 📚 All Documents
+
+### Foundations — Principles & Concepts
+
+- **[ERP vs ECMS Architecture](foundations/erp-ecms-architecture)** — Start here. Defines the two engines, the bridge, and the golden rule
+
+### System — Technical Design
+
+- **[Architecture Overview](system/architecture-overview)** — Layers, responsibilities, 4 main flows, extension points
+- **[ERP-ECMS Bridge](system/erp-ecms-bridge)** — 4 integration flows in detail (Budget→PO, Direct buy, Measure→Invoice, Subcontractor→Pay)
+
+### Domain — Core Entities & Logic
+
+- **[Module Hierarchy](domain/module-hierarchy)** — All 28 modules (ERP + ECMS), matrix of who owns what, dependencies
+- **[Cost Engine](domain/cost-engine)** — How real costs are calculated (Via A: materials, Via B: labor, Via C: equipment)
+- **[ACU (Unit Cost Analysis)](domain/acu)** — How each budget item is decomposed technically and economically
+- **[Budgets](domain/budgets)** — Budget structure, imports, movements, budget vs actual
+- **[Certifications](domain/certifications)** — Work advance certificates and subcontractor certificates, retentions
+
+### Product — User Workflows
+
+- **[Certification Workflow](product/certification-workflow)** — Step-by-step UI for issuing certificates
+
+### Execution — Roadmap
+
+- **[Documentation Roadmap](execution/documentation-architecture-erp-ecms)** — What was completed, next steps, reading order
+
+---
+
+## 💡 Key Concepts Quick Reference
+
+### The Two Engines
+
+| | **ERP** | **ECMS** |
+|---|---|---|
+| **Purpose** | Dinero y documentos | Obra y costos |
+| **Asks** | ¿De dónde sale el dinero? | ¿Cuánto ejecutamos? ¿Costó qué? |
+| **Owns** | Payments, invoices, contracts, accounts | Budgets, ACU, partes, certifications |
+| **Decides** | What to pay, when | What to execute, how much should cost |
+
+### The Golden Rule
+
+```
+┌─────────────────────────────────────────┐
+│  ECMS measures                          │
+│      ↓                                   │
+│  ERP records what ECMS measured         │
+│      ↓                                   │
+│  Finance completes the transaction      │
+└─────────────────────────────────────────┘
+```
+
+### The 4 Integration Flows
+
+```
+1. Budget → PO
+   ECMS: "We need 300 kg of cement"
+   ERP: "Ordering from supplier X at $0.30/kg"
+
+2. Direct Purchase
+   ERP: "Buying 50 bags of glue for $500"
+   Budget: Updated automatically
+
+3. Measurement → Invoice
+   ECMS: "100 m³ of concrete completed"
+   ERP: "Invoicing client 100 m³ × $400 + IVA"
+
+4. Subcontractor → Payment
+   ECMS: "Excavator completed 380 m³"
+   ERP: "Paying $7,220 neto (after retentions of $380)"
+```
+
+### The 28 Modules
+
+**ERP (8 modules)**:
+Compras, Catalogs, Órdenes, Facturas, Pagos, Tesorería, Caja chica, Dashboard, Contabilidad
+
+**ECMS (11 modules)**:
+Presupuesto, ACU, Solicitudes de Materiales, Centro de costos, Partes de máquina, Precios MO, Certificaciones, Subcontratos, Stock, RRHH
+
+**Transversales (9 modules)**:
+Auth, Uploads, Reports, etc.
+
+---
+
+## ❓ FAQ
+
+**Q: Where should I start?**
+A: Read "ERP vs ECMS Architecture" first (5 min). It's the foundation.
+
+**Q: Can I just read one section?**
+A: Yes, each document is somewhat self-contained. But they're best read in order because they reference each other.
+
+**Q: Is this about the old system or the new system?**
+A: This documents the **complete architecture** including both ERP and ECMS engines integrated together.
+
+**Q: Can an AI system learn from this?**
+A: Yes! This wiki was specifically designed for both human and AI systems to understand construction processes. Start with Foundations and read sequentially.
+
+**Q: I don't understand construction — can I still learn?**
+A: Yes. Each concept is explained with step-by-step examples. No construction experience required.
+
+**Q: Is this specific to one company?**
+A: No. This documents generic construction process logic applicable to any company in Paraguay.
+
+---
+
+## 🚀 Quick Examples
+
+### Example 1: "How does a payment to a subcontractor happen?"
+
+```
+1. ECMS: Engineer measures on site that subcontractor did 380 m³ excavation
+2. ECMS: Supervisor validates and creates certificate
+3. ECMS: System calculates: 380 m³ × $20/m³ = $7,600
+4. ECMS: Applies retentions: -$380 (guarantee) = $7,220 net
+5. ERP: Reads certificate, creates Payment record
+6. Finance: Approves payment
+7. Finance: Issues check/transfer for $7,220
+8. Accounting: Registers egresos and retentions held
+→ Result: Subcontractor paid, guarantee retained, audited
+```
+
+### Example 2: "How is real cost calculated?"
+
+```
+Presupuesto Item 5: 100 m³ hormigón @ $400/m³ = $40,000 budget
+
+Vía A (Materiales): 
+  95 m³ consumió 28.5 toneladas de árido @ $15/ton = $427,500... wait
+
+Actually, let me redo this correctly:
+  95 m³ consumió 28.5 ton árido @ $15/ton = $427.50
+  + 95 m³ consumió 47.5 ton cemento @ $0.30/kg = $14,250
+  = Total Vía A = $14,677.50
+
+Vía B (Labor):
+  95 m³ requirió 380 horas trabajadas
+  @ $25/h + 50% overhead = $37.50/h
+  = 380 × $37.50 = $14,250
+
+Vía C (Equipment):
+  Hormigonera: 4 h @ $100/h = $400
+  Vibrador: 20 h @ $10/h = $200
+  = Total Vía C = $600
+
+Real Cost Total = $14,677.50 + $14,250 + $600 = $29,527.50
+Presupuesto Cost = 95 m³ × $400 = $38,000
+Ganancia = $38,000 - $29,527.50 = $8,472.50 ✓ Good!
+```
+
+---
+
+## 📞 Need Help?
+
+- **Not sure where to start?** → Read [ERP vs ECMS Architecture](foundations/erp-ecms-architecture)
+- **Want to understand flows?** → Read [ERP-ECMS Bridge](system/erp-ecms-bridge)
+- **Need to understand costs?** → Read [Cost Engine](domain/cost-engine)
+- **Learning about measurement?** → Read [Certifications](domain/certifications) + [Certification Workflow](product/certification-workflow)
+
+---
+
+**This wiki is your guide to understanding Obra Studio. Start with the foundations and go from there.**
+
+**Last updated**: October 2026  
+**Status**: Complete, ready for learning  
+**For**: Humans AND AI systems

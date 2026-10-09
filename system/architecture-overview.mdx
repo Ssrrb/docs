@@ -1,0 +1,217 @@
+# Visión general de la arquitectura
+
+*System · approved*
+
+## Estructura en capas
+
+Obra Studio se organiza en **tres capas funcionales**:
+
+```
+┌─────────────────────────────────────────────────────┐
+│  CAPA 3: APLICACIÓN                                 │
+│  ├─ Frontend React (UI)                              │
+│  └─ Backend Express (API)                            │
+├─────────────────────────────────────────────────────┤
+│  CAPA 2: MOTORES                                     │
+│  ├─ ERP (Enterprise Resource Planning)              │
+│  │  └─ Compras, Finanzas, Documentos legales        │
+│  └─ ECMS (Engineering Cost Management System)       │
+│     └─ Presupuesto, Costos, Mediciones, Certificaciones │
+├─────────────────────────────────────────────────────┤
+│  CAPA 1: PERSISTENCIA                                │
+│  ├─ Base de datos (Prisma + PostgreSQL)             │
+│  ├─ Almacenamiento de archivos (local, cloud)       │
+│  └─ Historial de eventos                            │
+└─────────────────────────────────────────────────────┘
+```
+
+## Los dos motores
+
+### ERP (Dinero y Documentos)
+
+El **ERP gestiona la realidad financiera** de la empresa:
+
+```
+ERP = Dinero en + Dinero out + Obligaciones
+
+Módulos:
+├─ Compras (Purchase Orders desde ECMS material requests)
+├─ Proveedores (Partners)
+├─ Facturas (Invoices, inbound/outbound)
+├─ Pagos (Payments, cheques, transferencias)
+├─ Tesorería (Cuentas, libros mayores)
+├─ Caja chica (Petty cash)
+└─ Dashboard (Cash flow, deudas)
+```
+
+**Fuente de verdad ERP**: El libro mayor bancario. "¿De dónde sale el dinero?"
+
+### ECMS (Obra y Costos)
+
+El **ECMS gestiona la ejecución técnica y económica** de la construcción:
+
+```
+ECMS = Plan + Ejecución + Costos Reales
+
+Módulos:
+├─ Presupuesto (Ítems, cantidades, precios)
+├─ ACU (Análisis de costo unitario)
+├─ Material Requests (Solicitudes que comprometen presupuesto)
+├─ Certificaciones (Medición oficial en terreno: obra y subcontratistas)
+├─ Costos (Motor de 3 vías: materiales, MO, equipos)
+├─ Control (vs presupuesto, alertas desvíos)
+├─ Subcontratos (Contratos con contratistas)
+├─ MO (Precios de mano de obra)
+├─ Stock (Almacén de la obra)
+├─ RRHH (Personal, asistencia, liquidación)
+└─ Partes de máquina (horómetro, combustible, viajes de camión)
+```
+
+**Fuente de verdad ECMS**: La medición oficial. "¿Cuánto ejecutamos? ¿cuánto costó?"
+
+## El puente ERP-ECMS
+
+Los dos motores se comunican mediante **cuatro flujos principales**:
+
+### Flujo 1: Presupuesto → Compras
+
+```
+ECMS dice: "Ítem 5 necesita 50 kg de acero"
+  ↓
+ERP emite: Orden de compra a proveedor
+  ↓
+Stock registra: Entrada de 50 kg
+  ↓
+ECMS costea: 50 kg × precio unitario
+```
+
+### Flujo 2: Medición → Factura
+
+```
+ECMS certifica: "100 m² de hormigón ejecutados"
+  ↓
+ECMS calcula: 100 m² × $400/m² = $40.000
+  ↓
+ERP emite: Factura al cliente
+  ↓
+Tesorería registra: Crédito por cobrar
+```
+
+### Flujo 3: Certificación de Subcontratista → Pago
+
+```
+ECMS certifica: "Subcontratista ejecutó 30 m² de excavación"
+  ↓
+ECMS calcula: 30 m² × $20/m² = $600 (neto de retenciones)
+  ↓
+ERP autoriza: Cheque o transferencia
+  ↓
+Tesorería registra: Pago efectuado
+```
+
+### Flujo 4: Costo Real → Dashboard
+
+```
+Motor de costos calcula: "Ítem 5 costó $48.000 real vs $45.000 presupuestado"
+  ↓
+Dashboard alerta: "Desvío +6,7%, revisar ACU"
+  ↓
+Ingeniero ajusta: ACU o presupuesto (movimiento presupuestario)
+  ↓
+Sistema recalcula: Impacto en ganancia esperada
+```
+
+## Responsabilidades por motor
+
+| Concepto | Responsable | Por qué |
+|---|---|---|
+| Qué comprar | ECMS (presupuesto) | ECMS define el plan técnico |
+| A quién comprarlo | ERP (proveedores) | ERP mantiene relaciones comerciales |
+| Cuánto cuesta | ECMS (ACU) | ECMS define costos unitarios |
+| A qué precio | ERP (precio final) | ERP negocia con proveedores |
+| Cuándo pagar | ERP (tesorería) | ERP maneja cash flow |
+| Qué máquinas trabajaron | ECMS (partes de máquina) | ECMS registra horas de equipo |
+| Cuánto medimos | ECMS (certificación) | ECMS mide en terreno |
+| Cuánto costó real | ECMS (motor de costos) | ECMS analiza hechos |
+| Cuánto facturar | ERP (desde medición ECMS) | ERP emite documentos |
+| Cuánto pagar a subcontratista | ERP (desde certificación ECMS) | ERP procesa pagos |
+
+**Regla de oro**: ECMS mide. ERP registra lo que ECMS midió.
+
+## Integración de datos
+
+### Datos que viven en ECMS
+
+- Ítem del presupuesto (cantidad, descripción técnica)
+- ACU (descomposición técnica: materiales, MO, equipos)
+- Partes de máquina (horómetro, combustible, viajes)
+- Medición oficial (por período, independiente de partes)
+- Certificados (avance, subcontratistas)
+
+### Datos que viven en ERP
+
+- Proveedores (relación comercial, contactos)
+- Órdenes de compra (cantidad, precio contratado)
+- Facturas (documentos legales, IVA)
+- Pagos (cheques, transferencias)
+- Libros contables (activos, pasivos, patrimonio)
+
+### Datos compartidos (sincronizados)
+
+- Material (nombre, unidad, precio base)
+- Presupuesto total (costo directo + indirecto)
+- Certificaciones (medición oficial de ambos motores)
+- Costo real (ECMS calcula, ERP lo ve en reportes)
+
+## Puntos de extensión
+
+Obra Studio permite **módulos adicionales** sin modificar el core:
+
+```
+Core Obra Studio
+    ↓
+├─ Extensión 1: Stock (almacén de obra)
+├─ Extensión 2: RRHH avanzado (liquidación, impuestos)
+├─ Extensión 3: Integración con software 3D (BIM)
+├─ Extensión 4: Conector a banco (importar transacciones)
+└─ Extensión N: Cualquier necesidad específica
+```
+
+Cada extensión:
+- Respeta la API del core
+- No modifica tablas existentes (extend solo)
+- Se activa/desactiva por proyecto
+- Tiene su propio módulo en `/src/modules/`
+
+## Flujo de datos completo
+
+Ejemplo: Factura al cliente
+
+```
+1. ECMS: Ingeniero mide en terreno el hormigonado del mes (100 m³)
+2. ECMS: Genera Medición Oficial (100 m³, $40.000)
+3. ECMS: Certifica (estado Approved, congelado)
+4. Motor de Costos: Calcula costo real ($38.500)
+5. ERP: Lee Medición Oficial
+6. ERP: Calcula monto a facturar (100 m³ × $400 + IVA - fondo)
+7. ERP: Crea Factura al cliente
+8. Tesorería: Registra acreencia por cobrar
+9. Dashboard: Muestra medición acumulada, ganancia estimada $2.500
+```
+
+## Tecnología
+
+- **Backend**: Node.js + Express + TypeScript
+- **Persistencia**: Prisma ORM + PostgreSQL
+- **Frontend**: React 18 + TypeScript + Vite
+- **Cálculos**: Motor puro (sin dependencias externas, facilita testing)
+- **Almacenamiento**: Filesystem o cloud compatible S3
+- **Eventos**: Event sourcing opcional para auditoría
+
+## Garantías del sistema
+
+1. **Integridad**: No permitir facturar más de lo certificado
+2. **Trazabilidad**: Cada cambio registra quién, cuándo, qué
+3. **Consistencia**: Presupuesto + movimientos = presupuesto vigente
+4. **Recuperabilidad**: Base de datos respalda archivos; archivos respaldan datos
+5. **Independencia**: Motores pueden fallar parcialmente sin trabar al otro

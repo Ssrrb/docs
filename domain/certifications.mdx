@@ -1,0 +1,202 @@
+# Certificaciones
+
+*Domain · draft*
+
+## Dos tipos de certificación
+
+Obra Studio emite dos tipos de certificados, ambos basados en **medición oficial**:
+
+### 1. Certificado de Avance (Obra)
+
+Certifica el **avance físico de la obra** hacia el cliente.
+
+**Qué se certifica:**
+- Cantidad de trabajo completado por ítem (m², m³, días, etc.)
+- Valor de ese trabajo a precio unitario del presupuesto
+- Medición acumulada (%) del presupuesto
+- Desvíos de costo (si se cobran adicionales por cambios)
+
+**Período:** mensual o según contrato
+
+**Flujo:**
+```
+Ingeniero mide en terreno (cantidades del período)
+    ↓
+Genera medición oficial (por ítem, acumulada)
+    ↓
+Motor de costos calcula costo real de lo medido
+    ↓
+Se emite Certificado de Avance
+    ↓
+ERP → Factura al cliente (medición oficial × precio contratado + variaciones)
+    ↓
+Certificado aprobado queda congelado (no se modifica sin reemisión)
+```
+
+**Entidades involucradas:**
+- `Certification`: encabezado del certificado
+- `CertificationItem`: detalle por ítem del certificado (la medición oficial del período)
+
+### 2. Certificado de Subcontratista
+
+Certifica el **avance de un subcontratista** en su contrato.
+
+**Qué se certifica:**
+- Cantidad de trabajo que el subcontratista ejecutó (por ítem del subcontrato)
+- Valor pagadero al subcontratista (según su precio unitario, no el nuestro)
+- Retenciones legales (% de avance, fondo de reparo, etc.)
+- Monto neto a pagar
+
+**Período:** según contrato, típicamente cada 7-15 días
+
+**Flujo:**
+```
+Ingeniero mide en terreno lo ejecutado por el subcontratista
+    ↓
+Genera certificado del subcontratista
+    ↓
+Aplica retenciones (% a retener, fondos, etc.)
+    ↓
+Se emite Certificado de Subcontratista
+    ↓
+ERP → Genera orden de pago (neto después de retenciones)
+    ↓
+ERP → Registra la retención (cheque en calidad de retención)
+```
+
+**Entidades involucradas:**
+- `SubcontractorContract`: el contrato con el subcontratista
+- `SubcontractorCertificate`: el certificado de avance
+- `RetencionFondo`: retenciones aplicadas
+
+## Medición Oficial
+
+La **medición oficial** es el corazón de ambos certificados.
+
+**Características:**
+- Se crea por **ítem** y **período** (mes, semana, etc.)
+- Registra **cantidad física** completada (m², m³, metros, días, etc.)
+- La mide el ingeniero **en terreno**; no se deriva de partes diarios
+- Una vez aprobada, **no se modifica** (trazabilidad)
+- Es **la verdad** para facturación y costo real
+
+**Cálculo:**
+```
+Medición Oficial del Ítem 5 en Período 2:
+  = Cantidad medida en terreno en el período 2
+  = Se compara con Medición Oficial Acumulada (períodos 1+2)
+  = Se valida contra Cantidad Total Presupuestada (no exceder)
+```
+
+**Validaciones:**
+- No permitir exceder cantidad presupuestada total
+- No permitir ir hacia atrás en cantidad acumulada
+
+## Cálculo de Monto Certificado
+
+### Para Certificado de Avance (Obra)
+
+```
+Monto Período = Σ(Medición Oficial del Período × Precio Presupuestado)
+Monto Acumulado = Σ(todos los períodos anteriores) + Monto Período
+Menos: lo ya facturado en períodos previos
+Monto a Facturar Este Período = Monto Período - Facturado Previo
+```
+
+**Sobre el monto facturado se aplican:**
+- IVA (típicamente 10% en Paraguay)
+- Fondo de Reparo (% retenido para garantía de obra)
+- Retención por impuestos (si aplica, según contrato)
+
+Ejemplo:
+```
+Medición Oficial: 100 m² de hormigonado
+Precio Presupuestado: $500/m²
+Monto = 100 × $500 = $50.000
+IVA (10%) = $5.000
+Fondo Reparo (5%) = $2.500 (retención)
+Total a Cobrar = $50.000 + $5.000 - $2.500 = $52.500
+```
+
+### Para Certificado de Subcontratista
+
+```
+Monto = Σ(Medición Oficial × Precio Unitario del Subcontratista)
+Menos: Retenciones aplicables
+  - % de garantía (e.g., 5% del monto)
+  - Fondo de reparo
+  - Otros fondos (si aplica)
+Monto Neto a Pagar = Monto - Retenciones
+```
+
+Ejemplo:
+```
+Medición: 50 m² de excavación
+Precio Subcontratista: $30/m²
+Monto Bruto = 50 × $30 = $1.500
+Retención Garantía (5%) = $75
+Retención Fondo Reparo (3%) = $45
+Monto Neto = $1.500 - $75 - $45 = $1.380
+```
+
+## Integración con el Motor de Costos
+
+Al certificar, el motor de costos recalcula:
+
+```
+Costo Real de lo Certificado = Motor.costo(desde: inicio obra, hasta: fecha certificación, solo ítems certificados)
+Desvío = Costo Real - Monto Certificado (no es ingreso para nosotros)
+```
+
+**Ejemplo:**
+```
+Certificamos: 100 m² de hormigonado a $50.000
+Precio de venta unitario: $500/m²
+Motor calcula costo real: $48.000
+Ganancia en Período = $50.000 - $48.000 = $2.000
+```
+
+## Estados y Flujos
+
+### Certificado de Avance
+
+```
+Borrador → Revisión → Aprobado → Cerrado → (Reabierto si error)
+
+Borrador: genera desde mediciones, sin validar
+Revisión: ingeniero/supervisor revisa cantidades
+Aprobado: se puede facturar
+Cerrado: datos congelados, medición no modificable
+```
+
+### Certificado de Subcontratista
+
+```
+Borrador → Presentado → Aprobado → Pagado → (Contestado si hay rechazo)
+
+Borrador: el ingeniero ingresa la medición en terreno
+Presentado: enviado a subcontratista para revisión
+Aprobado: listo para pagar
+Pagado: se emitió cheque/transferencia
+```
+
+## Retenciones y Fondos
+
+Configurables por obra:
+
+| Fondo | Propósito | % Típico | Quién retiene |
+|---|---|---|---|
+| Fondo de Reparo | Garantía de calidad post-obra | 5-10% | Nosotros al cliente, nosotros al subcontratista |
+| Garantía de Contratista | Seguro de cumplimiento | 5% | Nosotros al subcontratista |
+| IVA | Impuesto de valor agregado | 10% | Nosotros al cliente (agregamos) |
+| Retención Laboral | Adelanto de impuestos | 2-8% | Nosotros al subcontratista |
+
+Configuración por obra:
+- `ConfigRetencionesAnticipos`: define % de cada retención
+- Se aplica automáticamente al emitir certificado
+
+## Reportes desde Certificación
+
+1. **Excel del Certificado**: planilla exportable con medición y cálculos
+2. **Análisis de Desvíos**: dónde se está desviando del presupuesto
+3. **Estado de Subcontratistas**: quién está al día, quién atrasado

@@ -1,0 +1,82 @@
+# ERP y ECMS — Arquitectura integrada
+
+*Foundations · approved*
+
+## Definición conceptual
+
+Obra Studio separa dos motores: el **ERP** y el **ECMS**.
+
+### ERP (Enterprise Resource Planning)
+
+El ERP gestiona **dinero, compras y documentos**. Es la contabilidad, las órdenes de compra, las facturas, los pagos y la tesorería.
+
+**Módulos ERP:**
+- **Compras**: órdenes de compra a proveedores (desde material requests del ECMS)
+- **Catalogs**: catálogo de materiales, proveedores, rubros
+- **Finance**: cuentas bancarias, libros mayores, conciliación documentos ↔ banco
+- **Invoices**: facturas legales (entrada, salida, notas de crédito)
+- **Petty Cash**: caja chica y gastos menores
+- **Dashboard**: tablero financiero (cash flow, deudas, obligaciones)
+
+El ERP responde a: ¿cuánto gastamos? ¿a quién le debemos? ¿de dónde sale el dinero?
+
+### ECMS (Engineering Cost Management System)
+
+El ECMS gestiona **obra, presupuesto, mediciones y costos reales**. Es el control técnico y económico de la construcción.
+
+**Módulos ECMS:**
+- **Budgets**: presupuesto base de la obra (ítems, cantidades, precios)
+- **ACU**: análisis de costo unitario por ítem (descomposición técnica y económica)
+- **Material Requests**: pedidos de materiales que comprometen presupuesto, desglosados en ACU
+- **Costs (Centro de Costos)**: costos reales contra presupuesto (vía materiales, MO, equipos)
+- **Daily Reports (Partes de máquina)**: registro diario de equipos (horómetro, combustible, viajes)
+- **Labor Prices**: catálogo de precios de mano de obra
+- **Stock**: almacén de la obra, entradas y salidas de materiales
+- **RRHH**: personal, asistencia, liquidación de haberes
+- **Certifications**: certificados de avance (obra) y de subcontratistas
+- **Subcontracts**: contratos con subcontratistas, medición de su trabajo
+
+El ECMS responde a: ¿cuánto hemos medido? ¿cuánto nos va a costar? ¿estamos dentro del presupuesto?
+
+## El puente: finanzas desde el ECMS
+
+El flujo natural es: **ECMS → ERP**
+
+1. El **ECMS mide** (mediciones en terreno, certificados, partes de máquina)
+2. El **ECMS calcula** costo real vs presupuesto
+3. El **ERP registra** lo que el ECMS midió (facturas al cliente, pagos a subcontratistas, compras de materiales)
+
+Ejemplo:
+- El ECMS certifica 10 m² de hormigonado a $500/m² = $5000 facturables
+- El ERP emite factura al cliente por $5000 (+ IVA, fondo de reparo)
+- El ECMS contabiliza el costo real de esos 10 m² (materiales + MO + equipos)
+- El ERP registra cheques a proveedores y liquidaciones de personal
+
+## Entidades transversales
+
+Algunas entidades viven en ambos mundos:
+
+| Entidad | Dueño | Propósito |
+|---|---|---|
+| **Obra (Project)** | ECMS | Unidad de ejecución; tiene presupuesto, mediciones, partes de máquina |
+| **Ítem (BudgetItem)** | ECMS | Línea del presupuesto; tiene cantidad, precio, ACU |
+| **Material** | Ambos | Catálogo compartido; usado por compras (ERP) y costos (ECMS) |
+| **Personal (Empleado)** | RRHH (ECMS) | Nómina, asistencia; registra en costeo (ECMS) y liquidación (RRHH) |
+| **Proveedor (Partner)** | ERP | Vendedor; vinculado a órdenes de compra y facturas |
+| **Subcontratista** | ECMS | Contratista especial; certificación de medición (ECMS) + pago (ERP) |
+
+## Ciclo de vida de una obra
+
+1. **Presupuesto**: ECMS carga presupuesto con ítems, cantidades, precios. Calcula ACU por ítem.
+2. **Ejecución**: ECMS registra partes de máquina (horas de equipo). Costea en tiempo real.
+3. **Medición**: ECMS certifica la medición oficial, tomada en terreno e independiente de los partes diarios.
+4. **Contabilidad**: ERP emite facturas al cliente y comprobantes a proveedores desde medición oficial.
+5. **Control**: ECMS calcula costo real vs presupuesto, alerta si hay desvío.
+
+## Principios de separación
+
+1. **ERP no calcula costo de obra**. Solo registra lo que ECMS midió.
+2. **ECMS no emite documentos legales** (facturas, cheques). Solo propone desde medición.
+3. **ECMS es fuente de verdad de medición**. ERP confía en lo que ECMS certificó.
+4. **ERP es fuente de verdad de dinero**. ECMS no conoce qué se pagó realmente.
+5. **Ambos conviven**: mientras ECMS mide, ERP puede estar en otra etapa (negociando precios con proveedores, preparando facturas atrasadas).

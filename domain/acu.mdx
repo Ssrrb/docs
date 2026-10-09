@@ -1,0 +1,187 @@
+# ACU — Análisis de Costo Unitario
+
+*Domain · draft*
+
+## Qué es un ACU
+
+Un **ACU** (Análisis de Costo Unitario) es la descomposición técnica y económica de **cómo se ejecuta un ítem del presupuesto**.
+
+Ejemplo:
+```
+Ítem: Hormigón de vigas (m³)
+Cantidad Presupuestada: 100 m³
+Precio Unitario Presupuestado: $400/m³
+
+ACU del ítem desglosa:
+├── Materiales
+│   ├── Cemento: 300 kg × $0,30/kg = $90
+│   ├── Arena: 500 kg × $0,15/kg = $75
+│   ├── Piedra: 800 kg × $0,12/kg = $96
+│   ├── Agua: incluido
+│   └── Subtotal: $261
+├── Mano de Obra
+│   ├── Capataz: 4 h × $50/h = $200
+│   ├── Obrero: 20 h × $25/h = $500
+│   ├── Peón: 8 h × $20/h = $160
+│   └── Subtotal (con cargas 50%): ($200+$500+$160) × 1.5 = $1.230
+├── Equipos
+│   ├── Hormigonera: 2 h × $100/h = $200
+│   ├── Vibradores: 20 h × $10/h = $200
+│   └── Subtotal: $400
+└── Costo Unitario Total: $261 + $1.230 + $400 = $1.891
+
+Pero se presupuestó a $400/m³.
+Esto significa: hay ganancias planificadas, o hay riesgo.
+```
+
+## Estructura técnica del ACU
+
+Un ACU tiene **materiales, mano de obra y equipos**. Cada uno se especifica por ítem:
+
+### Materiales (Insumos)
+
+Cada material tiene:
+- **Descripción**: "Cemento Pórtland tipo I"
+- **Unidad**: kg, l, m³, etc.
+- **Cantidad por unidad de obra**: "300 kg por m³ de hormigón"
+- **Precio unitario**: precio esperado a la fecha del presupuesto
+- **Subtotal**: cantidad × precio
+
+El sistema trae precios de la **base de datos de precios** (MaterialPrice). Si no hay precio registrado, se puede ingresar manualmente.
+
+### Mano de Obra (MO)
+
+Cada labor/oficio tiene:
+- **Descripción**: "Capataz", "Obrero especializado", "Peón"
+- **Unidad**: horas (h)
+- **Cantidad por unidad de obra**: "4 h por m³ de hormigón"
+- **Precio hora base**: de la lista de precios de MO de la obra
+- **Factor de cargas**: se aplica automáticamente (e.g., 50% = cargas patronales)
+- **Subtotal**: cantidad × precio × (1 + factor cargas)
+
+Las **cargas** (aportes patronales, seguros, aguinaldo) se definen en `RRHHConfig` por tipo de personal y se aplican automáticamente.
+
+### Equipos
+
+Cada máquina/equipo tiene:
+- **Descripción**: "Hormigonera de 400 l", "Vibrador inmersible"
+- **Unidad**: horas máquina (h)
+- **Cantidad por unidad de obra**: "2 h por m³"
+- **Precio hora**: precio de alquiler o depreciación/hora
+- **Subtotal**: cantidad × precio
+
+## Estados del ACU
+
+Un ACU puede estar:
+
+| Estado | Significado |
+|---|---|
+| **Borrador** | Se está editando, no se usa para costeo |
+| **Vigente** | Está en uso para costeo y cálculos |
+| **Obsoleto** | Fue reemplazado, historial solo |
+
+Solo los ACU **Vigentes** se usan en el motor de costos.
+
+## ACU Biblioteca vs Copia
+
+### Biblioteca (Original)
+
+Es la versión **maestra** del ACU:
+- Vive en la **base de datos compartida**
+- Sirve como **template** para nuevas obras
+- Se puede reutilizar en múltiples obras
+
+### Copia (Instancia de Obra)
+
+Cada obra tiene su **copia propia** del ACU:
+- Se crea al importar el presupuesto
+- Se puede **modificar sin afectar la biblioteca**
+- Contiene **valores específicos de esa obra** (precios, cargas locales)
+
+**Flujo:**
+```
+ACU Biblioteca (100 m³ hormigón a $400/m³)
+    ↓ (importar presupuesto)
+Obra A: Copia del ACU (100 m³ hormigón a $400/m³)
+Obra B: Copia del ACU (80 m³ hormigón a $450/m³, porque precios locales son diferentes)
+```
+
+Modificar la copia de Obra A **no afecta** la Biblioteca ni Obra B.
+
+## Parámetros globales de la obra
+
+Junto al ACU, la obra tiene parámetros que aplican a todos los ítems:
+
+### K (Factor de Gastos Generales)
+
+Porcentaje que se suma al costo directo para cubrir gastos indirectos (administración, seguros, etc.).
+
+```
+Costo Unitario ACU = $1.891
+K (gastos generales) = 10%
+Costo Unitario con K = $1.891 × 1.10 = $2.080,10
+Ganancia esperada = Precio Presupuestado ($400) - Costo con K ($2.080,10) = ???
+(En este caso, el presupuesto está mal y se perdería dinero)
+```
+
+### IVA
+
+Porcentaje de impuesto a valor agregado que se cobra al cliente.
+
+```
+Medición Oficial: 100 m³ × $400/m³ = $40.000
+IVA (10%): $4.000
+Total a Cobrar: $44.000
+```
+
+Ambos parámetros son **configurables por obra** y afectan cálculos de facturación y rentabilidad.
+
+## ACU en el Costeo
+
+Cuando se ejecuta la obra:
+
+1. **Medición certificada**: se certifican 95 m³ de hormigón en Ítem 5
+2. **Motor de costos busca**: ACU de Ítem 5, "¿cuánto debería costar el cemento de 95 m³?"
+3. **Lee del ACU**: coeficiente (300 kg/m³) y precio unitario del cemento (p.ej., $0,30/kg)
+4. **Calcula costo**: 95 × 300 kg × $0,30/kg
+
+**Si ACU y realidad divergen:**
+- **ACU dice**: cemento $0,30/kg
+- **Realidad es**: lo compramos a $0,35/kg
+- **Motor detecta**: "desvío en precio de materiales"
+- **Alerta**: "Ítem 5 está costando más de lo presupuestado"
+
+## ACU Simplificado vs Detallado
+
+El sistema permite dos niveles de detalle:
+
+### ACU Simplificado
+```
+Ítem 5: Hormigón (m³)
+Costo Unitario: $400/m³
+(Sin desglose de materiales/MO/equipos)
+```
+
+Se usa cuando no se necesita control granular de costos.
+
+### ACU Detallado
+```
+Ítem 5: Hormigón (m³)
+├── Materiales: $261
+├── MO (con cargas): $1.230
+├── Equipos: $400
+└── Costo Unitario: $1.891
+(Con desglose completo)
+```
+
+Se usa para control fino y análisis de desvíos.
+
+## Historial y Auditoría
+
+Cada cambio en un ACU se registra:
+- **Quién** modificó
+- **Cuándo**
+- **Qué cambió** (precio anterior → nuevo precio)
+- **Obra afectadas** (si es biblioteca)
+
+Esto permite rastrear por qué el costo real diverge del presupuesto: ¿fue cambio de ACU? ¿cambio de precio? ¿cambio de K?

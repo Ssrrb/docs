@@ -1,145 +1,80 @@
 {
   "$schema": "https://docs.page/schema.json",
-  "name": "Obra Studio",
-  "description": "Documentation for Obra Studio",
+  "name": "Obra Studio — ERP-ECMS Architecture",
+  "description": "Complete documentation of the integrated ERP (financial) and ECMS (engineering) systems for construction project management",
   "sidebar": [
     {
-      "group": "Foundations",
+      "group": "🏗️ Foundations — Start here",
       "pages": [
         {
-          "title": "Principles",
-          "href": "/foundations/principles",
-          "icon": "anchor"
+          "title": "ERP vs ECMS Architecture",
+          "href": "/foundations/erp-ecms-architecture",
+          "icon": "layers"
         }
       ]
     },
     {
-      "group": "Product",
+      "group": "🔧 System Architecture",
       "pages": [
         {
-          "title": "Minimum viable product",
-          "href": "/product/mvp",
-          "icon": "package"
+          "title": "Architecture Overview",
+          "href": "/system/architecture-overview",
+          "icon": "box-archive"
+        },
+        {
+          "title": "ERP-ECMS Bridge & Integration",
+          "href": "/system/erp-ecms-bridge",
+          "icon": "git-merge"
         }
       ]
     },
     {
-      "group": "Domain",
+      "group": "📊 Domain — Core Entities",
       "pages": [
         {
-          "title": "Budget",
+          "title": "Module Hierarchy (28 modules)",
+          "href": "/domain/module-hierarchy",
+          "icon": "git-branch"
+        },
+        {
+          "title": "Cost Engine (3 vías)",
+          "href": "/domain/cost-engine",
+          "icon": "calculator"
+        },
+        {
+          "title": "ACU — Unit Cost Analysis",
+          "href": "/domain/acu",
+          "icon": "chart-bar"
+        },
+        {
+          "title": "Budgets & Movements",
           "href": "/domain/budgets",
           "icon": "table"
         },
         {
-          "title": "Work unit",
-          "href": "/domain/work-units",
-          "icon": "layers"
-        },
-        {
-          "title": "Project",
-          "href": "/domain/projects",
-          "icon": "folder"
-        },
-        {
-          "title": "Obra",
-          "href": "/domain/obra",
-          "icon": "hard-hat"
-        },
-        {
-          "title": "Construction company",
-          "href": "/domain/companies",
-          "icon": "building"
-        },
-        {
-          "title": "Input",
-          "href": "/domain/inputs",
-          "icon": "box"
-        },
-        {
-          "title": "Socio",
-          "href": "/domain/partners",
-          "icon": "truck"
-        },
-        {
-          "title": "Purchase request",
-          "href": "/domain/purchase-requests",
-          "icon": "file-plus"
-        },
-        {
-          "title": "Purchase order",
-          "href": "/domain/purchase-orders",
-          "icon": "file-check"
-        },
-        {
-          "title": "Subcontract contract",
-          "href": "/domain/subcontracts",
-          "icon": "signature"
-        },
-        {
-          "title": "Advance certificate",
-          "href": "/domain/certificates",
+          "title": "Certifications",
+          "href": "/domain/certifications",
           "icon": "award"
-        },
-        {
-          "title": "Payment",
-          "href": "/domain/payments",
-          "icon": "banknote"
         }
       ]
     },
     {
-      "group": "System",
+      "group": "👤 Product — User Workflows",
       "pages": [
         {
-          "title": "Permissions",
-          "href": "/system/permissions",
-          "icon": "lock"
-        },
-        {
-          "title": "Persistence",
-          "href": "/system/persistence",
-          "icon": "hard-drive"
-        },
-        {
-          "title": "Events",
-          "href": "/system/events",
-          "icon": "bell"
+          "title": "Certification Workflow",
+          "href": "/product/certification-workflow",
+          "icon": "flow"
         }
       ]
     },
     {
-      "group": "Execution",
+      "group": "📋 Execution — Roadmap",
       "pages": [
         {
-          "title": "Roadmap",
-          "href": "/execution/roadmap",
+          "title": "Documentation Roadmap",
+          "href": "/execution/documentation-architecture-erp-ecms",
           "icon": "map"
-        }
-      ]
-    },
-    {
-      "group": "Decisions",
-      "pages": [
-        {
-          "title": "Calculation engine integration",
-          "href": "/decisions/motor-integration",
-          "icon": "git-merge"
-        },
-        {
-          "title": "Certificate chain",
-          "href": "/decisions/certificate-chain",
-          "icon": "file-badge"
-        }
-      ]
-    },
-    {
-      "group": "References",
-      "pages": [
-        {
-          "title": "Tools and references",
-          "href": "/references/tools",
-          "icon": "wrench"
         }
       ]
     }

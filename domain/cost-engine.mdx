@@ -1,0 +1,122 @@
+# Motor de Costos
+
+*Domain · draft*
+
+## Visión general
+
+El motor de costos es el corazón del ECMS. Calcula qué costó ejecutar cada ítem del presupuesto, usando tres vías simultáneamente:
+
+| Vía | Qué mide | Origen de datos |
+|---|---|---|
+| **A** | Costo de materiales | Cantidad certificada × coeficientes del ACU × precio vigente |
+| **B** | Costo de mano de obra | Cantidad certificada × horas del ACU × precio hora × cargas RRHH |
+| **C** | Costo de equipos | Partes de máquina (horómetro) × precio hora máquina + combustible |
+
+Las vías A y B no leen partes diarios de personal ni de materiales. La medición oficial es independiente, y el costo de lo medido se calcula desde esa medición y el ACU.
+
+El motor **reconcilia estas tres vías**. Si una vía falta datos, las otras dos la respaldan.
+
+## Flujo de datos
+
+```
+Medición oficial (Certification, en terreno)
+    ↓
+Cantidad certificada por ítem
+    ↓              ↓                           ↓
+Vía B (MO)     Vía A (Materiales)         Vía C (Equipos)
+    ↑              ↑                           ↑
+Asistencia +   Precios vigentes         Parte de máquina
+precio hora    (MaterialPrice)          (horómetro, combustible)
+    ↓              ↓                           ↓
+┌───────────────────────────────────────────────┐
+│         Motor de Costos (costEngine)           │
+│  Aplica: ACU, Precios vigentes, Cargas RRHH  │
+└───────────────────────────────────────────────┘
+    ↓
+Costo Real vs Presupuesto
+    ↓
+Dashboard: Alertas, Desvíos
+```
+
+## Vía A: Materiales
+
+1. **Medición certificada**: 95 m³ de hormigón en Ítem 5
+2. **ACU del Ítem 5 define**: 300 kg de cemento por m³
+3. **Motor busca**: precio vigente del cemento (MaterialPrice) a esa fecha
+4. **Calcula**: 95 × 300 kg × $0,30/kg = $8.550 costo de cemento en Ítem 5
+
+**Variantes:**
+- Precio puede estar en el ACU del ítem o en lista general de precios
+- Si el material viene de compras reales, el precio de compra (ERP) reemplaza al precio vigente
+- Alerta si el material del ACU no tiene precio vigente
+
+## Vía B: Mano de Obra
+
+1. **Medición certificada**: 95 m³ de hormigón en Ítem 5
+2. **ACU del Ítem 5 define**: 4 h de capataz por m³
+3. **Asistencia confirma**: el personal existe y está habilitado para la obra
+4. **ACU del Ítem 5 define**: "Capataz cuesta $50/hora en este ítem" (puede venir de MO del ACU o de lista de precios)
+5. **Cargas RRHH aplican**: si hay cargas patronales (e.g., 50%), se suma
+6. **Motor calcula**: 95 × 4 h × $50/h × 1.5 (con cargas) = $28.500 costo de MO del capataz en Ítem 5
+
+**Variantes:**
+- Precio hora puede ser unitario (lista de la obra) o componente del ACU
+- Cargas varían por tipo de personal (obrero, maestro, capataz)
+- Sistema valida: no costear personal sin asistencia registrada en la obra
+
+## Vía C: Equipos
+
+1. **Parte de máquina reporta**: "Excavadora X trabajó 4 horas (horómetro inicial 1200, final 1204)"
+2. **ACU del Ítem 5 define**: "Excavadora cuesta $200/hora"
+3. **Cargas de combustible**: se carga combustible (tanque lleno, litros agregados)
+4. **Motor calcula**: 4 h × $200/h = $800, más combustible consumido a precio/litro
+
+**Variantes:**
+- Horómetro vs horas trabajadas (validación)
+- Combustible por tanque lleno o por litros reportados
+- Depreciación lineal si hay datos de costo original de equipo
+
+Vía C es la única vía que usa partes diarios. Solo partes de máquina; no hay partes de personal ni de materiales.
+
+## Caché y Snapshot
+
+El motor es **caro computacionalmente**. Por eso usa caché:
+
+- **Rangos cerrados** (períodos oficiales): se cachean resultados
+- **Rango abierto** (hoy): se recalcula en tiempo real
+- **Invalidación**: al cambiar ACU, precios, cargas, nuevas mediciones o nuevos partes de máquina
+
+Ejemplo:
+```
+Enero cerrado → costo en caché, 100ms
+Febrero abierto → recalcula desde mediciones y partes de máquina, puede tardar 2s
+```
+
+## Alertas del motor
+
+Mientras ejecuta, el motor detecta:
+
+- **Desvío de cantidad**: se certificó más que el presupuesto
+- **Desvío de precio**: costo unitario más caro que presupuesto
+- **Falta de datos**: medición sin ACU, personal sin precio, material sin precio vigente, máquina sin parte
+- **Incoherencia**: vía A dice $1000, vía B dice $5000
+- **Pérdidas**: consumo anormal de combustible
+
+## Uso en la aplicación
+
+El motor se invoca desde:
+
+1. **Dashboard**: "¿cuánto cuesta esta obra?" (rango cerrado + abierto)
+2. **Cost Control**: "desglose por ítem" (árbol de costos)
+3. **Certification**: "¿cuánto cuesta lo que medimos?" (rango del certificado)
+4. **Finance**: "¿qué debo registrar en contabilidad?"
+
+## Fórmula simplificada
+
+```
+Costo Real de Ítem = Σ(Vía A) + Σ(Vía B con cargas) + Σ(Vía C)
+Desvío = Costo Real - (Cantidad Presupuestada × Precio Presupuestado)
+Alerta si Desvío > Tolerancia (%)
+```
+
+**Tolerancia**: típicamente 5-10%, configurable por obra.

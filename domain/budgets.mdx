@@ -1,0 +1,175 @@
+# Presupuesto
+
+*Domain · draft*
+
+## Qué es el Presupuesto
+
+El presupuesto es el **plan económico de la obra**:
+
+```
+Presupuesto = Σ(Ítem: Cantidad × Precio Unitario)
+```
+
+Ejemplo:
+```
+Ítem 1: Excavación (m³) = 500 m³ × $20/m³ = $10.000
+Ítem 2: Hormigonado (m³) = 100 m³ × $400/m³ = $40.000
+Ítem 3: Fierrería (kg) = 5.000 kg × $1,50/kg = $7.500
+──────────────────────────────────────────────────────
+Costo Directo = $57.500
+Gastos Generales (K=10%) = $5.750
+Valor Total de la Obra = $63.250
+```
+
+## Importación del Presupuesto
+
+El presupuesto se **importa desde Excel** (típicamente una planilla estándar con estructura de ítems).
+
+**Flujo de importación:**
+```
+1. Usuario sube archivo .xlsx
+2. Sistema analiza columnas (detecta: descripción, cantidad, precio)
+3. Valida estructura y datos
+4. Crea BudgetItem por cada fila
+5. Crea instancia de ACU para cada ítem (copia de biblioteca)
+6. Calcula total y alertas (precios faltantes, ítems duplicados, etc.)
+7. Usuario revisa preview y confirma importación
+```
+
+**Validaciones:**
+- Cantidades deben ser números positivos
+- Precios deben ser números positivos
+- Descripción del ítem no debe estar vacía
+- No permitir duplicados de descripción (o alertar)
+
+## Estructura de Ítems
+
+Cada **BudgetItem** tiene:
+
+| Campo | Descripción |
+|---|---|
+| **Descripción** | "Excavación de cimientos" |
+| **Unidad** | m³, m², kg, días, etc. |
+| **Cantidad** | total a ejecutar en la obra |
+| **Precio Unitario** | precio por unidad |
+| **Total** | cantidad × precio (calculado) |
+| **ACU** | referencia a análisis de costo unitario |
+| **Rubro** | categoría (estructura, acabados, etc.) |
+| **Orden** | secuencia de presentación |
+
+## Movimientos Presupuestarios
+
+El presupuesto es **flexible**. Se puede modificar via:
+
+### Ampliación de Presupuesto (Adicional)
+
+Cuando se requiere más cantidad o se agrega ítem:
+
+```
+Ítem 1: Excavación
+Presupuesto Original: 500 m³
+Adicional: +50 m³ (encontramos roca más de lo esperado)
+Presupuesto Nuevo: 550 m³
+
+Costo Adicional = 50 m³ × $20/m³ = $1.000
+```
+
+Registrado en `BudgetMovement` con tipo `AMPLIACION`.
+
+### Reducción de Presupuesto (Deducción)
+
+Cuando se reduce cantidad:
+
+```
+Ítem 2: Hormigonado
+Presupuesto Original: 100 m³
+Deducción: -10 m³ (diseño cambió)
+Presupuesto Nuevo: 90 m³
+
+Ahorro = 10 m³ × $400/m³ = $4.000
+```
+
+Registrado en `BudgetMovement` con tipo `DEDUCCION`.
+
+### Cambio de Precio (Variación)
+
+Cuando el precio unitario se modifica:
+
+```
+Ítem 1: Excavación
+Precio Original: $20/m³
+Precio Nuevo: $22/m³ (mercado subió)
+Cantidad sin cambios: 500 m³
+
+Costo Adicional = 500 m³ × ($22-$20) = $1.000
+```
+
+Registrado en `BudgetMovement` con tipo `VARIACION_PRECIO`.
+
+## Presupuesto vs Ejecución
+
+Mientras se ejecuta la obra, se comparan:
+
+| Concepto | Origen | Significado |
+|---|---|---|
+| **Presupuesto** | BudgetItem | Plan original |
+| **Adicionales/Deducciones** | BudgetMovement | Cambios al plan |
+| **Presupuesto Total** | Presupuesto + Movimientos | Plan vigente |
+| **Medición Oficial** | Certification | Cantidad medida en terreno |
+| **Costo Real** | Motor de Costos | Lo que costó ejecutar |
+
+**Cuadro Resumen:**
+```
+Ítem 1: Excavación
+
+Presupuesto Vigente: 550 m³ × $20/m³ = $11.000
+Medición Oficial: 480 m³ (ejecutamos menos)
+Costo Real: $9.850 (más barato de lo presupuestado)
+
+Análisis:
+├─ Cantidad: Ejecutamos 480, presupuestamos 550 → Falta 70 m³
+├─ Precio: Pagamos $9.850 / 480 = $20,52/m³
+│           Presupuestamos: $20/m³
+│           Desvío: +$0,52/m³ (más caro)
+└─ Impacto Neto: (480-550) × $20 + 480 × $0,52 = -$1.151 ganancia
+```
+
+## Rubros y Agrupaciones
+
+Los ítems se pueden agrupar por **rubro** (categoría):
+
+```
+Rubro A: Estructura
+├─ Ítem 1: Excavación
+├─ Ítem 2: Hormigonado
+└─ Ítem 3: Fierrería
+
+Rubro B: Acabados
+├─ Ítem 4: Revoque
+├─ Ítem 5: Pintura
+└─ Ítem 6: Pisos
+
+Total Rubro A: $57.500
+Total Rubro B: $12.750
+────────────────────
+Total Obra: $70.250
+```
+
+Permite análisis por etapa de construcción.
+
+## Presupuesto Base vs Presupuesto Vigente
+
+- **Presupuesto Base**: el importado originalmente, congelado para referencia
+- **Presupuesto Vigente**: Base + todos los movimientos acumulados
+
+Se mantienen ambos para ver la evolución y justificar cambios.
+
+## Alertas del Presupuesto
+
+El sistema alerta cuando:
+
+- Medición supera Presupuesto Vigente (overspend)
+- Precio real supera Precio Presupuestado en X% (desvío)
+- Ítem sin ACU asignado (no se puede costear)
+- Movimiento presupuestario sin aprobación
+- K o IVA no configurados en la obra
