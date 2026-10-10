@@ -6,33 +6,31 @@ Documentation for Obra Studio. The application is open to modular extensions for
 
 | I want to | Read |
 |---|---|
-| Know the project and its principles | [`docs/foundations/principles.mdx`](docs/foundations/principles.mdx) |
-| Know what the first delivery does | [`docs/product/mvp.mdx`](docs/product/mvp.mdx) |
-| Know what an entity means | [`docs/domain/`](docs/domain/) |
-| Know how the application stores and notifies | [`docs/system/`](docs/system/) |
+| Know the project and its two engines | [`docs/foundations/erp-ecms-architecture.mdx`](docs/foundations/erp-ecms-architecture.mdx) |
+| Know the architecture of the application | [`docs/system/architecture-overview.mdx`](docs/system/architecture-overview.mdx) |
+| Know how the ERP and the ECMS exchange information | [`docs/system/erp-ecms-bridge.mdx`](docs/system/erp-ecms-bridge.mdx) |
+| Know what an entity or a business rule means | [`docs/domain/`](docs/domain) |
+| Know how a certification works in the interface | [`docs/product/certification-workflow.mdx`](docs/product/certification-workflow.mdx) |
+| Know what documentation is pending | [`docs/execution/documentation-architecture-erp-ecms.mdx`](docs/execution/documentation-architecture-erp-ecms.mdx) |
+| Know how the team plans the work | [`docs/execution/agile-workflow.mdx`](docs/execution/agile-workflow.mdx) |
 | Know what a term means | [`AGENTS.md`](AGENTS.md) |
-| Know what work is pending | [`docs/execution/roadmap.mdx`](docs/execution/roadmap.mdx) |
-| Know why the team chose something | [`docs/decisions/`](docs/decisions/) |
-| Know which tools the team uses | [`docs/references/tools.mdx`](docs/references/tools.mdx) |
 | Write or change a document | [`AGENTS.md`](AGENTS.md) |
 
 ## Structure
 
 Each folder sits under `docs/`. The site serves no document from another location.
 
-| Folder | Authority | Content |
-|---|---|---|
-| `docs/foundations/` | L0 | Invariants, principles, permanent constraints. |
-| `docs/domain/` | L1 | Entities, ownership, relationships, business rules. |
-| `docs/system/` | L2 | Architecture, permissions, APIs, events, persistence. |
-| `docs/product/` | L3 | Interfaces, workflows, features, observable behavior. |
-| `docs/execution/` | L4 | Roadmap, pending work, implementation plans. |
-| `docs/references/` | None | Tools, books, links, anti-patterns. |
-| `docs/decisions/` | None | The reason for a decision. The options that were rejected. |
+| Folder | Content |
+|---|---|
+| `docs/foundations/` | The two engines, the bridge, and the separation principles. |
+| `docs/domain/` | Entities, ownership, relationships, and business rules. |
+| `docs/system/` | Architecture, layers, flows, events, and persistence. |
+| `docs/product/` | Interfaces, workflows, and observable behavior. |
+| `docs/execution/` | Plans, pending work, and the roadmap. |
+| `docs/references/` | Tools, books, links, and anti-patterns. |
+| `docs/decisions/` | The reason for a decision. The options that were rejected. |
 
-Authority descends. `docs/foundations/` has the highest authority.
-
-A folder appears when its first document is written. Every folder holds at least one document.
+A folder appears when its first document is written.
 
 ## Checks
 
@@ -56,12 +54,18 @@ Git is the history. No document holds a version. No document holds a revision da
 
 ## Language
 
-The repository holds English content. The reader uses the Chrome translation service to read the wiki in another language.
+The documents under `docs/` hold Spanish content. A business object of Paraguay keeps its Spanish name, and the document writes the English gloss after the term. The reader uses a translation tool to read the content in another language.
 
 ## Setup
 
-Launch with
+Launch the site on the local machine with
 
 ```sh
 npx @docs.page/cli preview
+```
+
+Check the links and the assets before a push:
+
+```sh
+npx @docs.page/cli check
 ```
