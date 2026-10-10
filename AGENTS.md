@@ -140,9 +140,9 @@ If the check fails, the agent removes words. The agent must not remove an obliga
 
 ## 7. Language and style
 
-- Write the content in English.
-- Write a term in Spanish when the term names a business object in Paraguay. Write the gloss after the term. An example is `obra (work site)`.
-- The reader uses the Chrome translation service. The repository holds no translated copy of a document.
+- Write the content in Spanish. A business object of Paraguay keeps its Spanish name. An example is `obra`.
+- Write the English gloss after a business term. An example is `obra (work site)`.
+- The reader uses a translation tool to read the content in another language. The repository holds no translated copy of a document.
 
 | Keyword | Meaning |
 |---|---|
