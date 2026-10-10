@@ -7,6 +7,11 @@
       "group": "🏗️ Foundations — Start here",
       "pages": [
         {
+          "title": "Home",
+          "href": "/",
+          "icon": "house"
+        },
+        {
           "title": "ERP vs ECMS Architecture",
           "href": "/foundations/erp-ecms-architecture",
           "icon": "layers"
@@ -50,6 +55,16 @@
           "title": "Budgets & Movements",
           "href": "/domain/budgets",
           "icon": "table"
+        },
+        {
+          "title": "Client",
+          "href": "/domain/clients",
+          "icon": "user"
+        },
+        {
+          "title": "Collection",
+          "href": "/domain/collections",
+          "icon": "money-bill"
         },
         {
           "title": "Certifications",
