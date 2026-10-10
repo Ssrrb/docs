@@ -4,15 +4,17 @@ This file is the entry point for every agent that works in this repository.
 
 It holds the basic idea of the project and the terminology that every agent needs. It states where a topic belongs. It states how to write a document.
 
-This file states no rule of the project. `docs/foundations/principles.mdx` holds the rules. If this file differs from that file, that file is correct.
+This file states how the repository works. A document under `docs/` states a requirement of the product.
 
 ## 1. The project
 
-Obra Studio is an application for construction companies. The first product serves one user with several projects in Paraguay. The people who use the application are engineers and architects.
+Obra Studio is an application for construction companies. The first product serves one construction company with several projects in Paraguay. The people who use the application are engineers and architects.
 
-The application has an opinionated core. The core holds a base structure, a central library, and a common design. Modules and connectors follow that structure. A new need enters through a module, not through a change of the core.
+The application joins two engines. The ERP manages money, purchases, and legal documents. The ECMS manages the `obra`, the budget, the measurement, and the cost. The bridge exchanges information between the two engines.
 
-`docs/foundations/principles.mdx` holds the rules of this section.
+The application has an opinionated core. The core holds the shared structure. A module adds a capability to the core. A new need enters through a module, not through a change of the core.
+
+`docs/foundations/erp-ecms-architecture.mdx` describes the two engines and the bridge.
 
 ## 2. Terminology
 
@@ -22,31 +24,25 @@ This table holds the one meaning of each term. No other document states a second
 
 | Term | One line |
 |---|---|
-| Core | The opinionated internal base of the application. |
-| Base structure | The structure that integrates modules and connectors. |
-| Common design | The design that the core publishes. |
-| Central library | The internal component that holds the common functions. |
-| Common function | A function that two or more extensions need. |
-| Specific function | A function that one module needs for its own capability. |
-| Variety | The number of different states that a component can have. |
-| Variability | The degree of change of a component over time. |
-| Extension point | A place in the core where an extension connects. |
-| Module reserve | The set of modules that the platform offers. |
-| Extension | A module or a connector that joins the application as a plugin. |
-| Module | An extension that provides a specific capability. |
-| Connector | An extension that joins an external system. |
-| Harness | The internal composition of skills, tests, tools, and loops for an agent. |
-| ERP | The engine for cost, capital, and control. |
-| ECMS | The engine for engineering and for project processes. |
+| Core | The shared base of the application. |
+| Module | A capability of the application. |
+| Extension point | A place in the core where a module connects. |
+| ERP | The engine for money, purchases, and legal documents. |
+| ECMS | The engine for the `obra`, the budget, the measurement, and the cost. |
 | Bridge | The mechanism that exchanges information between the two engines. |
 | MVP | The first delivery of the application. |
 | Construction company | A company that executes an `obra`. |
 | Obra (work site) | The unit of work of a construction company. |
 | Project | A group of `obra`. |
-| Company view | The interface that shows the information of every project of a construction company. |
-| Project view | The interface that shows the information of one open project. |
-
-The name `obra` names an entity of the domain. The name `Obras` names a module of the application. The `docs/domain/` folder holds the rules for the three domain terms when that folder appears. The `docs/domain/` folder will hold budgets, unit price analysis, M.O. (labor), inputs, subcontractors, suppliers, and certificates.
+| Presupuesto (budget) | The economic plan of one `obra`. |
+| Ítem (budget item) | One line of a `presupuesto`. |
+| ACU (unit cost analysis) | The technical and economic decomposition of one `ítem`. |
+| Medición oficial (official measurement) | The quantity of work that an engineer measures on site. |
+| Certificado (certificate) | The record that certifies a medición oficial for the client or for the subcontratista. |
+| Subcontratista (subcontractor) | A company that executes part of an `obra`. |
+| Socio (partner) | The company that sells to the construction company. |
+| Cliente (client) | The person or the company that pays the work. |
+| Cobro (collection) | The money that a client pays a project. |
 
 ### Writing terms
 
@@ -54,23 +50,18 @@ This table gives the words that this file uses.
 
 | Term | Meaning in this file |
 |---|---|
-| Layer | One level of authority. `docs/foundations/` is L0. `docs/domain/` is L1. |
-| Authority | The right of a layer to define a rule. |
 | Rule | A sentence that states one obligation. |
 | Obligation | A requirement that a rule states. |
-| Identifier | A layer letter, a hyphen, and two digits. An example is `L0-01`. |
 | State | The header value that names the approval of a document. |
-| Amendment | A change to an approved rule. Only the author makes an amendment. |
 | Gloss | The English words that follow a Spanish term. |
 | Example | A line or a table that shows the use of a rule. Do not write an example as a rule. |
-| Citation | A reference to the identifier of a rule. |
-| Check | A program that verifies a rule. |
+| Check | A program that verifies the repository. |
 
 ## 3. How to work
 
 1. Read section 4. Name the folder that holds the topic.
 2. Search that folder for a document that covers the topic.
-3. Read the document. Then read the documents of the folders with lower authority.
+3. Read the document. Read the documents of the other folders that the topic touches.
 4. Use each project term as section 2 defines it. A term has one meaning.
 5. Extend the document that covers the topic. Create a file only if no document covers the topic.
 6. Follow sections 5 to 8. Check the result against section 10.
@@ -78,9 +69,11 @@ This table gives the words that this file uses.
 
 | The author instruction | The response of the agent |
 |---|---|
-| It is clear and it does not conflict | Execute it. |
+| It is clear and it does not conflict with an approved document | Execute it. |
 | It has a material ambiguity | Ask one question about the missing information. |
-| It conflicts with a rule of a lower layer | Stop. Name the identifier of the rule. Request the amendment. |
+| It conflicts with an approved document | Stop. Name the document. Ask the author. |
+
+An agent writes a draft. Only the author moves a document to `approved`.
 
 An agent must not reinterpret an instruction. An agent must not ignore an instruction. An agent must not weaken an instruction.
 
@@ -88,29 +81,23 @@ An agent must not reinterpret an instruction. An agent must not ignore an instru
 
 Each folder sits under `docs/`. The site serves no document from another location.
 
-| Folder | Authority | Content |
-|---|---|---|
-| `docs/foundations/` | L0 | Invariants, principles, permanent constraints. |
-| `docs/domain/` | L1 | Entities, ownership, relationships, business rules. |
-| `docs/system/` | L2 | Architecture, permissions, APIs, events, persistence. |
-| `docs/product/` | L3 | Interfaces, workflows, features, observable behavior. |
-| `docs/execution/` | L4 | Roadmap, pending work, implementation plans. |
-| `docs/references/` | None | Tools, books, links, anti-patterns. |
-| `docs/decisions/` | None | The reason for a decision. The options that were rejected. |
+| Folder | Content |
+|---|---|
+| `docs/foundations/` | The two engines, the bridge, and the separation principles. |
+| `docs/domain/` | Entities, ownership, relationships, and business rules. |
+| `docs/system/` | Architecture, layers, flows, events, and persistence. |
+| `docs/product/` | Interfaces, workflows, and observable behavior. |
+| `docs/execution/` | Plans, pending work, and the roadmap. |
+| `docs/references/` | Tools, books, links, and anti-patterns. |
+| `docs/decisions/` | The reason for a decision. The options that were rejected. |
 
-Authority descends. `docs/foundations/` has the highest authority.
-
-- A higher layer must not redefine a rule of a lower layer.
-- An approved rule changes only through an amendment from the author.
-- An agent must not infer an amendment. The author names the identifier of the rule. The author names the documents that the amendment changes.
 - The agent states the affected documents before the agent edits them.
-- The folder states the authority. The file does not repeat the authority.
 - A folder appears when its first document is written. Do not create an empty folder.
 - If no folder fits the topic, ask one question. Do not create a folder without the answer.
 
 ### File names
 
-- The name states the topic. The name contains no layer number.
+- The name states the topic.
 - The name uses lowercase letters and hyphens. An example is `unit-price-analysis.mdx`.
 - The name does not repeat the folder. An example is `budgets.mdx` in `docs/domain/`. Do not write `domain-budgets.mdx`.
 
@@ -130,31 +117,26 @@ The state line contains the folder name. The state line contains the state.
 |---|---|
 | `draft` | The author has not approved the content. Do not cite the document. |
 | `approved` | The author approved the content. The document can be cited. |
-| `none` | The folder has no authority. The document informs. The document does not oblige. |
+| `none` | The document informs. The document does not oblige. |
 
 - A document holds one topic.
+- Reference another document by its path. An example is `docs/domain/collections.mdx`.
 - Omit the version from the state line. Omit the date from the state line. Git records both.
 - Three files follow no state line: `README.md`, `AGENTS.md`, and `docs.json`.
 
-## 6. How to write a rule
+## 6. How to write
 
 - A rule states one obligation. Name the subject.
 - Split the rule if the subject changes. Split the rule if the condition changes.
-- A rule must not hold an implementation detail of a lower layer.
+- A rule must not hold an implementation detail. Put the detail in the document that describes the implementation.
 - Put an example in its own line or in its own table. Do not put an example in the sentence of a rule.
-- A citation is not a rule. Record the source in `docs/references/` or in `docs/decisions/`.
-
-An identifier contains a layer letter, a hyphen, and two digits. An example is `L0-01`.
-
-- The number is unique in the layer.
-- Do not use a retired number for another rule.
-- Cite a rule by its identifier. Do not cite a rule by its title.
+- Record a source in `docs/references/` or in `docs/decisions/`.
 
 ### The limit for this file
 
 A check enforces the word limit of this file. The check holds the limit. The check is `scripts/check.sh`. The commit hook runs the check. A commit with a failing check does not pass.
 
-If the check fails, the agent removes words. The agent must not remove a rule to fit the limit. The author amends the limit in the check.
+If the check fails, the agent removes words. The agent must not remove an obligation to fit the limit. The author amends the limit in the check.
 
 ## 7. Language and style
 
@@ -188,13 +170,14 @@ Apply ASD-STE100.
 Git is the history of the repository. A document holds no version. A document holds no revision date.
 
 - Write one commit for one change. The message states what changed. The message states why it changed.
-- An amendment commit names the identifier of the rule that the amendment changes.
 - A commit can move a document from `draft` to `approved`.
 
 ## 9. The site
 
 `docs.json` configures the docs.page site. `docs.json` is not an index of the repository.
 
+- `npx @docs.page/cli preview` serves the site on the local machine.
+- `npx @docs.page/cli check` reports broken links and missing assets.
 - A document needs no entry in `docs.json`.
 - A document without an entry in `docs.json` is a valid document.
 - Change `docs.json` when a person publishes. Treat the file as a site file. Do not treat the file as a rule.
@@ -203,11 +186,11 @@ Git is the history of the repository. A document holds no version. A document ho
 
 Before the agent commits a document, the agent checks the list.
 
-- The topic sits in the folder of the right authority.
+- The topic sits in the folder of the right content.
 - A document of that folder covers the topic.
-- The file name holds no layer number. The file name does not repeat the folder.
+- The file name states the topic. The file name does not repeat the folder.
 - The header holds a title and a state line.
-- Each rule in a knowledge document states one obligation and holds an identifier.
+- Each rule states one obligation.
 - No document holds a version or a revision date.
 - The commit message states what changed and why it changed.
 - If the change touches this file, the check passes.
