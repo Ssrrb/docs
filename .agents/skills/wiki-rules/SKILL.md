@@ -1,46 +1,20 @@
 ---
 name: wiki-rules
 description: >-
-  Use when writing, amending, or approving rules and documents in the Obra
-  wiki (Ssrrb/docs — the only source of requirements for the product). Covers
-  the authority layers L0–L4, rule identifiers and draft/approved states, the
-  form rules and their check, amendments requested by factory flows, and the
-  roadmap updates shipped work produces.
+  Use when writing, amending, or approving documents in the Obra wiki (the
+  description of the ERP engine, the ECMS engine, and the bridge between
+  them). Covers the folder map, the document form, the draft and approved
+  states, the writing rules, and the check.
 ---
 
-# Document rules in the wiki (documenting)
+# Writing documents in the wiki
 
-This repository is the rule authority of Obra Studio. The factory reads it,
-the design and the code cite it, and nothing else is a requirement. `AGENTS.md`
-in this repository is the form authority — read sections 3–8 before writing.
+This repository describes Obra Studio. `AGENTS.md` at the root is the entry point and the form authority. Read it before you write. It states the terminology, the folder of each topic, the document form, the writing rules, and the commit rules.
 
-- **Authority descends** — `docs/foundations/` (L0) > `docs/domain/` (L1) >
-  `docs/system/` (L2) > `docs/product/` (L3) > `docs/execution/` (L4).
-  `docs/references/` and `docs/decisions/` inform; they do not oblige.
-- **A rule states one obligation and carries an identifier** (`L0-01`). The
-  number is unique in the layer; a retired number is never reused. Cite a rule
-  by its identifier, never by its title.
-- **States** — `draft` (do not cite), `approved` (citable), `none` (the folder
-  has no authority). An agent writes drafts and prepares changes; only the
-  author moves a document to `approved` or amends an approved rule. One
-  approval is one commit.
-- **Check before you commit** — `sh scripts/check.sh` enforces the form rules
-  (the commit hook runs it too). If the check fails on this file's word limit,
-  remove words, never a rule.
-- **The factory consumes this repository mechanically** — `rules-index.yaml`
-  in the factory is generated from these documents (id, layer, doc, title,
-  state); the `coverage` and `verified_by` columns are human-owned. A rule
-  that leaves the wiki moves to a `retired:` list; its number is never reused.
-- **Requests arrive from the factory's flows** — Flow B files rule conflicts
-  as `needs/rule-approval` and proposes the amendment; Flow C's bug-fix
-  variant files a wiki amendment when a production error has no matching rule
-  (a specification gap, not a bug); Flow C's dispose step updates
-  `docs/execution/roadmap.mdx` with the initiative's status and the issue link.
-- **Never reinterpret.** If an instruction conflicts with a lower layer, stop,
-  name the identifier, and request the amendment (`AGENTS.md` §3).
-
-Workspace note — the factory, the design platform, and the app are sibling
-repositories of the Obra workspace (`factory/manifest.yaml` names every
-repository and its remote). When only this repository is checked out, resolve
-what you can from the listed remotes and report the rest as unknown — a check
-that could not run is never green.
+- **One folder per topic.** `docs/foundations/` holds the two engines and the bridge. `docs/domain/` holds the entities and the business rules. `docs/system/` holds the architecture. `docs/product/` holds the interfaces and the workflows. `docs/execution/` holds the plans and the pending work. `docs/references/` and `docs/decisions/` inform.
+- **Extend before you create.** Search the folder for a document that covers the topic. Create a file only if no document covers the topic. A document holds one topic.
+- **The document form.** A knowledge document starts with a title and a state line. An example is `*Domain · draft*`. The states are `draft`, `approved`, and `none`. An agent writes a draft. Only the author moves a document to `approved`.
+- **The writing rules.** Write the content in Spanish. A business object of Paraguay keeps its Spanish name, and the document writes the English gloss after the term. Apply ASD-STE100: one idea per sentence, the active voice, the present tense, and a named subject. A rule states one obligation. Put an example in its own line or in its own table.
+- **The check.** Run `sh scripts/check.sh` before a commit. The check enforces the word limit of `AGENTS.md`. If the check fails, remove words. Do not remove an obligation to fit the limit.
+- **The site.** `docs.json` configures the docs.page site. A document needs no entry in `docs.json`. Run `npx @docs.page/cli preview` to serve the site on the local machine. Run `npx @docs.page/cli check` to find broken links and missing assets.
+- **The commits.** Write one commit for one change. The message states what changed and why it changed. A commit can move a document from `draft` to `approved`.
