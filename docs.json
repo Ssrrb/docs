@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.page/schema.json",
-  "name": "Obra Studio — ERP-ECMS Architecture",
+  "name": "Obra Studio - ERP-ECMS Architecture",
   "description": "Complete documentation of the integrated ERP (financial) and ECMS (engineering) systems for construction project management",
   "sidebar": [
     {
@@ -37,7 +37,7 @@
       "group": "📊 Domain — Core Entities",
       "pages": [
         {
-          "title": "Module Hierarchy (28 modules)",
+          "title": "Module Hierarchy (18 capabilities)",
           "href": "/domain/module-hierarchy",
           "icon": "git-branch"
         },

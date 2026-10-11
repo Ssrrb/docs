@@ -1,6 +1,6 @@
 # ERP y ECMS — Arquitectura integrada
 
-*Foundations · approved*
+*Foundations · draft*
 
 ## Definición conceptual
 
@@ -20,7 +20,7 @@ El ERP gestiona **dinero, compras y documentos**. Es la contabilidad, las órden
 
 El ERP responde a: ¿cuánto gastamos? ¿a quién le debemos? ¿de dónde sale el dinero?
 
-### ECMS (Engineering Cost Management System)
+### ECMS (Engineering Control Management System)
 
 El ECMS gestiona **obra, presupuesto, mediciones y costos reales**. Es el control técnico y económico de la construcción.
 
@@ -58,7 +58,7 @@ Algunas entidades viven en ambos mundos:
 
 | Entidad | Dueño | Propósito |
 |---|---|---|
-| **Obra (Project)** | ECMS | Unidad de ejecución; tiene presupuesto, mediciones, partes de máquina |
+| **Obra (work site), fila de `projects`** | ECMS | Unidad de ejecución; tiene presupuesto, mediciones, partes de máquina |
 | **Ítem (BudgetItem)** | ECMS | Línea del presupuesto; tiene cantidad, precio, ACU |
 | **Material** | Ambos | Catálogo compartido; usado por compras (ERP) y costos (ECMS) |
 | **Personal (Empleado)** | RRHH (ECMS) | Nómina, asistencia; registra en costeo (ECMS) y liquidación (RRHH) |

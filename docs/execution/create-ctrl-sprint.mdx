@@ -272,25 +272,28 @@ Reglas del despliegue:
 - El CLI no recibe las credenciales de migración.
 - El paquete público no contiene secretos.
 
-## Documentos pendientes de actualización
+## Documentos alineados con el sprint
 
-La búsqueda en `docs/` usó los términos `Prisma`, `Express` y `proyecto`. Las tablas listan los documentos que requieren un cambio y el cambio necesario de cada documento.
+Los documentos de arquitectura y flujo ágil describen Worker, Drizzle y Neon.
+La jerarquía de módulos distingue los 18 submódulos y las dependencias obligatorias.
+Los documentos de fundamentos, puente y certificaciones usan obra para la unidad de ejecución.
+La tabla `projects` conserva las obras existentes. `workspaces` agrupa obras.
+Los documentos modificados permanecen como borradores hasta la aprobación del autor.
 
-### Documentos que describen Prisma o Express
+## Revisión de preparación para producción
 
-| Documento | Cambio necesario |
-|---|---|
-| `docs/system/architecture-overview.mdx` | El diagrama de capas y la sección Tecnología describen un backend Express y una persistencia Prisma + PostgreSQL. El texto debe describir la API como un Cloudflare Worker en `obra-api` y debe nombrar la persistencia actual sin Prisma ni Express. |
-| `docs/execution/agile-workflow.mdx` | La fase de cimientos describe la persistencia como Prisma + PostgreSQL. El texto debe describir la persistencia actual. |
+La revisión corrige la verificación OAuth con el contrato del SDK de Clerk.
+La API requiere la clave publicable y la clave secreta de la instancia del helper.
+El onboarding exige administrador antes de devolver un perfil existente.
+Una carrera de onboarding reconcilia la membresía antes de consultar al ganador.
+El código automático de obra conserva el UUID completo para evitar colisiones.
 
-### Documentos que equiparan proyecto con obra
+El diario local declara una versión independiente del manifiesto canónico.
+La recuperación vincula organización, servidor y entrada confirmada.
+La recuperación conserva archivos ajenos y rechaza rutas generadas incompatibles.
+El asistente interactivo permite crear o vincular después de elegir organización.
 
-| Documento | Cambio necesario |
-|---|---|
-| `docs/foundations/erp-ecms-architecture.mdx` | La tabla de entidades transversales tiene la fila "Obra (Project)". El texto debe decir que la obra es una fila de la tabla `projects` y que el workspace agrupa obras. |
-| `docs/domain/module-hierarchy.mdx` | La lista de entidades transversales dice "Project (Obra)" y la sección "Configuración por proyecto" habilita módulos por proyecto. El texto debe decir obra y debe referir al catálogo de submódulos de este sprint. |
-| `docs/system/architecture-overview.mdx` | La lista de puntos de extensión dice "Se activa/desactiva por proyecto". El texto debe decir que la selección estructural es por obra. |
-| `docs/system/erp-ecms-bridge.mdx` | El documento configura el IVA, los fondos de retención y la tolerancia "por proyecto". El texto debe decir "por obra". |
-| `docs/domain/certifications.mdx` | El documento configura los fondos de retención "por proyecto". El texto debe decir "por obra". |
-| `docs/product/certification-workflow.mdx` | El flujo lee los fondos de retención "del proyecto". El texto debe decir "de la obra". |
-| `docs/execution/agile-workflow.mdx` | La fase de cimientos lista "proyectos y obra" y la fase de medición configura "retenciones por proyecto". El texto debe usar los términos obra y workspace de este documento. |
+El Worker preview utiliza una instancia separada y una base de desarrollo.
+La producción y la publicación npm permanecen como pasos del release.
+La evidencia debe identificar el commit verificado y las comprobaciones pendientes.
+Un fallo de facturación de GitHub Actions no equivale a una prueba aprobada.

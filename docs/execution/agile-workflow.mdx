@@ -27,8 +27,8 @@ Las dos personas programan. Toda historia pasa por la revisión de la otra perso
 
 ### Fase 1 — Cimientos (sprints 1 y 2)
 
-- Core: auth, catálogos (Material, Partner), proyectos y `obra (work site)`.
-- Persistencia (Prisma + PostgreSQL) y esqueleto de API y frontend.
+- Core: auth, catálogos (Material, Partner), workspaces (agrupadores) y obras (work sites).
+- Persistencia (Drizzle + Neon PostgreSQL) y API en Cloudflare Workers.
 - Entregable: login, alta de obra y catálogo navegable.
 
 ### Fase 2 — Presupuesto (sprints 3 y 4)
@@ -40,7 +40,7 @@ Las dos personas programan. Toda historia pasa por la revisión de la otra perso
 ### Fase 3 — Medición y certificación (sprints 5 y 6)
 
 - `certifications`: medición oficial en terreno, independiente de los partes diarios.
-- Subcontratos con modalidad `PRODUCCION` o `JORNAL`, y retenciones configurables por proyecto.
+- Subcontratos con modalidad `PRODUCCION` o `JORNAL`, y retenciones configurables por obra.
 - Entregable: certificado aprobado, exportable a PDF y Excel.
 
 ### Fase 4 — Puente ERP (sprints 7 y 8)
