@@ -1,0 +1,299 @@
+# Sprint create-ctrl y workspaces compartidos
+
+*Execution · draft*
+
+Este documento especifica las decisiones confirmadas del sprint `create-ctrl`. El sprint entrega un CLI, una API y un contrato de carpetas local.
+
+El contexto de los dos motores está en `docs/foundations/erp-ecms-architecture.mdx`. La jerarquía de módulos está en `docs/domain/module-hierarchy.mdx`. El flujo de trabajo del sprint sigue `docs/execution/agile-workflow.mdx`.
+
+## Objetivo
+
+El usuario ejecuta el CLI con `npx create-ctrl`. El CLI crea un workspace con su primera obra (work site). El CLI también vincula una carpeta local a un workspace existente.
+
+Los miembros de una organización de Clerk comparten la identidad. Los miembros comparten la configuración central. Cada miembro materializa la estructura en su computadora. La materialización usa los mismos identificadores. La réplica no crea otro proyecto.
+
+## Correspondencias
+
+La tabla fija la correspondencia entre los conceptos del producto y las tablas de la base de datos.
+
+| Concepto | Correspondencia |
+|---|---|
+| Organización de Clerk | Empresa (company) en la tabla `companies`, mediante `clerk_org_id` |
+| Workspace | Nuevo agrupador de obras |
+| Obra | Fila existente de la tabla `projects` |
+| Motores ERP y ECMS | Catálogo existente en la tabla `modules` |
+| Capacidades seleccionables | Nuevo catálogo de submódulos, agrupados por motor |
+
+El sprint conserva los nombres actuales de las tablas.
+
+Este documento usa el término obra para la unidad de trabajo. Este documento usa el término workspace para el agrupador de obras.
+
+## Alcance
+
+Dentro del alcance:
+
+- El CLI en el paquete `create-ctrl`.
+- La API HTTP como un Cloudflare Worker dedicado en `obra-api`.
+- La creación del workspace y de su primera obra.
+- La selección estructural de módulos por obra.
+- La consulta de la estructura y su réplica.
+- El reconocimiento de nuevos miembros tras la aceptación de una invitación en Clerk.
+- La resolución del vínculo pendiente con `companies`.
+- La recuperación local y la idempotencia.
+- La prueba del paquete npm desde su tarball (archivo de paquete).
+
+Fuera del alcance:
+
+- Las invitaciones. Las invitaciones permanecen en Clerk.
+- La interfaz nativa de Ctrl+. Otro sprint la entrega.
+- Los procesos operativos del ERP y del ECMS.
+- La sincronización del contenido de `archivos-compartidos`. El CLI crea la carpeta. El contenido permanece local.
+
+## Contrato de carpetas local
+
+El ejemplo muestra la estructura de la carpeta raíz:
+
+```
+<raíz>/
+├── workspace.code-workspace
+├── README.md
+├── .ctrl/
+│   └── workspace.json
+├── archivos-compartidos/
+│   └── README.md
+└── obras/
+    └── <obra-id>/
+        ├── .ctrl/
+        │   └── obra.json
+        └── <motor>/
+            └── <capacidad>/
+                └── README.md
+```
+
+Reglas de la estructura:
+
+- Las referencias internas usan rutas relativas.
+- Los manifiestos identifican la empresa, la organización de Clerk, el workspace, las obras y la versión de la estructura.
+- Los manifiestos distinguen los módulos elegidos de los módulos incorporados por dependencia.
+- Las carpetas de módulos viven bajo `erp/` o bajo `ecms/`.
+- Un motor aparece en una obra solo si el motor tiene capacidades seleccionadas.
+- Los identificadores determinan los nombres de las carpetas.
+- La configuración canónica no contiene rutas absolutas.
+- La configuración canónica no contiene credenciales.
+- Si el destino está ocupado, el CLI rechaza la operación.
+- El CLI acepta un destino ocupado si el destino tiene una operación pendiente reconocida.
+- La recuperación preserva los archivos ajenos a la estructura.
+- Los manifiestos registran el valor 1 en `schemaVersion`.
+- Si la versión de la estructura es incompatible, el CLI rechaza la carpeta.
+- El mensaje de rechazo indica actualizar el CLI.
+
+## Catálogo de capacidades
+
+El catálogo organiza las capacidades en dos motores. El ERP es el motor administrativo. El ECMS es el motor técnico. El catálogo tiene 18 capacidades de negocio.
+
+La autenticación es infraestructura. La autenticación no cuenta entre las 18 capacidades. La autenticación viene incluida. Nadie desactiva la autenticación.
+
+La tabla lista las dependencias obligatorias del grafo:
+
+| Capacidad | Dependencias obligatorias |
+|---|---|
+| `erp.catalogs` | Ninguna |
+| `erp.petty-cash` | Ninguna |
+| `erp.finance` | Ninguna |
+| `erp.dashboard` | Ninguna |
+| `erp.purchase-orders` | `erp.catalogs` |
+| `erp.invoices` | `erp.catalogs` |
+| `erp.payments` | `erp.catalogs` |
+| `ecms.budgets` | Ninguna |
+| `ecms.partes` | Ninguna |
+| `ecms.labor-prices` | Ninguna |
+| `ecms.rrhh` | Ninguna |
+| `ecms.uploads` | Ninguna |
+| `ecms.acu` | `erp.catalogs` |
+| `ecms.material-requests` | `ecms.budgets`, `erp.catalogs` |
+| `ecms.certifications` | `ecms.budgets` |
+| `ecms.subcontracts` | `erp.catalogs` |
+| `ecms.stock` | `erp.catalogs` |
+| `ecms.cost-control` | `ecms.budgets`, `ecms.acu` |
+
+Las otras relaciones del grafo son integraciones opcionales. Una integración opcional no arrastra módulos.
+
+El resolver calcula el cierre transitivo de las capacidades seleccionadas. El cierre no contiene duplicados. El cierre sigue un orden determinista. El resolver distingue la elección explícita de la inclusión por dependencia. El resolver rechaza los códigos desconocidos. El resolver rechaza los ciclos.
+
+La versión inicial del catálogo es 1. Las filas del catálogo son definiciones inmutables. Un cambio de la estructura del catálogo requiere otra versión.
+
+## Datos
+
+El sprint agrega tres tablas nuevas: `workspaces`, `submodules` y `project_submodules`. El sprint agrega dos columnas nuevas en la tabla `projects`. Una columna referencia el workspace de la obra. La otra columna registra la versión del catálogo.
+
+La tabla `workspaces` agrupa obras. La tabla `workspaces` guarda una clave de creación. La clave de creación es única por empresa. La tabla `workspaces` guarda un hash de la entrada. El hash respalda la idempotencia de la creación.
+
+Las obras antiguas conservan el workspace nulo. Las migraciones son aditivas.
+
+## API v1
+
+La tabla lista las rutas de la API:
+
+| Ruta | Propósito |
+|---|---|
+| `GET /healthz` | Verificación de salud del servicio |
+| `GET /v1/organizations` | Organizaciones del usuario autenticado |
+| `POST /v1/organizations/:orgId/company` | Creación del perfil de la empresa. Solo un administrador la ejecuta |
+| `GET /v1/module-catalog` | Catálogo de submódulos |
+| `GET /v1/organizations/:orgId/workspaces` | Workspaces de la organización |
+| `POST /v1/organizations/:orgId/workspaces` | Creación de un workspace. La creación es idempotente por `creationKey` |
+| `GET /v1/organizations/:orgId/workspaces/:workspaceId` | Snapshot (instantánea) canónico del workspace |
+
+La API verifica los tokens OAuth del helper de autenticación mediante Clerk. La API verifica la membresía vigente en Clerk. La API reconcilia la caché `company_members`. Si Clerk no puede verificar el token, la API responde con un fallo temporal. La API nunca autoriza una solicitud con una fila antigua.
+
+## Interfaz del CLI
+
+El bloque muestra el comando y sus opciones:
+
+```
+create-ctrl [directory]
+
+Opciones:
+  --name         Nombre del workspace nuevo
+  --obra-name    Nombre de la primera obra
+  --obra-code    Código de la primera obra
+  --org          Identificador de la organización de Clerk
+  --modules      Lista de las capacidades seleccionadas
+  --workspace    Identificador del workspace existente para la vinculación
+  --api-url      URL base de la API
+  --auth-cli     Comando del helper de autenticación
+  --yes          Acepta los recomendados sin preguntas
+  --json         Produce un documento JSON en stdout
+  --help         Muestra la ayuda
+  --version      Muestra la versión del paquete
+```
+
+Reglas del comportamiento:
+
+- La opción `--workspace` vincula una carpeta local a un workspace existente.
+- La opción `--workspace` es incompatible con las opciones de modificación.
+- Si la selección de módulos está vacía, la opción `--yes` acepta los recomendados.
+- La opción `--json` no hace preguntas.
+- La opción `--json` no inicia el login interactivo.
+- Con la opción `--json`, stdout contiene un solo documento JSON.
+- Con la opción `--json`, los diagnósticos salen por stderr.
+
+La tabla lista los códigos de salida:
+
+| Código | Significado |
+|---|---|
+| 0 | Éxito |
+| 1 | Fallo de la ejecución |
+| 2 | Error de uso o de entrada |
+| 130 | Cancelación por el usuario |
+
+- El CLI invoca el helper con `shell: false`.
+- El CLI invoca el helper con los comandos de la lista:
+
+```
+obra-auth session --json
+obra-auth login --json
+```
+
+- Los tokens no aparecen en las salidas del CLI.
+- Los tokens no aparecen en los manifiestos.
+
+## Onboarding empresarial
+
+Si la fila de `companies` falta, solo un administrador completa el perfil mínimo. El perfil mínimo tiene cuatro campos: el nombre, el país, la moneda y la zona horaria. El identificador legal es opcional. El onboarding usa la función SQL existente.
+
+La tabla lista las sugerencias del perfil:
+
+| Campo | Sugerencia |
+|---|---|
+| País | `PY` |
+| Moneda | `PYG` |
+| Zona horaria | `America/Asuncion` |
+
+Reglas del onboarding:
+
+- La creación del perfil es idempotente por `clerk_org_id`.
+- En una carrera, la respuesta devuelve la referencia que ganó.
+- El onboarding no modifica un perfil existente.
+- El onboarding no crea una organización de Clerk como compensación.
+- El onboarding no elimina una organización de Clerk como compensación.
+
+## Recuperación
+
+La creación central y la materialización local tienen estados separados. El workspace queda disponible cuando la transacción central termina. El CLI verifica su carpeta antes de informar el éxito.
+
+Un diario local registra la operación. El diario guarda la clave de creación, la entrada normalizada, los identificadores, el snapshot y la fase de la operación.
+
+La reanudación no ejecuta otra creación central. La reanudación no modifica la configuración registrada. Si la entrada cambia, el CLI produce un error explícito.
+
+## Escenarios de aceptación obligatorios
+
+Las pruebas del sprint cubren todos los escenarios de la tabla:
+
+| # | Escenario | Verificación |
+|---|---|---|
+| 1 | Primera creación | El CLI crea el workspace, la primera obra y la carpeta local |
+| 2 | Empresa preparada | El flujo continúa cuando la fila de `companies` existe |
+| 3 | Catálogo completo | La selección de las 18 capacidades produce una estructura válida |
+| 4 | Dependencias deterministas | El resolver produce el mismo cierre para la misma selección |
+| 5 | Selección vacía válida | Una obra sin capacidades seleccionadas produce una estructura válida |
+| 6 | Réplica multiusuario | Dos miembros materializan el mismo workspace con los mismos identificadores |
+| 7 | Vincular no duplica filas | La vinculación no crea filas nuevas en la base de datos central |
+| 8 | Nuevos miembros tras invitación | La API reconoce al miembro nuevo tras la aceptación de la invitación en Clerk |
+| 9 | Revocación impide consultas | La API rechaza las consultas del miembro revocado |
+| 10 | Aislamiento entre empresas | Un miembro de una empresa no lee los datos de otra empresa |
+| 11 | Varias organizaciones | Un usuario con dos organizaciones opera en cada organización por separado |
+| 12 | RLS (row-level security) sin fugas | Las políticas de la base de datos bloquean el acceso a los datos de otra empresa |
+| 13 | Obras antiguas válidas | Las obras con workspace nulo siguen funcionando |
+| 14 | Onboarding solo administrador y seguro en carrera | Un miembro sin rol de administrador no crea el perfil. Una carrera devuelve la referencia que ganó |
+| 15 | Idempotencia por repetición | La repetición de la creación con la misma clave no duplica el workspace |
+| 16 | Recuperación local preserva archivos ajenos | La reanudación no elimina los archivos ajenos a la estructura |
+| 17 | Archivos compartidos solo directorio | El CLI crea la carpeta. El contenido permanece local |
+| 18 | Autenticación rechaza tokens inválidos | La API rechaza el token vacío, el token vencido, el token inválido y el token de otro tipo |
+| 19 | CLI robusto | El CLI se comporta según lo especificado con rutas con espacios, permisos, cancelación, salida JSON y códigos de salida |
+| 20 | Tarball fuera del checkout | El paquete instalado desde el tarball funciona fuera del checkout |
+
+## Despliegue
+
+El Worker tiene dos destinos: preview y producción. El dominio propuesto para producción es `api.ctrlmas.tech`.
+
+El despliegue sigue este orden:
+
+1. Aplicar las migraciones y las políticas RLS en la base de datos de desarrollo.
+2. Ejecutar la API y el CLI contra esa base de datos.
+3. Desplegar el preview del Worker.
+4. Construir y probar el tarball del paquete npm.
+5. Reunir las evidencias y hacer la revisión.
+6. Publicar el release.
+
+Reglas del despliegue:
+
+- El Worker no recibe las credenciales de migración.
+- El CLI no recibe las credenciales de migración.
+- El paquete público no contiene secretos.
+
+## Documentos alineados con el sprint
+
+Los documentos de arquitectura y flujo ágil describen Worker, Drizzle y Neon.
+La jerarquía de módulos distingue los 18 submódulos y las dependencias obligatorias.
+Los documentos de fundamentos, puente y certificaciones usan obra para la unidad de ejecución.
+La tabla `projects` conserva las obras existentes. `workspaces` agrupa obras.
+Los documentos modificados permanecen como borradores hasta la aprobación del autor.
+
+## Revisión de preparación para producción
+
+La revisión corrige la verificación OAuth con el contrato del SDK de Clerk.
+La API requiere la clave publicable y la clave secreta de la instancia del helper.
+El onboarding exige administrador antes de devolver un perfil existente.
+Una carrera de onboarding reconcilia la membresía antes de consultar al ganador.
+El código automático de obra conserva el UUID completo para evitar colisiones.
+
+El diario local declara una versión independiente del manifiesto canónico.
+La recuperación vincula organización, servidor y entrada confirmada.
+La recuperación conserva archivos ajenos y rechaza rutas generadas incompatibles.
+El asistente interactivo permite crear o vincular después de elegir organización.
+
+El Worker preview utiliza una instancia separada y una base de desarrollo.
+La producción y la publicación npm permanecen como pasos del release.
+La evidencia debe identificar el commit verificado y las comprobaciones pendientes.
+Un fallo de facturación de GitHub Actions no equivale a una prueba aprobada.

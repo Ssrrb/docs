@@ -68,7 +68,7 @@ Read in this order:
 ```
 Read in this order:
 1. ERP vs ECMS Architecture (5 min)
-2. Module Hierarchy (10 min) — know all 28 modules
+2. Module Hierarchy (10 min) — know all 18 business capabilities
 3. Cost Engine (15 min) — how real costs are calculated
 4. Budgets (10 min) — budget vs actual
 ```
@@ -96,7 +96,7 @@ By the end, you will understand:
 - How work is measured on site
 - How payments are made
 - How certifications work
-- How 28 different modules integrate
+- Cómo se integran las 18 capacidades de negocio
 ```
 
 ---
@@ -114,7 +114,7 @@ By the end, you will understand:
 
 ### Domain — Core Entities & Logic
 
-- **[Module Hierarchy](domain/module-hierarchy)** — All 28 modules (ERP + ECMS), matrix of who owns what, dependencies
+- **[Module Hierarchy](domain/module-hierarchy)** — All 18 business capabilities (ERP + ECMS), matrix of who owns what, dependencies
 - **[Cost Engine](domain/cost-engine)** — How real costs are calculated (Via A: materials, Via B: labor, Via C: equipment)
 - **[ACU (Unit Cost Analysis)](domain/acu)** — How each budget item is decomposed technically and economically
 - **[Budgets](domain/budgets)** — Budget structure, imports, movements, budget vs actual
@@ -173,16 +173,18 @@ By the end, you will understand:
    ERP: "Paying $7,220 neto (after retentions of $380)"
 ```
 
-### The 28 Modules
+### Las 18 capacidades de negocio
 
-**ERP (8 modules)**:
-Compras, Catalogs, Órdenes, Facturas, Pagos, Tesorería, Caja chica, Dashboard, Contabilidad
+**ERP (siete capacidades)**:
+Catálogos, Órdenes de compra, Facturas, Pagos, Caja chica, Finanzas, Dashboard.
 
-**ECMS (11 modules)**:
-Presupuesto, ACU, Solicitudes de Materiales, Centro de costos, Partes de máquina, Precios MO, Certificaciones, Subcontratos, Stock, RRHH
+**ECMS (11 capacidades)**:
+Presupuesto, ACU, Solicitudes de materiales, Control de costos, Partes,
+Precios de mano de obra, Certificaciones, Subcontratos, Stock, RRHH, Archivos adjuntos.
 
-**Transversales (9 modules)**:
-Auth, Uploads, Reports, etc.
+La autenticación es infraestructura incluida.
+La selección del CLI configura manifiestos y carpetas por obra.
+Los procesos operativos del ERP y ECMS corresponden a entregas posteriores.
 
 ---
 

@@ -123,12 +123,12 @@ Total a Cobrar = $50.000 + $5.000 - $2.500 = $52.500
 ```
 Monto = Σ(Medición Oficial × Precio Unitario del Subcontratista)
 Menos: Retenciones aplicables
-  - Fondos activos del proyecto cuya aplica_a incluye la modalidad del contrato
+  - Fondos activos de la obra cuya aplica_a incluye la modalidad del contrato
   - Cada fondo se calcula sobre su base, según su porcentaje
 Monto Neto a Pagar = Monto - Retenciones
 ```
 
-Ejemplos (la configuración del proyecto decide qué fondos aplican):
+Ejemplos (la configuración de la obra decide qué fondos aplican):
 ```
 Contrato PRODUCCION, medición 50 m² de excavación
 Precio Subcontratista: $30/m²
@@ -194,8 +194,8 @@ Configurables por obra:
 | IVA | Impuesto de valor agregado | 10% | Nosotros al cliente (agregamos) |
 | Retención Laboral | Adelanto de impuestos | 2-8% | Nosotros al subcontratista |
 
-Configuración por proyecto:
-- `ConfigRetencionesAnticipos`: lista de fondos del proyecto. Cada fondo tiene:
+Configuración por obra:
+- `ConfigRetencionesAnticipos`: lista de fondos de la obra. Cada fondo tiene:
   - `nombre`: por ejemplo Garantía, Fondo de Reparo, Retención Laboral
   - `porcentaje`: el porcentaje a retener
   - `base`: sobre qué monto se calcula (bruto del certificado)
@@ -204,7 +204,7 @@ Configuración por proyecto:
 - Cada `SubcontractorContract` tiene una modalidad: `PRODUCCION` (pago por cantidad ejecutada) o `JORNAL` (pago por jornales trabajados).
 - Un fondo se aplica al certificado solo si está activo y su `aplica_a` incluye la modalidad del contrato.
 - Sin fondos activos para la modalidad, el certificado no tiene retenciones. Un contrato por jornal sin fondo configurado para `JORNAL` no tiene retención.
-- Los fondos se configuran por proyecto; no hay porcentajes fijos del sistema.
+- Los fondos se configuran por obra; no hay porcentajes fijos del sistema.
 - Se aplica automáticamente al emitir certificado.
 
 ## Reportes desde Certificación
