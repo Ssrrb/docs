@@ -40,6 +40,45 @@ Los procesos operativos que se describen abajo corresponden a entregas posterior
 La carpeta `archivos-compartidos/` se crea vacía de contenidos externos.
 Su contenido permanece local en este sprint.
 
+## Recorrido guiado de create-ctrl
+
+El CLI ofrece un recorrido guiado para crear un workspace con su primera obra (work site).
+El recorrido sigue estos pasos:
+
+1. El usuario elige el tipo de proyecto Obra.
+2. El usuario elige el preset Recomendada o la opción Personalizar.
+3. La opción Personalizar abre el selector por niveles.
+4. El usuario completa los datos del workspace y de la primera obra.
+5. El CLI inicia el login con el helper de Ctrl+.
+6. El usuario elige la organización mediante Clerk.
+7. El portal de Clerk permite crear la organización cuando la organización falta.
+8. Un administrador completa el perfil empresarial si el perfil falta.
+9. El CLI muestra el resumen de la selección.
+10. El CLI crea el workspace y materializa la carpeta local.
+11. El CLI verifica la carpeta.
+12. El usuario invita miembros o posterga la invitación.
+
+### Selector por niveles
+
+El selector responde a las teclas ↑ y ↓, a Espacio y a Enter.
+El CLI incorpora la librería prompts al bundle.
+El CLI restaura la terminal al terminar.
+El CLI restaura el cursor al terminar.
+
+### Opción --manage-org
+
+La combinación `--manage-org --org <id>` vuelve al portal de la organización.
+Con `--json`, el CLI devuelve la organización y la URL.
+Con `--json`, el CLI no hace preguntas.
+Con `--json`, el CLI no abre el navegador.
+
+### Helper de autenticación
+
+El CLI busca el helper empaquetado de Ctrl+.
+La búsqueda conserva la opción `--auth-cli`.
+La búsqueda conserva las variables de entorno.
+La búsqueda conserva la ruta manual.
+
 ## Los dos motores
 
 ### ERP (Dinero y Documentos)
