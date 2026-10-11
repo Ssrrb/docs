@@ -21,7 +21,7 @@ Se ha documentado **completamente la arquitectura integrada de Obra Studio**, se
 - Principios de separación de responsabilidades
 - Ciclo de vida de una obra
 
-**Status**: Approved ✓
+**Status**: Draft (actualizado para create-ctrl)
 
 ---
 
@@ -34,7 +34,7 @@ Se ha documentado **completamente la arquitectura integrada de Obra Studio**, se
 - Puntos de extensión del core
 - Flujo de datos completo (ejemplo factura)
 
-**Status**: Approved ✓
+**Status**: Draft (actualizado para create-ctrl)
 
 **[erp-ecms-bridge.mdx](../system/erp-ecms-bridge.mdx)**
 - **Flujo 1**: Presupuesto → OC (con partida ECMS)
@@ -52,15 +52,15 @@ Se ha documentado **completamente la arquitectura integrada de Obra Studio**, se
 ### Domain (Entidades y lógica)
 
 **[module-hierarchy.mdx](../domain/module-hierarchy.mdx)**
-- Jerarquía completa de 28 módulos
-- ERP: 9 módulos (compras, finanzas, pagos)
-- ECMS: 10 módulos (presupuesto, costos, partes de máquina, certificaciones)
+- Jerarquía completa de 18 capacidades de negocio
+- ERP: siete capacidades (compras, finanzas, pagos)
+- ECMS: 11 capacidades (presupuesto, costos, partes de máquina, certificaciones)
 - Matriz de responsabilidad (quién posee cada entidad)
 - 4 flujos cross-module clave
 - Dependencias entre módulos
 - Matrices de acceso por rol
 
-**Status**: Approved ✓
+**Status**: Draft (actualizado para create-ctrl)
 
 **[cost-engine.mdx](../domain/cost-engine.mdx)**
 - Visión general del motor de costos
@@ -159,7 +159,7 @@ Según plan arquitectónico, quedan para próximas semanas:
 
 1. `docs/foundations/erp-ecms-architecture.mdx` — Entender la separación
 2. `docs/system/architecture-overview.mdx` — Ver las capas
-3. `docs/domain/module-hierarchy.mdx` — Conocer los 28 módulos
+3. `docs/domain/module-hierarchy.mdx` — Conocer los 18 capacidades de negocio
 4. `docs/system/erp-ecms-bridge.mdx` — Ver cómo se comunican
 5. Pick one module y leer su documentación en domain/
 
@@ -229,7 +229,7 @@ Domain
 | Aspecto | Status | Notas |
 |---|---|---|
 | **Definición ERP vs ECMS** | ✓ 100% | Claro en foundations + system |
-| **Jerarquía de módulos** | ✓ 100% | 28 módulos documentados + matriz |
+| **Jerarquía de módulos** | ✓ 100% | 18 capacidades de negocio documentadas + matriz |
 | **Flujos de dinero** | ✓ 100% | 4 flujos clave en sistema |
 | **Motor de costos** | ✓ 80% | 3 vías definidas; detalles pendientes |
 | **Certificaciones** | ✓ 90% | Ambos tipos; workflow UI pendiente |
@@ -269,11 +269,11 @@ Domain
 
 ## Criterios de éxito cumplidos
 
-✓ **Jerarquía clara**: Module-hierarchy explica los 28 módulos y dueños
+✓ **Jerarquía clara**: Module-hierarchy explica los 18 capacidades de negocio y dueños
 ✓ **Flujos visibles**: ERP-ECMS-bridge muestra 4 flujos con ejemplos paso a paso
 ✓ **Certificaciones documentadas**: Certification.mdx + bridge flujos 3-4
 ✓ **Cálculos transparentes**: Cost-engine y ACU explican derivaciones
-✓ **Conexiones explícitas**: Cada doc tiene <<vinculaciones>> a otros
+✓ **Conexiones explícitas**: Cada doc tiene `vinculaciones` a otros
 ✓ **Sin nombres empresa**: Solo lógica genérica, aplicable a cualquier obra Paraguay
 
 ---

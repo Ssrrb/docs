@@ -206,7 +206,7 @@ Tesorería (registra) → Cash flow actualizado
 
 **Validaciones:**
 - No permitir facturar más de lo medido
-- IVA debe estar configurado en proyecto
+- IVA debe estar configurado en la obra
 - Fondo de reparo debe estar configurado
 - Retenciones solo si aplica por contrato
 
@@ -236,7 +236,7 @@ Tesorería (registra) → Cash flow actualizado
    │  ├─ Cantidad: 380 m³
    │  ├─ Precio unitario: $20/m³
    │  ├─ Monto bruto: 380 × $20 = $7.600
-   │  ├─ Fondos activos del proyecto para PRODUCCION:
+   │  ├─ Fondos activos de la obra para PRODUCCION:
    │  │  └─ Garantía (5% sobre bruto): -$380
    │  └─ Monto neto: $7.220
    └─ Status: Draft
@@ -302,8 +302,8 @@ Contabilidad registra
 **Validaciones:**
 - Certificado no puede exceder techo del contrato
 - Payment no puede exceder certificado
-- Retenciones se toman de la configuración del proyecto, según la modalidad del contrato (PRODUCCION o JORNAL)
-- Un contrato JORNAL no recibe retención si el proyecto no tiene un fondo activo para JORNAL
+- Retenciones se toman de la configuración de la obra, según la modalidad del contrato (PRODUCCION o JORNAL)
+- Un contrato JORNAL no recibe retención si la obra no tiene un fondo activo para JORNAL
 - Subcontratista debe estar vigente
 
 ---
@@ -353,7 +353,7 @@ BudgetItem.committed_amount ≤ BudgetItem.amount + Tolerancia(%)
 Lógica:
 - Alerta si committed supera presupuesto
 - Permite overcommitment (seguimiento manual)
-- Admin puede configurar tolerancia por proyecto
+- Admin puede configurar tolerancia por obra
 ```
 
 ## Resincronización

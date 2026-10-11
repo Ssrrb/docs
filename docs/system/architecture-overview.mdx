@@ -1,6 +1,6 @@
 # Visión general de la arquitectura
 
-*System · approved*
+*System · draft*
 
 ## Estructura en capas
 
@@ -10,20 +10,35 @@ Obra Studio se organiza en **tres capas funcionales**:
 ┌─────────────────────────────────────────────────────┐
 │  CAPA 3: APLICACIÓN                                 │
 │  ├─ Frontend React (UI)                              │
-│  └─ Backend Express (API)                            │
+│  └─ Cloudflare Worker (API)                            │
 ├─────────────────────────────────────────────────────┤
 │  CAPA 2: MOTORES                                     │
 │  ├─ ERP (Enterprise Resource Planning)              │
 │  │  └─ Compras, Finanzas, Documentos legales        │
-│  └─ ECMS (Engineering Cost Management System)       │
+│  └─ ECMS (Engineering Control Management System)       │
 │     └─ Presupuesto, Costos, Mediciones, Certificaciones │
 ├─────────────────────────────────────────────────────┤
 │  CAPA 1: PERSISTENCIA                                │
-│  ├─ Base de datos (Prisma + PostgreSQL)             │
+│  ├─ Base de datos (Drizzle + Neon PostgreSQL)             │
 │  ├─ Almacenamiento de archivos (local, cloud)       │
 │  └─ Historial de eventos                            │
 └─────────────────────────────────────────────────────┘
 ```
+
+## Identidad y alcance de la entrega
+
+La organización de Clerk se vincula con `companies.clerk_org_id`.
+El workspace o proyecto agrupa obras mediante `workspaces`.
+Cada fila existente de `projects` representa una obra (work site).
+Una obra antigua puede conservar `workspace_id = NULL`.
+
+`create-ctrl` registra la configuración central y materializa carpetas locales.
+Los miembros vigentes de la organización comparten los mismos identificadores.
+La réplica consulta esa configuración y no crea otra obra.
+El catálogo estructural entrega manifiestos y carpetas por capacidad.
+Los procesos operativos que se describen abajo corresponden a entregas posteriores.
+La carpeta `archivos-compartidos/` se crea vacía de contenidos externos.
+Su contenido permanece local en este sprint.
 
 ## Los dos motores
 
@@ -180,7 +195,7 @@ Core Obra Studio
 Cada extensión:
 - Respeta la API del core
 - No modifica tablas existentes (extend solo)
-- Se activa/desactiva por proyecto
+- Se configura por obra
 - Tiene su propio módulo en `/src/modules/`
 
 ## Flujo de datos completo
@@ -201,8 +216,8 @@ Ejemplo: Factura al cliente
 
 ## Tecnología
 
-- **Backend**: Node.js + Express + TypeScript
-- **Persistencia**: Prisma ORM + PostgreSQL
+- **Backend**: Cloudflare Workers + TypeScript
+- **Persistencia**: Drizzle ORM + Neon PostgreSQL
 - **Frontend**: React 18 + TypeScript + Vite
 - **Cálculos**: Motor puro (sin dependencias externas, facilita testing)
 - **Almacenamiento**: Filesystem o cloud compatible S3
