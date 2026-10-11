@@ -1,0 +1,116 @@
+# Alcance de la configuración de módulos
+
+*Decisions · draft*
+
+## Propósito
+
+Esta propuesta distingue el motor responsable de un módulo, su configuración y el alcance de sus registros. La propuesta responde a las preguntas sobre configuración empresarial, niveles del mapa y conservación de módulos.
+
+La ubicación de un módulo en ERP o ECMS no determina por sí sola el alcance de todos sus parámetros. Esta propuesta describe el alcance de negocio. La propuesta conserva el contrato de carpetas del sprint actual.
+
+## Contexto de la lectura
+
+Los documentos actuales de fundamentos, arquitectura, jerarquía y sprint tienen estado `draft`. La lectura sirve para formular esta propuesta. No constituye una aprobación del autor.
+
+La separación entre ERP y ECMS distingue la responsabilidad financiera de la responsabilidad técnica. El catálogo estructural selecciona capacidades por obra. La configuración operativa corresponde a entregas posteriores.
+
+La carpeta de una capacidad bajo una obra no exige duplicar los datos empresariales que utiliza. Esta propuesta no define cuántos fondos tiene una empresa existente. Propone admitir los fondos que su operación necesite.
+
+## Distinciones propuestas
+
+| Concepto | Pregunta que responde | Ejemplo |
+|---|---|---|
+| Motor responsable | ¿Quién registra este hecho? | ERP registra un pago. |
+| Configuración empresarial | ¿Qué comparte la empresa? | Catálogo de proveedores. |
+| Configuración de obra | ¿Qué cambia en esta ejecución? | Presupuesto y tolerancia de desvíos. |
+| Configuración de una entidad | ¿Qué necesita este fondo o contrato? | Responsable de un fondo de caja chica. |
+| Imputación | ¿A qué destino corresponde este importe? | Compra distribuida entre dos obras. |
+| Habilitación | ¿Qué capacidad utiliza este proyecto? | Gestión de almacén habilitada. |
+
+La expresión «global de la obra» significa que un parámetro aplica a sus ítems. No significa que el parámetro aplique a todas las obras de la empresa.
+
+## Distribución propuesta
+
+| Área | Alcance empresarial | Alcance de obra o entidad |
+|---|---|---|
+| Catálogos | Materiales, unidades, proveedores y categorías | Selección de recursos y precios aplicables a la obra |
+| Presupuesto y ACU (unit cost analysis) | Biblioteca de análisis reutilizables | Presupuesto, cantidades, copias del ACU, rendimientos y gastos indirectos |
+| Mano de obra | Categorías y referencias de precios | Precios aplicables a cada obra |
+| Solicitudes y compras | Gestión de proveedores y política de aprobación | Solicitud de la obra; destino de cada línea de compra |
+| Almacén | Identidad de los materiales y de los almacenes | Existencias y movimientos por almacén; destino de los consumos |
+| RRHH | Identidad del empleado y relación laboral | Asignaciones y asistencia por obra |
+| Equipos | Identidad de las máquinas | Asignaciones, tarifas aplicables y partes de máquina |
+| Subcontratos y certificados | Identidad comercial del subcontratista | Alcance, modalidad, precios, límites, períodos y mediciones del contrato |
+| Facturas, pagos y Finanzas | Cuentas, documentos y movimientos del ERP | Vínculos con obras, contratos y certificados; distribución de importes |
+| Caja chica | Política y administración de fondos | Saldo, responsable, límites y movimientos de cada fondo |
+| Adjuntos | Almacenamiento compartido | Vínculo y permisos del documento de negocio |
+| Tableros | Consolidado empresarial | Vistas por proyecto y obra |
+
+La selección del tratamiento tributario respeta la normativa aplicable. Esta propuesta no fija tasas tributarias ni porcentajes de cargas laborales.
+
+## Caja chica
+
+Se propone un módulo empresarial que administra varios fondos independientes. Un fondo puede atender la oficina, una obra o un proyecto con varias obras. No se exige crear un fondo por obra.
+
+Cada fondo identifica su responsable, moneda, ubicación, importe autorizado, saldo y límites de uso. Cada fondo conserva sus movimientos, rendiciones y reposiciones.
+
+El destino del gasto se identifica por separado del fondo que lo paga. Un gasto corresponde a una obra o a un centro administrativo. Si atiende varias obras, registra una distribución explícita.
+
+### Ejemplo
+
+La oficina y la obra A tienen fondos distintos. El fondo de la oficina paga una compra de la obra A. El saldo disminuye en el fondo de la oficina. La compra se imputa a la obra A.
+
+### Reposición
+
+Una entrega de dinero del banco al fondo repone su efectivo. No genera un segundo gasto de obra. El registro del comprobante y el movimiento de caja conservan un vínculo para evitar duplicar el importe.
+
+La compra de un material no demuestra que el material se consumió. El control distingue compra, ingreso al almacén y consumo cuando la obra utiliza almacén.
+
+## Respuestas propuestas
+
+### Una configuración empresarial del ERP
+
+Se propone seleccionar «Todo el ERP» con una nota de alcance. La configuración compartida existe a nivel empresa. Los fondos, contratos, cuentas y documentos tienen sus propios registros. Las obras conservan los parámetros que les corresponden.
+
+El selector estructural del sprint actual registra capacidades por obra. Esta propuesta distingue esa selección de la configuración operativa de las cuentas, los fondos y los documentos empresariales. La selección no implica crear una contabilidad independiente por obra.
+
+### Niveles y dependencias
+
+Se propone seleccionar «Ordenar por niveles». El mapa organiza la presentación. La revisión del alcance de configuración no sustituye por sí misma el grafo del catálogo estructural.
+
+Se propone conservar las dependencias estructurales confirmadas para el selector. Las integraciones operativas se distinguen de esas dependencias. Por ejemplo, seleccionar Facturas no obliga a seleccionar Partes de máquina. Cuando se utiliza el flujo de certificación de un subcontratista, el certificado conserva su vínculo con el contrato correspondiente.
+
+La selección estructural puede conservar Partes deshabilitado. La operación posterior define cómo representa el costo de equipos sin esos registros. Un dato faltante no equivale a costo cero. La interfaz identifica el componente sin datos o la estimación utilizada.
+
+### Conservación de módulos
+
+Se propone seleccionar «Conservar los tres».
+
+- Caja chica permanece en ERP y administra sus fondos.
+- Solicitudes de materiales permanece en ECMS y vincula la necesidad de obra con la compra.
+- Adjuntos de obra conserva su ubicación en ECMS. El almacenamiento compartido puede servir también a documentos ERP, con los permisos del documento correspondiente.
+
+Conservar un módulo en el producto no exige habilitarlo en todas las obras. La propuesta distingue una selección recomendada de una activación obligatoria. La propuesta conserva la posibilidad de una selección estructural vacía.
+
+## Alternativas descartadas en la propuesta
+
+- Duplicar el ERP completo por obra: duplica catálogos y dificulta la consolidación empresarial.
+- Imponer una única caja chica: impide separar responsables y saldos de fondos distintos.
+- Imponer una caja chica por obra: crea fondos innecesarios cuando existe una administración compartida.
+- Tomar las flechas del mapa como nuevas dependencias obligatorias: confunde presentación con requisitos.
+- Eliminar módulos porque no aparecen en una imagen: elimina capacidades documentadas sin una decisión de alcance.
+
+## Definiciones pendientes
+
+- La relación entre selección estructural por obra y configuración operativa empresarial.
+- La operación de Control de costos cuando no se utiliza Partes.
+- Los valores empresariales que una obra hereda y los parámetros que un contrato puede ajustar.
+
+El proyecto o workspace agrupa obras. La obra es la unidad de ejecución. La propuesta conserva esa distinción al asignar presupuesto, mediciones y costos.
+
+## Referencias externas
+
+Estas referencias ilustran patrones de ERP. No constituyen requisitos de Obra Studio.
+
+- [SAP: Cash Journal](https://help.sap.com/docs/sap_s4hana_on-premise/651d8af3ea974ad1a4d74449122c620e/c17cc2531bb9b44ce10000000a174cb4.html): admite varios registros de caja dentro de una empresa.
+- [Odoo: Analytic accounting](https://www.odoo.com/documentation/17.0/applications/finance/accounting/others/analytic/purchase_expenses.html): permite distribuir importes entre cuentas analíticas para analizar proyectos o departamentos.
