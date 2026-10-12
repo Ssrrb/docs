@@ -8,7 +8,9 @@ El contexto de los dos motores está en `docs/foundations/erp-ecms-architecture.
 
 ## Objetivo
 
-El usuario ejecuta el CLI con `npx create-ctrl`. El CLI crea un workspace con su primera obra (work site). El CLI también vincula una carpeta local a un workspace existente.
+El usuario ejecuta el CLI desde la terminal integrada de Ctrl+. La distribución objetivo incluye el CLI con la aplicación y no requiere descargarlo del registro npm. El CLI crea un workspace con su primera obra (work site). El CLI también vincula una carpeta local a un workspace existente.
+
+El autor cancela la publicación pública y privada en npm. La integración del ejecutable en la distribución de Ctrl+ permanece pendiente; la ronda actual utiliza el bundle local.
 
 Los miembros de una organización de Clerk comparten la identidad. Los miembros comparten la configuración central. Cada miembro materializa la estructura en su computadora. La materialización usa los mismos identificadores. La réplica no crea otro proyecto.
 
@@ -40,12 +42,13 @@ Dentro del alcance:
 - El reconocimiento de nuevos miembros tras la aceptación de una invitación en Clerk.
 - La resolución del vínculo pendiente con `companies`.
 - La recuperación local y la idempotencia.
-- La prueba del paquete npm desde su tarball (archivo de paquete).
+- La prueba del artefacto interno desde su tarball (archivo de paquete).
 
 Fuera del alcance:
 
 - Las invitaciones. Las invitaciones permanecen en Clerk.
 - La interfaz nativa de Ctrl+. Otro sprint la entrega.
+- La publicación del CLI en un registro npm público o privado.
 - Los procesos operativos del ERP y del ECMS.
 - La sincronización del contenido de `archivos-compartidos`. El CLI crea la carpeta. El contenido permanece local.
 
@@ -262,15 +265,15 @@ El despliegue sigue este orden:
 1. Aplicar las migraciones y las políticas RLS en la base de datos de desarrollo.
 2. Ejecutar la API y el CLI contra esa base de datos.
 3. Desplegar el preview del Worker.
-4. Construir y probar el tarball del paquete npm.
+4. Construir y probar el artefacto interno del CLI.
 5. Reunir las evidencias y hacer la revisión.
-6. Publicar el release.
+6. Distribuir el CLI con el release de Ctrl+ cuando su integración esté verificada.
 
 Reglas del despliegue:
 
 - El Worker no recibe las credenciales de migración.
 - El CLI no recibe las credenciales de migración.
-- El paquete público no contiene secretos.
+- El artefacto distribuido no contiene secretos.
 
 ## Documentos alineados con el sprint
 
@@ -294,6 +297,245 @@ La recuperación conserva archivos ajenos y rechaza rutas generadas incompatible
 El asistente interactivo permite crear o vincular después de elegir organización.
 
 El Worker preview utiliza una instancia separada y una base de desarrollo.
-La producción y la publicación npm permanecen como pasos del release.
+La distribución del CLI con Ctrl+ permanece como paso del release. La publicación npm queda cancelada por decisión del autor.
 La evidencia debe identificar el commit verificado y las comprobaciones pendientes.
 Un fallo de facturación de GitHub Actions no equivale a una prueba aprobada.
+
+## Verificación manual del administrador y del miembro en producción
+
+Esta ronda verifica el PR `Ssrrb/ctrl-mas#14`, commit `c3c50fccbdb671745111a84f7a45213646e150c0`.
+La prueba utiliza dos cuentas en el mismo Mac.
+La organización anfitriona es `Sebas's Organization`, identificador `org_3KWSArrkx0yNy1x2ywExfkJs7TZ`.
+El administrador es `sebarojasb20@gmail.com`.
+El miembro es `sirsebastianrojas@gmail.com`.
+El autor confirma que el miembro ya aceptó la invitación.
+Esta ronda verifica su reconocimiento y su réplica; no repite la aceptación ni cambia membresías.
+
+### Cómo accede el miembro
+
+El miembro inicia sesión con su propia cuenta.
+La API consulta sus membresías vigentes en Clerk en cada solicitud autenticada.
+La API reconcilia `company_members` y resuelve la empresa mediante `companies.clerk_org_id`.
+El Worker consulta Neon con el rol `obra_api` y el contexto del usuario.
+Las políticas RLS aíslan los datos de cada empresa.
+La conexión a PostgreSQL pertenece al Worker; el miembro no recibe sus credenciales.
+Esta entrega utiliza la base del servicio con aislamiento por empresa; no provisiona una base separada para cada organización.
+
+La aceptación no crea una carpeta en la computadora del miembro.
+El miembro ejecuta `--workspace <id> --org <id>` para descargar el snapshot canónico.
+El CLI genera la misma estructura y los mismos identificadores en una carpeta nueva.
+La vinculación no crea otro workspace ni otra obra.
+La vinculación puede reconciliar las filas de identidad y membresía.
+La réplica no transfiere el contenido local de `archivos-compartidos/` ni mantiene sincronización continua.
+La revocación impide futuras consultas; no elimina los archivos ya descargados.
+
+### Preparación y conexión
+
+Ejecutar un bloque por vez en una terminal dedicada.
+Si un comando falla, conservar su salida y detener el siguiente paso.
+Las creaciones QA permanecen en producción.
+La prueba no utiliza los scripts antiguos que borran directorios temporales.
+
+El entorno local de esta ronda se guarda, sin credenciales, en `.research/stage2/manual-e2e.env`.
+La carpeta QA nueva es `/tmp/ctrl-e2e.bmPFRj`.
+El autor creó el workspace `sebas-obra` en `/Users/sebastian/Desktop/obra-studio/sebas-obra` y el perfil `sebas-enterprise`.
+`CTRL_QA_ADMIN` conserva esa ruta real; la carpeta no se mueve ni se elimina.
+La creación Recomendada ya terminó: continuar desde la réplica, sin repetir la creación.
+Si se pierde esa carpeta tras un reinicio, preparar otra ronda; no borrar ni reutilizar un destino ocupado.
+
+```bash
+source /Users/sebastian/Desktop/obra-studio/.research/stage2/manual-e2e.env
+"$CTRL_QA_NODE" "$CTRL_QA_CLI" --version
+"$CTRL_QA_HELPER" obra-auth session
+```
+
+La versión esperada es `0.1.0`.
+El helper sin `--json` muestra la cuenta y los scopes, sin mostrar el token.
+El helper con `--json` contiene un token: no copiar esa salida al reporte.
+La salida `--json` de `create-ctrl` no contiene credenciales.
+
+Comprobar HTTPS antes de cerrar una sesión existente:
+
+```bash
+"$CTRL_QA_NODE" -e '
+Promise.all([
+  "https://clerk.ctrlmas.tech/.well-known/openid-configuration",
+  process.env.CTRL_API_URL + "/healthz"
+].map(async url => {
+  const response = await fetch(url, { signal: AbortSignal.timeout(10000) });
+  if (!response.ok) throw new Error("HTTP " + response.status + " en " + url);
+  const data = await response.json();
+  if (url.endsWith("/healthz") && data.ok !== true) throw new Error("API sin healthz válido");
+  if (url.endsWith("/openid-configuration") && data.issuer !== "https://clerk.ctrlmas.tech") throw new Error("Issuer inesperado");
+  console.log(JSON.stringify({ url, status: response.status, issuer: data.issuer, ok: data.ok }));
+})).catch(error => { console.error(error.message); process.exitCode = 1; });
+'
+```
+
+La comprobación debe devolver HTTP 200 en ambos endpoints, el issuer esperado y `ok: true` para la API.
+En la red original, la inspección HTTPS de Fortinet presentó una cadena que los clientes locales rechazaron.
+La conexión desde el hotspot resolvió el fallo sin desactivar TLS ni cambiar certificados del sistema.
+Un fallo de confianza TLS no demuestra que Clerk o la API estén caídos.
+
+### Creación como administrador
+
+Si la sesión pertenece a otra cuenta, ejecutar logout después de comprobar HTTPS.
+El cambio de cuenta también afecta la sesión local que usa Ctrl+.
+
+```bash
+"$CTRL_QA_HELPER" obra-auth logout
+"$CTRL_QA_HELPER" obra-auth login --no-browser
+```
+
+Si la sesión ya está cerrada, ejecutar solamente el login.
+Abrir la URL de login en una ventana privada y usar `sebarojasb20@gmail.com`.
+No guardar esa URL en el reporte.
+Después del login, comprobar la organización:
+
+```bash
+"$CTRL_QA_NODE" "$CTRL_QA_CLI" --json --manage-org --org "$CTRL_QA_ORG" \
+  > "$CTRL_QA_ROOT/admin-org.json"
+printf 'exit=%s\n' "$?"
+cat "$CTRL_QA_ROOT/admin-org.json"
+```
+
+La respuesta debe contener `ok: true`, la organización anfitriona y `role: "org:admin"`.
+No continuar si la cuenta, la organización o el rol no coinciden.
+La URL de gestión devuelta apunta al Dashboard de desarrolladores de Clerk; este es un fallo conocido del PR, no una verificación aprobada del portal de usuarios.
+
+```bash
+printf 'Carpeta del administrador: %s\n' "$CTRL_QA_ADMIN"
+"$CTRL_QA_NODE" "$CTRL_QA_CLI" --org "$CTRL_QA_ORG"
+printf 'exit=%s\n' "$?"
+```
+
+El autor eligió Obra, Recomendada y el nombre `sebas-obra`.
+El autor utilizó `./sebas-obra` como destino y como nombre de la primera obra.
+Completar los datos de la primera obra.
+Si falta el perfil empresarial, el administrador lo completa en el asistente.
+Revisar el resumen antes de confirmar la creación.
+El autor eligió Invitar miembros; la CLI informó que abrió el Dashboard de desarrolladores de Clerk.
+La salida esperada es cero y la verificación local debe terminar con éxito.
+
+Comprobar el manifiesto y conservar el identificador:
+
+```bash
+"$CTRL_QA_NODE" -e '
+const fs = require("node:fs"), assert = require("node:assert/strict");
+const workspace = JSON.parse(fs.readFileSync(process.env.CTRL_QA_ADMIN + "/.ctrl/workspace.json", "utf8"));
+assert.equal(workspace.clerkOrgId, process.env.CTRL_QA_ORG);
+assert.equal(workspace.obras.length, 1);
+const obra = JSON.parse(fs.readFileSync(process.env.CTRL_QA_ADMIN + "/" + workspace.obras[0].path + "/.ctrl/obra.json", "utf8"));
+assert.equal(obra.workspaceId, workspace.workspaceId);
+assert.equal(obra.companyId, workspace.companyId);
+assert.equal(obra.modules.explicit.length, 17);
+assert(obra.modules.explicit.includes("ecms.budgets"));
+assert(!obra.modules.effective.some(module => module.code === "ecms.partes"));
+console.log(JSON.stringify({ workspaceId: workspace.workspaceId, companyId: workspace.companyId, obraId: obra.obraId, explicitCount: obra.modules.explicit.length }, null, 2));
+' &&
+export CTRL_QA_WS="$("$CTRL_QA_NODE" -p 'require(process.argv[1]).workspaceId' "$CTRL_QA_ADMIN/.ctrl/workspace.json")"
+```
+
+### Réplica como miembro
+
+Después de verificar la creación, cerrar la sesión del administrador e iniciar sesión en una ventana privada como `sirsebastianrojas@gmail.com`.
+
+```bash
+"$CTRL_QA_HELPER" obra-auth logout
+"$CTRL_QA_HELPER" obra-auth login --no-browser
+"$CTRL_QA_NODE" "$CTRL_QA_CLI" --json --manage-org --org "$CTRL_QA_ORG" \
+  > "$CTRL_QA_ROOT/member-org.json"
+printf 'exit=%s\n' "$?"
+cat "$CTRL_QA_ROOT/member-org.json"
+```
+
+La organización debe conservar el mismo identificador y devolver `role: "org:member"`.
+Si la terminal se cerró, cargar el entorno y recuperar `CTRL_QA_WS` desde el manifiesto del administrador.
+
+```bash
+"$CTRL_QA_NODE" "$CTRL_QA_CLI" --json --yes \
+  --org "$CTRL_QA_ORG" --workspace "$CTRL_QA_WS" \
+  "$CTRL_QA_ROOT/member" > "$CTRL_QA_ROOT/member-result.json"
+printf 'exit=%s\n' "$?"
+cat "$CTRL_QA_ROOT/member-result.json"
+```
+
+La salida esperada es cero, con `ok: true` y `mode: "link"`.
+Comparar los identificadores y el árbol generado:
+
+```bash
+"$CTRL_QA_NODE" -e '
+const fs = require("node:fs"), assert = require("node:assert/strict");
+const root = process.env.CTRL_QA_ROOT;
+const admin = JSON.parse(fs.readFileSync(process.env.CTRL_QA_ADMIN + "/.ctrl/workspace.json", "utf8"));
+const member = JSON.parse(fs.readFileSync(root + "/member-result.json", "utf8"));
+assert.equal(member.ok, true);
+assert.equal(member.mode, "link");
+assert.equal(member.workspace.id, admin.workspaceId);
+assert.equal(member.clerkOrgId, admin.clerkOrgId);
+assert.deepEqual(member.obras.map(obra => obra.id), admin.obras.map(obra => obra.id));
+console.log("Identificadores de la réplica: OK");
+' &&
+diff -r -x journal.json "$CTRL_QA_ADMIN" "$CTRL_QA_ROOT/member"
+printf 'exit=%s\n' "$?"
+```
+
+El diff debe terminar sin diferencias y con salida cero.
+Las carpetas comparadas deben contener solamente la estructura recién generada.
+El journal es específico de cada operación y no se compara.
+Los manifiestos de workspace y obra sí deben ser idénticos.
+
+### Casos adicionales y cierre
+
+| Caso | Acción | Resultado esperado |
+|---|---|---|
+| Personalizar | Volver al administrador; crear `QA E2E Personalizada` en `$CTRL_QA_ROOT/personalizada` con Control de costos y sin Partes | Presupuestos y Control de costos explícitos; ACU y Catálogos incorporados; cuatro capacidades efectivas |
+| Cancelación | Iniciar otro asistente y presionar Ctrl+C en la primera pregunta | Salida 130, terminal utilizable, sin una creación central |
+| Destino ocupado | Repetir el comando de vinculación sobre `$CTRL_QA_ROOT/member` | Salida uno, rechazo explícito; repetir el diff y comprobar que los archivos se conservaron |
+| Portal | Inspeccionar la URL de `--manage-org --json` | Registrar el enlace al Dashboard como fallo conocido; no marcar aprobado el portal para usuarios finales |
+| Cierre | Volver a iniciar sesión como administrador y comprobar su cuenta | Cuenta del administrador activa; carpetas QA conservadas para inspección |
+
+No eliminar filas productivas ni revocar al miembro durante esta ronda.
+No publicar npm, desplegar, fusionar ni enviar comentarios externos.
+El borrador de comentario se guarda en `.research/stage2/pr-comment-manual-e2e-draft.md`.
+El borrador distingue resultados locales, resultados manuales y pasos pendientes.
+
+### Evidencia de esta ronda
+
+| Comprobación | Estado | Evidencia |
+|---|---|---|
+| Versión de la CLI | Verificado | El autor ejecutó el bundle local y obtuvo `0.1.0` |
+| Sesión inicial | Verificado | El autor obtuvo `Signed in as sirsebastianrojas@gmail.com` y los scopes esperados |
+| Cambio inicial de cuenta | Interrumpido por TLS | Logout eliminó la sesión local; la revocación remota no pudo confirmarse; login falló durante discovery |
+| Conexión desde hotspot | Verificado | Discovery HTTP 200 con issuer esperado; healthz HTTP 200 con `ok: true`; TLS activo |
+| Integración multiusuario local | Verificado | Cuatro pruebas aprobadas con PGlite y Clerk simulado sobre el commit indicado |
+| Organización y rol del administrador | Verificado | El autor obtuvo `ok: true`, el identificador esperado, `Sebas's Organization` y `org:admin` desde producción |
+| Creación Recomendada y perfil empresarial | Verificado | Autor: exit cero; workspace `sebas-obra`, empresa `sebas-enterprise`; manifiestos verificados localmente, 17 módulos explícitos y efectivos, sin Partes; journal `done` |
+| Reconocimiento del miembro | Verificado | Login de `sirsebastianrojas@gmail.com`; API devuelve la misma organización con `org:member`; lista un workspace con una obra antes de vincular |
+| Réplica del miembro | Verificado | CLI real: `ok: true`, `mode: link`; 22 archivos y 24 directorios idénticos, salvo el journal; mismos IDs de empresa, workspace y obra |
+| Vincular sin duplicar dominio | Verificado | API productiva antes y después: un workspace y una obra, misma lista de identificadores |
+| Cancelación | Verificado manual | Autor: Ctrl+C en la primera pregunta, error `cancelled`, salida 130; teclado y cursor normales |
+| Destino ocupado | Verificado manual y local | Autor: salida uno y error `incompatible`; JSON comprobado y diff posterior sin diferencias |
+| Reutilización del perfil desde la app | Pendiente | El autor prioriza crear otro workspace desde la terminal integrada con el CLI local, sin repetir los datos de empresa |
+| Personalizar | Diferido | El autor prioriza la reutilización del perfil empresarial |
+| Estado del PR | Revisión pendiente | Tres hilos sin resolver y tres checks `chat-lib tests` fallidos; ninguna aprobación formal |
+
+El E2E real permanece pendiente hasta registrar las ejecuciones manuales.
+Una invitación aceptada, un healthz válido o las pruebas con Clerk simulado no sustituyen esa evidencia.
+
+### Prioridad del autor: otro workspace desde Ctrl+
+
+El autor prioriza ejecutar el CLI desde la terminal integrada de Ctrl+, sin publicación npm.
+La creación debe reutilizar el perfil de la misma organización.
+`runCreateFlow` solicita el perfil solamente cuando `org.company` es `null`.
+Una empresa existente evita las preguntas de nombre empresarial, identificación legal, país, moneda y zona horaria.
+La selección de organización y los datos del workspace y de la obra siguen perteneciendo al asistente.
+
+La prueba local utiliza el bundle indicado en `.research/stage2/manual-e2e.env`.
+La instalación externa del tarball ya verificada conserva su valor como prueba del artefacto interno.
+La ejecución desde una terminal de desarrollo no verifica que el instalador de Ctrl+ incluya el CLI ni que detecte automáticamente el helper de una app instalada.
+El entorno QA proporciona explícitamente el helper y la API productiva.
+La publicación pública y privada queda cancelada; no permanece como pendiente del release.
+El script local de publicación se elimina para evitar ejecutar el procedimiento descartado.
+Ejecutar desde Ctrl+ no restringe por sí mismo el acceso HTTP a la API.
+La autenticación, los permisos de organización y la protección contra abuso siguen perteneciendo al servidor.
