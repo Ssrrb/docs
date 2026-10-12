@@ -658,7 +658,7 @@ La tabla separa el código verificado de los pasos del release:
 | Suite API | 156 pruebas aprobadas; tipos y bundles de Worker verificados |
 | Integración de terminal y autenticación | Siete pruebas aprobadas; extensión compilada con el compilador del fork |
 | Metadata nativa | Dos pruebas aprobadas; helper de release construido |
-| Procedimiento WAF | Nueve pruebas aprobadas; aplicación pendiente del token de zona |
+| Procedimiento WAF | Nueve pruebas aprobadas; regla creada y releída mediante token de zona; salud 200 y sin sesión 401 después de aplicarla |
 | Artefacto macOS | Electron ejecuta ambos comandos fuera del checkout, desde una ruta con espacios y sin Node/npm en PATH |
 | Documentos nativo en macOS | El helper devuelve la carpeta Documentos del usuario sin inicializar estado del launcher |
 | Réplica real del miembro | Producción: primera ejecución `created`, segunda `existing`, salida cero; solo tres GET por ejecución |
@@ -677,3 +677,8 @@ Las pruebas incluyen resultados parciales y recuperación de una creación pendi
 El gate (control) de Factory conserva dos fallos y cinco avisos anteriores a esta entrega.
 Estos fallos no se registran como comprobaciones aprobadas.
 El PR original conserva su head anterior hasta publicar los commits locales con autorización separada.
+
+La regla WAF creada tiene el identificador `0d785164745f4781aaf838cdb185ab1b`.
+El ruleset (conjunto de reglas) tiene el identificador `6a7d6c51762e42c5956608058a6e9498`.
+La evidencia local registra la ruta DELETE de esa regla para un rollback (reversión) acotado.
+La aplicación no reemplaza otra regla ni usa el WAF Enterprise de cuenta.
