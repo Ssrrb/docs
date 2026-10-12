@@ -92,6 +92,39 @@ Se propone seleccionar «Conservar los tres».
 
 Conservar un módulo en el producto no exige habilitarlo en todas las obras. La propuesta distingue una selección recomendada de una activación obligatoria. La propuesta conserva la posibilidad de una selección estructural vacía.
 
+## Decisión de la etapa: niveles y preset recomendado
+
+Esta sección registra la decisión de la etapa «selección por niveles y release productivo» del sprint create-ctrl.
+
+### Opción elegida
+
+Los niveles y el preset recomendado son configuración de presentación del CLI.
+El CLI organiza el selector con los niveles de `docs/domain/module-hierarchy.mdx`.
+El preset Recomendada incluye 17 módulos: todos salvo Partes de máquina.
+El preset es la selección por defecto del asistente y de la automatización sin `--modules`.
+El catálogo y su grafo estructural confirmado no cambian.
+
+### Alternativas rechazadas de esta decisión
+
+- Niveles como dato del catálogo o de la base de datos: acopla la presentación con el grafo inmutable. Un cambio de la presentación exigiría otra versión del catálogo.
+- Preset en el servidor: el selector necesita los niveles antes del login. El CLI no consulta el servidor sin una sesión.
+
+### Presupuestos obligatorio
+
+Esta decisión reemplaza la posibilidad de una selección estructural vacía de la propuesta anterior.
+El CLI incorpora Presupuestos a la entrada normalizada de toda creación nueva.
+La API exige Presupuestos después de comprobar si la solicitud corresponde a un replay (repetición) existente.
+La comprobación del replay precede a la exigencia.
+Así los agregados antiguos siguen reproduciéndose.
+Así los diarios (journals) antiguos no se modifican de forma silenciosa.
+El CLI rechaza una entrada pendiente antigua incompatible.
+El rechazo preserva los archivos.
+
+### Vincular y recuperar
+
+Vincular conserva la selección original registrada.
+Recuperar conserva la selección original registrada.
+
 ## Alternativas descartadas en la propuesta
 
 - Duplicar el ERP completo por obra: duplica catálogos y dificulta la consolidación empresarial.
