@@ -10,7 +10,7 @@ El contexto de los dos motores está en `docs/foundations/erp-ecms-architecture.
 
 El usuario ejecuta el CLI desde la terminal integrada de Ctrl+. La distribución objetivo incluye el CLI con la aplicación y no requiere descargarlo del registro npm. El CLI crea un workspace con su primera obra (work site). El CLI también vincula una carpeta local a un workspace existente.
 
-El autor cancela la publicación pública y privada en npm. La integración del ejecutable en la distribución de Ctrl+ permanece pendiente; la ronda actual utiliza el bundle local.
+El autor cancela la publicación pública y privada en npm. La distribución integra el CLI y el helper de autenticación. La verificación de los instaladores permanece como requisito del release.
 
 Los miembros de una organización de Clerk comparten la identidad. Los miembros comparten la configuración central. Cada miembro materializa la estructura en su computadora. La materialización usa los mismos identificadores. La réplica no crea otro proyecto.
 
@@ -165,6 +165,8 @@ Opciones:
   --workspace    Identificador del workspace existente para la vinculación
   --api-url      URL base de la API
   --auth-cli     Comando del helper de autenticación
+  --advanced     Permite editar la configuración y las sugerencias empresariales
+  --pull         Trae todos los workspaces de la empresa seleccionada
   --yes          Acepta los recomendados sin preguntas
   --json         Produce un documento JSON en stdout
   --help         Muestra la ayuda
@@ -200,6 +202,103 @@ obra-auth login --json
 
 - Los tokens no aparecen en las salidas del CLI.
 - Los tokens no aparecen en los manifiestos.
+
+## Flujo desde la terminal de Ctrl+
+
+El usuario escribe `create-ctrl` en la terminal integrada local.
+El comando usa el runtime incluido con Ctrl+.
+El usuario no instala Node, npm ni otro ejecutable.
+El instalador incluye los comandos para macOS, Windows y Linux.
+El alcance inicial cubre macOS x64 y arm64, Windows x64 y Linux x64.
+Las terminales remotas, WSL y la versión web quedan fuera de este flujo.
+
+El asistente inicia sesión antes de pedir los datos de la obra.
+El asistente elige la única empresa disponible sin pedir confirmación.
+Si hay varias empresas, el asistente muestra sus nombres.
+Si hay obras existentes, el asistente permite abrir una o crear otra.
+Si no hay obras, el asistente pide el nombre de la obra.
+El nombre identifica el workspace y su primera obra.
+El flujo habitual usa la configuración Recomendada de 17 capacidades.
+El asistente muestra un resumen y pide confirmar la creación.
+El flujo habitual omite las preguntas de tipo, módulos, código, nombre del workspace, carpeta e invitación.
+La opción `--advanced` conserva la configuración detallada.
+La empresa existente evita todas las preguntas del perfil empresarial.
+El primer administrador indica el nombre de la empresa si falta el perfil.
+El resumen muestra las sugerencias `PY`, `PYG` y `America/Asuncion`.
+La opción `--advanced` permite cambiar esas sugerencias y agregar el identificador legal.
+
+El destino automático usa Documentos del sistema operativo.
+En Windows, el helper respeta la carpeta Documentos redirigida.
+En Linux, el helper consulta la configuración XDG.
+Si el sistema no declara Documentos, el comando usa `Documents` dentro del directorio personal.
+
+Ejemplo del destino:
+
+```text
+Documentos/Ctrl/Empresa Ejemplo/Obra Centro/
+```
+
+Los nombres legibles conservan espacios y acentos.
+Los componentes excluyen caracteres y nombres reservados de Windows.
+Una colisión agrega un sufijo numérico y conserva la carpeta existente.
+El índice local `Ctrl/.ctrl/locations.json` vincula los identificadores con sus destinos.
+El índice conserva el destino cuando cambia el nombre central.
+La estructura interna conserva los manifiestos v1 y las carpetas `obras/<UUID>/`.
+Un workspace existente con varias obras conserva su agrupación.
+El comando abre el archivo del workspace en una ventana nueva de Ctrl+ después de verificar la estructura.
+
+El usuario escribe `pull-ctrl` para traer todas las obras de la empresa seleccionada.
+Todos los miembros vigentes de la empresa tienen acceso a sus workspaces.
+Este flujo no introduce permisos distintos por obra.
+El comando consulta y materializa cada workspace en orden.
+El comando conserva los mismos identificadores y no crea filas de dominio.
+El comando reutiliza carpetas verificadas y reanuda operaciones pendientes compatibles.
+Si cambia la revisión o el manifiesto resulta incompatible, el comando conserva los archivos y registra el fallo.
+El resultado JSON agrega un estado por workspace y termina con salida uno si alguno falla.
+Los resultados completos permanecen disponibles aunque falle otra descarga.
+El comando abre un solo `Ctrl.code-workspace` de la empresa con las obras verificadas.
+La réplica descarga la estructura; el contenido operativo local no se sincroniza.
+
+La paleta de Ctrl+ permite crear obras, traer obras y gestionar invitaciones.
+La extensión prepara el entorno antes de ejecutar el comando en una terminal nueva.
+Las terminales que ya estaban abiertas pueden necesitar reiniciarse para recibir el comando.
+Las invitaciones usan el portal de usuarios `accounts.ctrlmas.tech/organization`.
+La creación de una organización usa `accounts.ctrlmas.tech/create-organization`.
+La verificación de estas páginas en un navegador real permanece separada de la verificación del enlace.
+
+## Protección del servicio
+
+La API mantiene el registro abierto y exige identidad y membresía vigentes en Clerk.
+La API no recibe autorización implícita por ejecutarse desde Ctrl+.
+El Worker usa límites nativos con contadores distintos para preview y producción.
+El límite previo a Clerk permite 120 solicitudes por IP por minuto.
+El límite de identidad permite 60 solicitudes por usuario verificado por minuto antes de consultar membresías.
+Cada POST exige los límites de diez solicitudes por usuario y diez por organización por minuto.
+La organización del contador procede de la membresía vigente.
+Un identificador arbitrario de la URL no selecciona el contador de otra organización.
+Los límites se aplican antes del acceso a la base de datos.
+La ausencia de los bindings requeridos produce HTTP 503 antes de consultar Clerk.
+Los fallos del servicio de limitación producen HTTP 503 en su punto de verificación.
+La API mide el cuerpo real y rechaza más de 16 KiB con HTTP 413.
+El rechazo de frecuencia produce HTTP 429 con `Retry-After: 60`.
+El CLI interactivo espera de forma cancelable y reintenta una sola vez con la misma entrada.
+El modo JSON informa el rechazo sin esperar.
+Producción desactiva el dominio workers.dev y las URLs de preview.
+
+La regla de borde prevista para la zona Free limita 60 solicitudes por IP en diez segundos.
+La regla bloquea durante diez segundos las rutas `/v1/` y `/healthz`.
+La expresión disponible en Free cubre esas rutas en todos los hosts de la zona.
+El procedimiento consulta la regla existente y no reemplaza una regla ajena.
+El procedimiento registra los identificadores para retirar solo la regla agregada.
+La aplicación de esta regla requiere un token WAF limitado a la zona.
+Los contadores del Worker son locales a cada ubicación de Cloudflare y tienen consistencia eventual.
+Estos controles no garantizan que un ataque distribuido respete la cuota diaria de Workers Free.
+
+Referencias de implementación:
+
+- [Rate limiting bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/)
+- [Regla de borde mediante Rulesets API](https://developers.cloudflare.com/waf/rate-limiting-rules/create-api/)
+- [Parámetros de la regla de borde](https://developers.cloudflare.com/waf/rate-limiting-rules/parameters/)
 
 ## Onboarding empresarial
 
