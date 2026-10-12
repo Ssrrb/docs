@@ -265,6 +265,8 @@ Las terminales que ya estaban abiertas pueden necesitar reiniciarse para recibir
 Las invitaciones usan el portal de usuarios `accounts.ctrlmas.tech/organization`.
 La creación de una organización usa `accounts.ctrlmas.tech/create-organization`.
 La verificación de estas páginas en un navegador real permanece separada de la verificación del enlace.
+La revisión en Chrome confirma la página de organización, la sección de miembros y el botón de invitación.
+La revisión confirma el formulario de creación de organización sin enviarlo.
 
 ## Protección del servicio
 
@@ -619,7 +621,8 @@ El borrador distingue resultados locales, resultados manuales y pasos pendientes
 | Personalizar | Diferido | El autor prioriza la reutilización del perfil empresarial |
 | Estado del PR | Revisión pendiente | Tres hilos sin resolver y tres checks `chat-lib tests` fallidos; ninguna aprobación formal |
 
-El E2E real permanece pendiente hasta registrar las ejecuciones manuales.
+La evidencia manual de esta ronda corresponde al commit indicado.
+El nuevo asistente integrado requiere su propia verificación.
 Una invitación aceptada, un healthz válido o las pruebas con Clerk simulado no sustituyen esa evidencia.
 
 ### Prioridad del autor: otro workspace desde Ctrl+
@@ -638,3 +641,39 @@ La publicación pública y privada queda cancelada; no permanece como pendiente 
 El script local de publicación se elimina para evitar ejecutar el procedimiento descartado.
 Ejecutar desde Ctrl+ no restringe por sí mismo el acceso HTTP a la API.
 La autenticación, los permisos de organización y la protección contra abuso siguen perteneciendo al servidor.
+
+## Entrega del asistente integrado
+
+La rama local `feat/ctrl-cli-desktop-guided` contiene la creación guiada, la réplica empresarial y la integración del empaquetado.
+El paquete declara `private: true` y no se publica en npm.
+El cambio conserva la estructura canónica y no agrega migraciones de base de datos.
+El ledger de esta entrega es `factory/contracts/patch-ledger.desktop-cli.yaml`.
+El ledger canónico del fork conserva su baseline anterior.
+
+La tabla separa el código verificado de los pasos del release:
+
+| Comprobación | Resultado |
+|---|---|
+| Suite CLI | 175 pruebas aprobadas; tipos y bundle verificados |
+| Suite API | 156 pruebas aprobadas; tipos y bundles de Worker verificados |
+| Integración de terminal y autenticación | Siete pruebas aprobadas; extensión compilada con el compilador del fork |
+| Metadata nativa | Dos pruebas aprobadas; helper de release construido |
+| Procedimiento WAF | Nueve pruebas aprobadas; aplicación pendiente del token de zona |
+| Artefacto macOS | Electron ejecuta ambos comandos fuera del checkout, desde una ruta con espacios y sin Node/npm en PATH |
+| Documentos nativo en macOS | El helper devuelve la carpeta Documentos del usuario sin inicializar estado del launcher |
+| Réplica real del miembro | Producción: primera ejecución `created`, segunda `existing`, salida cero; solo tres GET por ejecución |
+| Portal de usuarios | Chrome muestra organización, miembros, invitación y formulario de creación; no se modifica la organización |
+| Preview del Worker | Versión `bb309d67-a1c0-4da4-805a-c9e64ff45956`; salud 200, sin sesión 401, cuerpo grande 413 |
+| Producción del Worker | Versión `4591c684-a1e9-4e75-a49c-06703b7d8eb9`; mismas comprobaciones con solicitudes acotadas |
+| Instaladores completos | Pendiente de construir y comprobar; el artefacto de extensión no equivale a un instalador |
+| Ejecución nativa Windows y Linux | Pendiente; el autor dispone solo de su Mac durante esta ronda |
+
+La prueba productiva del miembro utiliza un destino QA temporal.
+La prueba conserva la carpeta original `sebas-obra` del administrador.
+La revisión independiente detecta y corrige la versión del bundle y la limpieza del lock (reserva) tras una cancelación.
+La réplica repetida conserva ajustes, carpetas agregadas y archivos del usuario.
+Las pruebas de recuperación incluyen cancelación al publicar el propietario y al retirar una reserva de un proceso terminado.
+Las pruebas incluyen resultados parciales y recuperación de una creación pendiente mediante GET.
+El gate (control) de Factory conserva dos fallos y cinco avisos anteriores a esta entrega.
+Estos fallos no se registran como comprobaciones aprobadas.
+El PR original conserva su head anterior hasta publicar los commits locales con autorización separada.
