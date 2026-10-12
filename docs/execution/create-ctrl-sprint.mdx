@@ -654,14 +654,15 @@ La tabla separa el código verificado de los pasos del release:
 
 | Comprobación | Resultado |
 |---|---|
-| Suite CLI | 175 pruebas aprobadas; tipos y bundle verificados |
+| Suite CLI | 177 pruebas aprobadas en 15 archivos; tipos y bundle verificados |
 | Suite API | 156 pruebas aprobadas; tipos y bundles de Worker verificados |
 | Integración de terminal y autenticación | Siete pruebas aprobadas; extensión compilada con el compilador del fork |
 | Metadata nativa | Dos pruebas aprobadas; helper de release construido |
 | Procedimiento WAF | Nueve pruebas aprobadas; regla creada y releída mediante token de zona; salud 200 y sin sesión 401 después de aplicarla |
 | Artefacto macOS | Electron ejecuta ambos comandos fuera del checkout, desde una ruta con espacios y sin Node/npm en PATH |
+| VSIX interno de macOS | Ruta `extensions/obra-auth/test/.validation/obra-auth-desktop-darwin-arm64.vsix`; sha256 `f3add67ec5ee09c50a7a29c8e465b9bbfdc16c66b252548d2a4a28e24fddf7a2`; 9367177 bytes; manifiesto sin cambios; sin fuentes, pruebas, `node_modules` ni secretos |
 | Documentos nativo en macOS | El helper devuelve la carpeta Documentos del usuario sin inicializar estado del launcher |
-| Réplica real del miembro | Producción: primera ejecución `created`, segunda `existing`, salida cero; solo tres GET por ejecución |
+| Réplica real del miembro | Commit `37c1265`, bundle `8388b3351b82da1b1b1c976aae9ed5131408a33a96899ea03951b3b4624de7a6`: producción, primera ejecución `created`, segunda `existing`, salida cero; solo tres GET por ejecución |
 | Portal de usuarios | Chrome muestra organización, miembros, invitación y formulario de creación; no se modifica la organización |
 | Preview del Worker | Versión `bb309d67-a1c0-4da4-805a-c9e64ff45956`; salud 200, sin sesión 401, cuerpo grande 413 |
 | Producción del Worker | Versión `4591c684-a1e9-4e75-a49c-06703b7d8eb9`; mismas comprobaciones con solicitudes acotadas |
@@ -674,6 +675,10 @@ La revisión independiente detecta y corrige la versión del bundle y la limpiez
 La réplica repetida conserva ajustes, carpetas agregadas y archivos del usuario.
 Las pruebas de recuperación incluyen cancelación al publicar el propietario y al retirar una reserva de un proceso terminado.
 Las pruebas incluyen resultados parciales y recuperación de una creación pendiente mediante GET.
+El bundle final `b5864b21595323021839ef50b16d2e0d4e2ce334ba7facb98b298543c2d55cf1` corresponde al commit `31a4d6b7`.
+Los dos commits posteriores a la réplica registrada cambian el aviso del abridor del navegador, la lista de archivos del artefacto y dos pruebas.
+La repetición de la réplica GET con el bundle final queda pendiente.
+El empaquetado del VSIX omitió el paso `prepublish` porque `gulp` no estaba disponible en el entorno; la compilación nativa y las pruebas de navegador se ejecutaron por separado. La auditoría del VSIX no encontró valores de secretos ni nombres sospechosos.
 El gate (control) de Factory conserva dos fallos y cinco avisos anteriores a esta entrega.
 Estos fallos no se registran como comprobaciones aprobadas.
 El PR original conserva su head anterior hasta publicar los commits locales con autorización separada.
