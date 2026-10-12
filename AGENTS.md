@@ -8,7 +8,7 @@ This file states how the repository works. A document under `docs/` states a req
 
 ## 1. The project
 
-Obra Studio is an application for construction companies. The first product serves one construction company with several projects in Paraguay. The people who use the application are engineers and architects.
+ctrl+ is an application for construction companies. The first product serves one construction company with several projects in Paraguay. The people who use the application are engineers and architects.
 
 The application joins two engines. The ERP manages money, purchases, and legal documents. The ECMS manages the `obra`, the budget, the measurement, and the cost. The bridge exchanges information between the two engines.
 
@@ -44,18 +44,6 @@ This table holds the one meaning of each term. No other document states a second
 | Cliente (client) | The person or the company that pays the work. |
 | Cobro (collection) | The money that a client pays a project. |
 
-### Writing terms
-
-This table gives the words that this file uses.
-
-| Term | Meaning in this file |
-|---|---|
-| Rule | A sentence that states one obligation. |
-| Obligation | A requirement that a rule states. |
-| State | The header value that names the approval of a document. |
-| Gloss | The English words that follow a Spanish term. |
-| Example | A line or a table that shows the use of a rule. Do not write an example as a rule. |
-| Check | A program that verifies the repository. |
 
 ## 3. How to work
 
@@ -67,15 +55,6 @@ This table gives the words that this file uses.
 6. Follow sections 5 to 8. Check the result against section 10.
 7. Commit the change.
 
-| The author instruction | The response of the agent |
-|---|---|
-| It is clear and it does not conflict with an approved document | Execute it. |
-| It has a material ambiguity | Ask one question about the missing information. |
-| It conflicts with an approved document | Stop. Name the document. Ask the author. |
-
-An agent writes a draft. Only the author moves a document to `approved`.
-
-An agent must not reinterpret an instruction. An agent must not ignore an instruction. An agent must not weaken an instruction.
 
 ## 4. Where a topic belongs
 
@@ -103,35 +82,11 @@ Each folder sits under `docs/`. The site serves no document from another locatio
 
 ## 5. Document form
 
-A knowledge document starts with a title and a state line.
-
-```markdown
-# Unit price analysis
-
-*Domain · draft*
-```
-
-The state line contains the folder name. The state line contains the state.
-
-| State | Meaning |
-|---|---|
-| `draft` | The author has not approved the content. Do not cite the document. |
-| `approved` | The author approved the content. The document can be cited. |
-| `none` | The document informs. The document does not oblige. |
-
 - A document holds one topic.
 - Reference another document by its path. An example is `docs/domain/collections.mdx`.
 - Omit the version from the state line. Omit the date from the state line. Git records both.
-- Three files follow no state line: `README.md`, `AGENTS.md`, and `docs.json`.
-
+- 
 ## 6. How to write
-
-- A rule states one obligation. Name the subject.
-- Split the rule if the subject changes. Split the rule if the condition changes.
-- A rule must not hold an implementation detail. Put the detail in the document that describes the implementation.
-- Put an example in its own line or in its own table. Do not put an example in the sentence of a rule.
-- Record a source in `docs/references/` or in `docs/decisions/`.
-
 ### The limit for this file
 
 A check enforces the word limit of this file. The check holds the limit. The check is `scripts/check.sh`. The commit hook runs the check. A commit with a failing check does not pass.
@@ -139,20 +94,6 @@ A check enforces the word limit of this file. The check holds the limit. The che
 If the check fails, the agent removes words. The agent must not remove an obligation to fit the limit. The author amends the limit in the check.
 
 ## 7. Language and style
-
-- Write the content in Spanish. A business object of Paraguay keeps its Spanish name. An example is `obra`.
-- Write the English gloss after a business term. An example is `obra (work site)`.
-- The reader uses a translation tool to read the content in another language. The repository holds no translated copy of a document.
-
-| Keyword | Meaning |
-|---|---|
-| **MUST** | required |
-| **MUST NOT** | prohibited |
-| **SHOULD** | recommended |
-| **MAY** | optional |
-
-Each keyword keeps the same meaning in every document.
-
 Apply ASD-STE100.
 
 - Write one idea per sentence.
