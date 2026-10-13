@@ -8,9 +8,9 @@ El contexto de los dos motores está en `docs/foundations/erp-ecms-architecture.
 
 ## Objetivo
 
-El usuario ejecuta el CLI desde la terminal integrada de Ctrl+. La distribución objetivo incluye el CLI con la aplicación y no requiere descargarlo del registro npm. El CLI crea un workspace con su primera obra (work site). El CLI también vincula una carpeta local a un workspace existente.
+El usuario instala el CLI con `npm i -g @ctrlmas/ctrl` o usa la terminal integrada de Ctrl+. La distribución incluye el CLI con la aplicación. El CLI crea un workspace con su primera obra (work site). El CLI también vincula una carpeta local a un workspace existente.
 
-El autor cancela la publicación pública y privada en npm. La distribución integra el CLI y el helper de autenticación. La verificación de los instaladores permanece como requisito del release.
+El paquete npm incluye el launcher y el backend Node. Los paquetes opcionales incluyen la TUI Rust y el helper de autenticación. La publicación estable requiere verificar los instaladores en los tres sistemas operativos.
 
 Los miembros de una organización de Clerk comparten la identidad. Los miembros comparten la configuración central. Cada miembro materializa la estructura en su computadora. La materialización usa los mismos identificadores. La réplica no crea otro proyecto.
 
@@ -42,13 +42,16 @@ Dentro del alcance:
 - El reconocimiento de nuevos miembros tras la aceptación de una invitación en Clerk.
 - La resolución del vínculo pendiente con `companies`.
 - La recuperación local y la idempotencia.
-- La prueba del artefacto interno desde su tarball (archivo de paquete).
+- La prueba del artefacto npm desde su tarball (archivo de paquete).
+- La TUI Rust independiente y el protocolo JSON por línea.
+- La instalación de Ctrl+ por usuario y la apertura del workspace.
+- El acceso al portal de invitaciones y roles para administradores.
 
 Fuera del alcance:
 
-- Las invitaciones. Las invitaciones permanecen en Clerk.
+- El envío directo de invitaciones. La invitación y su aceptación permanecen en Clerk.
 - La interfaz nativa de Ctrl+. Otro sprint la entrega.
-- La publicación del CLI en un registro npm público o privado.
+- La publicación estable antes de verificar macOS ARM64, Linux x64 y Windows x64.
 - Los procesos operativos del ERP y del ECMS.
 - La sincronización del contenido de `archivos-compartidos`. El CLI crea la carpeta. El contenido permanece local.
 
@@ -209,23 +212,26 @@ El usuario escribe `create-ctrl` en la terminal integrada local.
 El comando usa el runtime incluido con Ctrl+.
 El usuario no instala Node, npm ni otro ejecutable.
 El instalador incluye los comandos para macOS, Windows y Linux.
-El alcance inicial cubre macOS x64 y arm64, Windows x64 y Linux x64.
+El alcance inicial cubre macOS ARM64, Windows x64 y Ubuntu 24.04 de escritorio x64 con keyring.
 Las terminales remotas, WSL y la versión web quedan fuera de este flujo.
 
 El asistente inicia sesión antes de pedir los datos de la obra.
 El asistente elige la única empresa disponible sin pedir confirmación.
 Si hay varias empresas, el asistente muestra sus nombres.
-Si hay obras existentes, el asistente permite abrir una o crear otra.
-Si no hay obras, el asistente pide el nombre de la obra.
-El nombre identifica el workspace y su primera obra.
-El flujo habitual usa la configuración Recomendada de 17 capacidades.
+El asistente pide el perfil empresarial antes del menú si la empresa no existe.
+El administrador indica nombre, RUC opcional, país, moneda y zona horaria.
+Los valores iniciales editables son `PY`, `PYG` y `America/Asuncion`.
+La empresa existente evita las preguntas del perfil empresarial.
+El menú ofrece Crear nueva, Traer todas, Invitar usuarios, Abrir Ctrl+ y Salir.
+Invitar usuarios aparece para administradores.
+El asistente actualiza la empresa y sus proyectos después de cada operación.
+El asistente libera las reservas de carpetas después de cada operación.
+La creación ofrece Recomendada y Personalizar sin exigir `--advanced`.
+Recomendada incluye 17 capacidades, salvo Partes de máquina.
+La personalización conserva Presupuestos y las dependencias obligatorias.
 El asistente muestra un resumen y pide confirmar la creación.
-El flujo habitual omite las preguntas de tipo, módulos, código, nombre del workspace, carpeta e invitación.
-La opción `--advanced` conserva la configuración detallada.
-La empresa existente evita todas las preguntas del perfil empresarial.
-El primer administrador indica el nombre de la empresa si falta el perfil.
-El resumen muestra las sugerencias `PY`, `PYG` y `America/Asuncion`.
-La opción `--advanced` permite cambiar esas sugerencias y agregar el identificador legal.
+Las opciones `--workspace`, `--pull` y las demás opciones explícitas ejecutan una operación.
+`--yes`, `--json` y la entrada sin terminal no abren navegador, editor ni instalador.
 
 El destino automático usa Documentos del sistema operativo.
 En Windows, el helper respeta la carpeta Documentos redirigida.
@@ -398,7 +404,7 @@ La recuperación conserva archivos ajenos y rechaza rutas generadas incompatible
 El asistente interactivo permite crear o vincular después de elegir organización.
 
 El Worker preview utiliza una instancia separada y una base de desarrollo.
-La distribución del CLI con Ctrl+ permanece como paso del release. La publicación npm queda cancelada por decisión del autor.
+La distribución del CLI con Ctrl+ y npm requiere la evidencia de las tres plataformas antes de la publicación estable.
 La evidencia debe identificar el commit verificado y las comprobaciones pendientes.
 Un fallo de facturación de GitHub Actions no equivale a una prueba aprobada.
 
@@ -625,9 +631,9 @@ La evidencia manual de esta ronda corresponde al commit indicado.
 El nuevo asistente integrado requiere su propia verificación.
 Una invitación aceptada, un healthz válido o las pruebas con Clerk simulado no sustituyen esa evidencia.
 
-### Prioridad del autor: otro workspace desde Ctrl+
+### Evidencia anterior: otro workspace desde Ctrl+
 
-El autor prioriza ejecutar el CLI desde la terminal integrada de Ctrl+, sin publicación npm.
+En la ronda anterior, el autor prioriza ejecutar el CLI desde la terminal integrada de Ctrl+. La entrega actual agrega npm según el contrato de distribución descrito abajo.
 La creación debe reutilizar el perfil de la misma organización.
 `runCreateFlow` solicita el perfil solamente cuando `org.company` es `null`.
 Una empresa existente evita las preguntas de nombre empresarial, identificación legal, país, moneda y zona horaria.
@@ -637,15 +643,14 @@ La prueba local utiliza el bundle indicado en `.research/stage2/manual-e2e.env`.
 La instalación externa del tarball ya verificada conserva su valor como prueba del artefacto interno.
 La ejecución desde una terminal de desarrollo no verifica que el instalador de Ctrl+ incluya el CLI ni que detecte automáticamente el helper de una app instalada.
 El entorno QA proporciona explícitamente el helper y la API productiva.
-La publicación pública y privada queda cancelada; no permanece como pendiente del release.
-El script local de publicación se elimina para evitar ejecutar el procedimiento descartado.
+La ronda anterior excluye la publicación npm. El contrato actual sustituye esa decisión y requiere artefactos verificados antes de publicar.
 Ejecutar desde Ctrl+ no restringe por sí mismo el acceso HTTP a la API.
 La autenticación, los permisos de organización y la protección contra abuso siguen perteneciendo al servidor.
 
 ## Entrega del asistente integrado
 
 La rama local `feat/ctrl-cli-desktop-guided` contiene la creación guiada, la réplica empresarial y la integración del empaquetado.
-El paquete declara `private: true` y no se publica en npm.
+La evidencia de esta sección corresponde al paquete interno anterior. La entrega npm usa `@ctrlmas/ctrl`.
 El cambio conserva la estructura canónica y no agrega migraciones de base de datos.
 El ledger de esta entrega es `factory/contracts/patch-ledger.desktop-cli.yaml`.
 El ledger canónico del fork conserva su baseline anterior.
@@ -687,3 +692,77 @@ La regla WAF creada tiene el identificador `0d785164745f4781aaf838cdb185ab1b`.
 El ruleset (conjunto de reglas) tiene el identificador `6a7d6c51762e42c5956608058a6e9498`.
 La evidencia local registra la ruta DELETE de esa regla para un rollback (reversión) acotado.
 La aplicación no reemplaza otra regla ni usa el WAF Enterprise de cuenta.
+
+## Contrato de la TUI y distribución npm
+
+Esta entrega es experimental hasta completar las verificaciones de plataforma.
+El snapshot de Codex vive en `factory/vendor/codex` como referencia de solo lectura.
+El commit fijado es `816fa702ec66a4c81b204701a03371a1ac3511e6`.
+El crate `create-ctrl/tui` compila sin motores de agentes ni proveedores de modelos.
+El crate conserva licencias, atribuciones y avisos de adaptación.
+Rust controla la terminal y ejecuta el backend Node mediante pipes.
+El protocolo JSON por línea transporta preguntas, respuestas, mensajes y resultado.
+Cada respuesta identifica la pregunta activa.
+Node conserva autenticación, validación, API, journal y materialización.
+Los tokens del helper permanecen fuera del protocolo visual.
+Ctrl+C cancela la operación con salida 130.
+La cancelación, EOF y los errores restauran terminal y cursor.
+
+El paquete principal requiere Node 20 o superior.
+Los aliases son `ctrl`, `ctrl-l`, `create-ctrl` y `pull-ctrl`.
+El shim de `pull-ctrl` antepone `--pull`.
+`--help` y `--version` no requieren binarios nativos.
+Los tres paquetes opcionales usan la versión exacta del paquete principal.
+Cada paquete nativo contiene `ctrl-tui` y el helper existente.
+La resolución del helper sigue `--auth-cli`, `CTRL_AUTH_CLI`, `OBRA_AUTH_CLI`, `CTRL_HELPER_PATH` y la instalación de Ctrl+.
+El helper conserva `obra-clerk-auth`, la cuenta, el estado, los locks y la generación compartida con el editor.
+
+El repositorio público de descarga es `Ssrrb/ctrl-releases`.
+El fork permanece privado.
+El manifiesto fija versión, URL, SHA-256 y entrada ejecutable para cada plataforma.
+La instalación usa `~/Applications`, `~/.local/share/ctrl-plus` o `%LOCALAPPDATA%/Programs/CtrlPlus`.
+El instalador verifica el archivo antes de extraerlo en staging.
+El instalador publica la instalación completa y rechaza destinos ajenos o incompletos.
+Un fallo conserva los proyectos creados.
+La primera distribución carece de firmas Apple y Windows.
+Si el sistema impide abrir la app, el asistente muestra instrucciones.
+
+La publicación usa los artefactos verificados sin reconstruirlos.
+El orden es escritorio, paquetes nativos y paquete principal.
+Un fallo parcial detiene la secuencia.
+La publicación local usa autenticación npm y `--access public`, sin `--provenance`.
+Antes de publicar, el operador verifica acceso al scope `@ctrlmas` y al repositorio público.
+La evidencia registra commit, versiones, hashes, plataforma y resultado.
+La prueba de otro sistema operativo permanece pendiente si no existe una ejecución nativa.
+
+## Evidencia de la implementación npm y TUI
+
+El commit de producto es `f8d74605d237b9c3642f2b9c97f9e721d85adf03` en `feat/ctrl-cli-desktop-guided`.
+El commit `55a01e57f08` contiene la implementación.
+El commit siguiente permite verificar el launcher instalado desde un tarball.
+La entrega permanece experimental.
+
+| Comprobación | Resultado |
+|---|---|
+| CLI Node | 204 pruebas aprobadas en 19 archivos; tipos y bundle correctos |
+| TUI Rust | Cinco pruebas aprobadas, clippy sin avisos y release macOS ARM64 construido |
+| Puente PTY | Nueve escenarios aprobados; Unicode, pegado, terminal estrecha, selectores, multiselección, señales, EOF y errores |
+| Runtime integrado | Electron ejecuta los escenarios sin Node en PATH; terminal y cursor restaurados |
+| Tarballs reales | Principal y macOS ARM64 instalados juntos fuera del checkout; cuatro aliases verificados |
+| Helper y extensión | Helper reconstruido; TUI, bundles, licencias y shims generados; cinco pruebas de terminal aprobadas |
+| Ledger experimental | 80 archivos y cinco core; generador con worktree explícito y prueba aprobada; ledger fresco |
+| Wiki | Check aprobado |
+| Repositorio público | `Ssrrb/ctrl-releases` creado con documentación; acceso GitHub admin y push verificado |
+| Publicación npm | No ejecutada; npm informa ENEEDAUTH; propiedad del scope sin verificar |
+| Escritorio completo | Pendiente en macOS, Linux y Windows; manifiesto sin descargas |
+| Clerk real y réplica multiusuario | Pendiente en cada plataforma; los fixtures no sustituyen esta evidencia |
+
+El reporte completo vive en `factory/reports/ctrl-npm-tui-2026-10-13.md`.
+Los artefactos locales viven en `vscode-worktrees/create-ctrl-prod/.build/ctrl-npm-tui/`.
+`SHA256SUMS` registra los bytes de los tarballs y ejecutables.
+`platform-evidence.json` conserva los gates incompletos.
+El gate de congelación rechaza esta evidencia con `Incomplete verification: darwin-arm64`.
+No se generan artefactos congelados ni se publica una entrega estable.
+Factory conserva los dos fallos y cinco avisos previos.
+La ejecución no modifica cuentas ni invitaciones de usuarios reales.
+La ejecución no publica código del fork, despliegues ni paquetes npm.
