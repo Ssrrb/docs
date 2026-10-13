@@ -1,0 +1,91 @@
+# Release npm de Ctrl+
+
+*Execution · draft*
+
+Este plan empieza después de aceptar la experiencia visual descrita en `docs/execution/create-ctrl-sprint.mdx`.
+El objetivo es publicar `@ctrlmas/ctrl` con los seis paquetes nativos de la misma versión.
+La entrega local actual usa `0.1.0`.
+La publicación permanece pendiente.
+
+## Alcance
+
+| Paquete nativo | Sistema | Arquitectura |
+|---|---|---|
+| `@ctrlmas/ctrl-darwin-arm64` | macOS | ARM64 |
+| `@ctrlmas/ctrl-darwin-x64` | macOS | x64 |
+| `@ctrlmas/ctrl-linux-arm64` | Linux | ARM64 |
+| `@ctrlmas/ctrl-linux-x64` | Linux | x64 |
+| `@ctrlmas/ctrl-win32-arm64` | Windows | ARM64 |
+| `@ctrlmas/ctrl-win32-x64` | Windows | x64 |
+
+El paquete principal conserva `ctrl`, `ctrl-l`, `create-ctrl` y `pull-ctrl`.
+El paquete principal requiere Node 20 o superior.
+Cada paquete nativo incluye la TUI, el helper y sus licencias.
+La aplicación incluye el CLI y usa Electron como runtime Node.
+El release estable requiere evidencia nativa de cada destino.
+Una compilación cruzada no reemplaza esa ejecución.
+
+## Prerrequisitos
+
+El usuario acepta la TUI en su terminal.
+El operador verifica una sesión npm y permiso de publicación en `@ctrlmas`.
+El operador verifica permiso para subir assets a `Ssrrb/ctrl-releases`.
+El fork permanece privado.
+El commit de producto queda limpio y registra todos los cambios aceptados.
+Los scripts de firma reutilizan la identidad persistente en macOS.
+La firma del bundle completo se verifica después del empaquetado.
+Developer ID, notarización y firma de Windows se registran según el artefacto entregado.
+Una firma self-signed no elimina los avisos de Gatekeeper.
+
+## Preparación y verificación
+
+1. Construir la aplicación, la TUI y el helper para cada destino desde el mismo commit.
+2. Preparar cada paquete nativo con `create-ctrl/scripts/prepare-native.mjs`.
+3. Preparar cada archivo de escritorio con `prepare-desktop-archive.mjs`.
+4. Verificar login Clerk real, invitación aceptada, réplica repetida, conservación de archivos, instalación y apertura por destino.
+5. Registrar cada archivo real con `prepare-desktop-manifest.mjs`.
+6. Ejecutar `npm pack` para cada paquete nativo y para el principal.
+7. Instalar los tarballs fuera del checkout y verificar los cuatro aliases desde PATH.
+8. Registrar commit, versión, hashes y resultados en `platform-evidence.json`.
+9. Ejecutar `freeze-release.mjs` con esa evidencia y un directorio nuevo.
+
+El manifiesto registra versión, URL HTTPS, SHA-256 y ejecutable relativo para cada destino.
+El manifiesto del paquete principal contiene los seis archivos verificados.
+El instalador verifica el hash antes de extraer en staging.
+El instalador conserva los proyectos ante un fallo.
+El archivo de escritorio contiene archivos y directorios sin enlaces simbólicos.
+El preparador resuelve los enlaces internos de Electron.
+Los listados de archivos usan un buffer de 256 MiB.
+
+El gate exige los checks `login`, `acceptedInvitation`, `repeatPull`, `preservedFiles`, `desktopInstallOpen` y `nativeTarball` por destino.
+El gate rechaza un destino incompleto, una versión distinta o un hash distinto.
+El gate compara el manifiesto incluido en el tarball principal.
+El gate congela los bytes inspeccionados.
+El gate no genera evidencia de usuario.
+
+## Publicación
+
+La publicación usa los archivos congelados sin reconstruirlos.
+
+1. Subir los seis archivos de escritorio a `Ssrrb/ctrl-releases`.
+2. Descargar cada asset público y comparar su SHA-256 con la evidencia.
+3. Publicar los seis tarballs nativos con `npm publish <tarball> --access public`.
+4. Verificar la versión y la integridad pública de cada paquete nativo.
+5. Publicar el tarball principal con el mismo comando.
+6. Instalar desde el registry en cada destino y verificar PATH, login, réplica y descarga de escritorio.
+
+La publicación local no usa `--provenance`.
+Un fallo parcial detiene la secuencia.
+El operador conserva la evidencia de los paquetes ya publicados.
+Un paquete publicado no permite reemplazar los bytes de su versión.
+Si los bytes cambian, el operador prepara otra versión y repite la verificación.
+
+## Estado de preparación
+
+La TUI, el backend y los scripts tienen pruebas locales aprobadas.
+Los tarballs principal y macOS ARM64 tienen una instalación offline verificada.
+El manifiesto del checkout permanece vacío.
+El archivo macOS de la entrega anterior no contiene esta TUI.
+La aceptación visual, Clerk real, la firma del bundle y los otros cinco destinos permanecen pendientes.
+La sesión npm y el permiso del scope requieren verificación antes de publicar.
+No se publica ningún paquete durante la fase uno.

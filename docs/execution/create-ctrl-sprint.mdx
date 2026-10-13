@@ -693,47 +693,84 @@ El ruleset (conjunto de reglas) tiene el identificador `6a7d6c51762e42c595660805
 La evidencia local registra la ruta DELETE de esa regla para un rollback (reversión) acotado.
 La aplicación no reemplaza otra regla ni usa el WAF Enterprise de cuenta.
 
-## Contrato de la TUI y distribución npm
+## Fase uno: experiencia de terminal
 
 Esta entrega es experimental hasta completar las verificaciones de plataforma.
-El snapshot de Codex vive en `factory/vendor/codex` como referencia de solo lectura.
-El commit fijado es `816fa702ec66a4c81b204701a03371a1ac3511e6`.
+La aceptación visual de esta fase precede a la publicación.
+El plan separado de npm está en `docs/execution/ctrl-npm-release.mdx`.
+El snapshot visual de Codex vive en `.research/codex` como referencia de solo lectura.
+El commit fijado es `cf0ed4c600161fcaa18eeac02b5fc715e1076955`.
+La extracción inicial de lifecycle y scroll conserva su atribución a `816fa702ec66a4c81b204701a03371a1ac3511e6`.
 El crate `create-ctrl/tui` compila sin motores de agentes ni proveedores de modelos.
 El crate conserva licencias, atribuciones y avisos de adaptación.
 Rust controla la terminal y ejecuta el backend Node mediante pipes.
-El protocolo JSON por línea transporta preguntas, respuestas, mensajes y resultado.
+El protocolo JSON por línea transporta preguntas, respuestas, mensajes, avisos, login, actividad, contexto y resultado.
 Cada respuesta identifica la pregunta activa.
 Node conserva autenticación, validación, API, journal y materialización.
 Los tokens del helper permanecen fuera del protocolo visual.
-Ctrl+C cancela la operación con salida 130.
+Esc y Ctrl+C cancelan la operación con salida 130.
 La cancelación, EOF y los errores restauran terminal y cursor.
+
+`CtrlWidget` compone el historial y `BottomPane`.
+`BottomPane` conserva el campo, el login, la actividad y el contexto.
+El composer comparte geometría entre medición, dibujo y cursor.
+El campo usa el prefijo `›`, fondo suave y espacio interior sin borde.
+El renderer usa el cursor real de la terminal.
+El campo desplaza el texto por grafemas completos.
+El historial conserva respuestas con las etiquetas del usuario.
+Node confirma los resultados antes de mostrar éxito.
+El viewport adapta su altura al contenido y a la pantalla.
+La empresa y la carpeta aparecen sobre los atajos.
+El login muestra espera y la URL pública completa en el historial.
+Los estados de espera permiten cancelar.
+La paleta deriva de los colores de la terminal.
+Los estilos tienen variantes claras, oscuras, ANSI256 y colores por defecto.
+`NO_COLOR` conserva los colores nativos.
+El contrato visual vive en `ui/ux/ctrl-cli.yaml`.
+La evidencia vive en `ui/ux/evidence/ctrl-cli/README.md`.
 
 El paquete principal requiere Node 20 o superior.
 Los aliases son `ctrl`, `ctrl-l`, `create-ctrl` y `pull-ctrl`.
 El shim de `pull-ctrl` antepone `--pull`.
 `--help` y `--version` no requieren binarios nativos.
-Los tres paquetes opcionales usan la versión exacta del paquete principal.
+Los seis paquetes opcionales usan la versión exacta del paquete principal.
 Cada paquete nativo contiene `ctrl-tui` y el helper existente.
 La resolución del helper sigue `--auth-cli`, `CTRL_AUTH_CLI`, `OBRA_AUTH_CLI`, `CTRL_HELPER_PATH` y la instalación de Ctrl+.
 El helper conserva `obra-clerk-auth`, la cuenta, el estado, los locks y la generación compartida con el editor.
 
-El repositorio público de descarga es `Ssrrb/ctrl-releases`.
-El fork permanece privado.
-El manifiesto fija versión, URL, SHA-256 y entrada ejecutable para cada plataforma.
-La instalación usa `~/Applications`, `~/.local/share/ctrl-plus` o `%LOCALAPPDATA%/Programs/CtrlPlus`.
-El instalador verifica el archivo antes de extraerlo en staging.
-El instalador publica la instalación completa y rechaza destinos ajenos o incompletos.
-Un fallo conserva los proyectos creados.
-La primera distribución carece de firmas Apple y Windows.
-Si el sistema impide abrir la app, el asistente muestra instrucciones.
+### Identidad del llavero de macOS
 
-La publicación usa los artefactos verificados sin reconstruirlos.
-El orden es escritorio, paquetes nativos y paquete principal.
-Un fallo parcial detiene la secuencia.
-La publicación local usa autenticación npm y `--access public`, sin `--provenance`.
-Antes de publicar, el operador verifica acceso al scope `@ctrlmas` y al repositorio público.
-La evidencia registra commit, versiones, hashes, plataforma y resultado.
-La prueba de otro sistema operativo permanece pendiente si no existe una ejecución nativa.
+`setup-codesign.mjs` crea una identidad persistente `ctrl-codesign` en el llavero del usuario.
+El script reutiliza la identidad existente.
+El empaquetado firma el helper con `com.ctrlmas.ctrl-auth`.
+El empaquetado firma la TUI con `com.ctrlmas.ctrl-tui`.
+La firma fija certificado e identificador entre builds.
+La lectura y escritura conservan `keyring`.
+La implementación evita pasar credenciales a `security` mediante argumentos.
+La autorización de un ítem previo con firma ad-hoc puede requerir una migración.
+`verify-keychain.mjs` comprueba dos builds con bytes y rutas distintos.
+La prueba usa un ítem temporal y lo elimina al terminar.
+La prueba no lee credenciales de Clerk.
+Esta identidad no reemplaza Developer ID ni notarización.
+
+### Evidencia actual de la fase uno
+
+| Comprobación | Resultado |
+|---|---|
+| Backend Node | 235 pruebas aprobadas; tipos y bundle correctos |
+| Renderer Rust | 14 pruebas aprobadas; clippy sin avisos |
+| PTY desde tarballs | 15 escenarios aprobados; login, Unicode, NO_COLOR, resize, señales, EOF y errores |
+| Runtime integrado | Ocho escenarios aprobados con Electron, paleta clara y Node fuera de PATH |
+| Paquetes locales | Principal y macOS ARM64 instalados offline fuera del checkout; cuatro aliases responden |
+| Llavero aislado | Dos builds firmados con el mismo requisito designado leen el mismo ítem temporal |
+| Íconos | Los cuatro commits del PR 14 ya son ancestros de la rama actual |
+| Revisión visual | Pendiente; los PNG derivan de celdas capturadas por xterm en PTY |
+| Clerk real | Pendiente; login, invitación, réplica y apertura requieren ejecución del usuario |
+
+La rama actual es `feat/create-ctrl-levels-release`.
+La tabla siguiente conserva evidencia de la entrega anterior.
+El ZIP anterior no contiene el renderer de esta fase.
+El release exige un nuevo artefacto de escritorio con estos bytes.
 
 ## Evidencia de la implementación npm y TUI
 
