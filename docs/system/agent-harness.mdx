@@ -1,0 +1,325 @@
+# Ejecución de agentes de IA
+
+*System · draft*
+
+## Propósito y alcance
+
+Este documento propone un entorno para medir y mejorar los agentes de ctrl+.
+No registra una elección aprobada.
+El objetivo principal es controlar instrucciones, contexto, herramientas, capacidades y evaluaciones mediante ejecuciones trazables.
+El reemplazo del backend de Copilot permite que ctrl+ controle ese proceso de mejora.
+El alcance incluye la operación de los módulos y la creación o modificación de extensiones por el usuario.
+El usuario identifica DeepSeek Harness como el repositorio `deepseek-ai/deepseek-harness`.
+La dirección solicitada es un fork mínimo de DSH, un plugin de ctrl+ y el adaptador del chat existente.
+El [plan del entorno propio](../execution/owned-agent-runtime.mdx) define el MVP y sus criterios de entrega.
+
+La separación entre ERP y ECMS sigue [la arquitectura integrada](../foundations/erp-ecms-architecture.mdx).
+Las capas de la aplicación siguen [la visión general](architecture-overview.mdx).
+El agente usa las reglas existentes de cada motor.
+
+## Entorno de experimentación
+
+La interfaz existente presenta las ejecuciones de producción y sus resultados.
+Un ejecutor de evaluaciones usa los mismos contratos sin depender de clics en esa interfaz.
+El registro de experimentos pertenece a ctrl+ y no al proveedor de modelos o al backend elegido.
+DSH es el primer candidato para el entorno que ctrl+ configura y mejora.
+Codex y Claude Code pueden participar mediante adaptadores de sus entornos respectivos.
+
+La integración de [Codex App Server](https://learn.chatgpt.com/docs/app-server) conecta una aplicación con el entorno de Codex.
+El [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview) expone el ciclo de agente y las herramientas que utiliza Claude Code.
+Estos adaptadores no convierten esos productos en modelos intercambiables dentro de DSH.
+El equipo registra qué opciones controla y qué eventos observa en cada backend.
+La falta de un evento o una opción se registra como capacidad no disponible.
+La falta de datos de uso se registra como dato desconocido, no como consumo cero.
+
+| Experimento | Elemento que cambia | Elementos que se conservan |
+|---|---|---|
+| Modelo | Proveedor o modelo dentro del mismo entorno. | Tarea, instrucciones, herramientas, contexto inicial, permisos y límites. |
+| Entorno | DSH, Codex o Claude Code mediante su adaptador. | Tarea, estado inicial, criterio de éxito y presupuesto de recursos. Las diferencias de herramientas e instrucciones se declaran. |
+| Instrucción | Una revisión del prompt que el entorno permite configurar. | Modelo, herramientas, fuentes de contexto, tarea y límites. |
+| Capacidad | Una herramienta, skill o fuente de contexto nueva. | Casos de evaluación existentes y condiciones de comparación. |
+
+Cada ejecución conserva un manifiesto con los siguientes datos:
+
+- Identificadores de tarea, ejecución y experimento.
+- Versión del backend y configuración efectiva de plugins.
+- Modelo solicitado, modelo informado cuando exista y configuración de generación.
+- Revisión de instrucciones y referencias al contexto utilizado.
+- Esquemas de herramientas, política de permisos y límites.
+- Estado inicial de archivos y datos de prueba.
+- Versión de evaluadores y criterios de éxito.
+
+La traza conecta cada llamada al modelo con las herramientas, decisiones y resultados disponibles.
+El registro conserva cambios y artefactos para comprobar el estado final.
+La traza no presupone acceso al razonamiento interno del modelo.
+Los secretos se excluyen antes de almacenar o exportar datos.
+La conservación del contexto respeta el alcance de los datos de la empresa.
+
+Un caso define una solicitud, un estado inicial, acciones prohibidas y comprobaciones del resultado.
+Una prueba de certificado verifica datos y reglas del motor.
+Una prueba de extensión verifica compilación, contrato y conducta observable.
+Una prueba de permisos verifica que el estado protegido permanezca sin cambios.
+Los evaluadores de estado y las pruebas ejecutables prevalecen sobre una valoración del texto por otro modelo.
+
+El ejecutor restablece el entorno entre casos y evita escrituras sobre datos de producción.
+Las comparaciones repiten los casos y declaran fallos, tiempos de espera y condiciones de caché.
+El equipo compara éxito, costo por tarea exitosa, tiempo y violaciones de política.
+Una ejecución repetible conserva las condiciones de prueba, pero no promete una respuesta idéntica del modelo.
+El equipo conserva casos separados para verificar mejoras sin ajustar el sistema a todas las respuestas conocidas.
+
+El ciclo de mejora registra una línea base, modifica un factor, repite la evaluación y revisa regresiones.
+Una capacidad nueva necesita pruebas de su contrato y casos que demuestren su utilidad.
+El equipo activa una configuración mediante una decisión registrada y puede restaurar la configuración anterior.
+
+## Conceptos
+
+El modelo propone respuestas y llamadas a herramientas.
+El router selecciona el proveedor y el modelo de cada solicitud.
+El entorno de ejecución, o harness, prepara el contexto, llama al modelo, procesa herramientas y conserva el estado necesario para continuar.
+El adaptador del editor conecta ese entorno con Code OSS.
+El servicio de negocio autoriza y ejecuta una operación de la aplicación.
+
+Una instrucción describe una conducta deseada.
+Una política ejecutable permite o rechaza una acción.
+Una confirmación registra la autorización del usuario para una acción concreta.
+Un sandbox limita los recursos que un proceso puede usar.
+Estos mecanismos cumplen funciones distintas.
+
+## Integración con Code OSS
+
+El código local ofrece dos vías de integración.
+
+Una extensión puede conectar un chat propio con herramientas del editor mediante las API públicas.
+Una herramienta puede abrir una vista, leer contexto o llamar al servicio de negocio.
+La [API de herramientas](https://code.visualstudio.com/api/extension-guides/ai/tools) permite registrar esquemas, implementaciones y mensajes de confirmación.
+Un comando registrado no se convierte por ese hecho en una herramienta del modelo.
+
+El Agent Host del fork ofrece una integración interna más profunda.
+La interfaz `IAgent` está en `vscode/src/vs/platform/agentHost/common/agent.ts`.
+Su propiedad `chats` conecta el ciclo de vida de los chats con el entorno del proveedor.
+Su método `respondToPermissionRequest` entrega una decisión de autorización al entorno correspondiente.
+La arquitectura local se describe en `vscode/src/vs/platform/agentHost/AGENTS.md`.
+Estas interfaces internas requieren mantenimiento al incorporar cambios de upstream.
+
+### DSH detrás de la interfaz existente
+
+El usuario requiere conservar la interfaz de chat que usa Copilot dentro de la aplicación.
+La propuesta conecta DSH como backend de ese chat mediante un proveedor `IAgent` propio.
+DSH es el entorno de ejecución de esos chats.
+El proveedor adapta los protocolos y no añade otro ciclo de razonamiento.
+La implementación de este proveedor sigue pendiente.
+
+La ruta propuesta es: chat del workbench, Agent Host, adaptador de ctrl+, DSH y router de modelos.
+`vscode/src/vs/platform/agentHost/node/agentHostProviderService.ts` registra proveedores mediante `registerProvider`.
+`vscode/src/vs/workbench/contrib/chat/browser/agentSessions/agentHost/agentHostChatContribution.ts` conecta proveedores con el chat existente.
+`vscode/src/vs/workbench/contrib/chat/browser/agentSessions/agentHost/agentHostSessionHandler.ts` transforma el estado del protocolo en progreso, herramientas y decisiones del chat.
+El adaptador debe comprobar las condiciones específicas de Copilot que aún afectan modelos, ubicaciones y personalizaciones.
+La reutilización del chat no garantiza paridad automática con autocompletado, edición inline u otras funciones de Copilot.
+
+El [cliente TypeScript de DSH](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/sdk/client/README.md) controla un proceso hijo por JSON-RPC sobre stdio.
+La aplicación puede distribuir y administrar ese proceso sin mostrar la interfaz web de DSH.
+La [arquitectura de DSH](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) define perfiles de arranque como vía soportada.
+La carga directa de plugins dentro del proceso del editor no es una vía de integración de producto soportada por esa arquitectura.
+La propuesta conserva una sola aplicación y un solo ciclo de agente activo por chat.
+No promete ejecutar DSH dentro del mismo proceso del editor.
+
+El contrato del adaptador incluye entrada de mensajes, contexto del editor, eventos de progreso, herramientas, aprobaciones, cancelación e historial.
+DSH conserva su registro de ejecución.
+Agent Host conserva el catálogo de chats y las referencias necesarias para restaurarlos.
+Un mapa estable de identificadores conecta chat, sesión DSH, turno y llamada a herramienta.
+El adaptador reconstruye la vista del chat sin crear un historial de ejecución independiente.
+
+El [protocolo SDK documentado](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/sdk/protocol/README.md) no ofrece cancelación por turno ni cierre por sesión.
+El cliente documenta que las solicitudes de servidor a cliente para aprobaciones aún no están implementadas.
+El protocolo publica eventos duraderos y estados del agente, pero no declara notificaciones de tokens en curso.
+La integración necesita ampliar el transporte o aportar un plugin de puente para esas capacidades.
+Cerrar el proceso es un recurso de interrupción, pero no equivale a cancelar un chat dentro de un proceso compartido.
+Las pruebas deben verificar cancelación, aprobación, progreso de texto y revisión nativa de ediciones antes de afirmar paridad con la experiencia actual.
+El [transporte ACP de DSH](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/acp/acp/README.md) ofrece otra ruta que documenta cancelación, permisos y cierre por sesión.
+El plan prueba esa ruta antes de modificar el SDK.
+ACP omite deltas crudos y reproducción de historial; el adaptador debe verificar el alcance requerido por ctrl+.
+
+`IHarnessDescriptor` está en `vscode/src/vs/workbench/contrib/chat/common/customizationHarnessService.ts`.
+El descriptor representa las capacidades y fuentes del panel de personalizaciones.
+Registrar ese descriptor no sustituye el ciclo de ejecución de Copilot.
+Cambiar el proveedor del modelo tampoco sustituye por sí mismo ese ciclo.
+
+## Permisos y ejecución
+
+El flujo propuesto tiene seis pasos:
+
+1. El usuario solicita una tarea.
+2. El entorno entrega al modelo el contexto y las herramientas permitidas.
+3. El modelo propone una herramienta con argumentos estructurados.
+4. La política valida los argumentos y decide si permite, rechaza o solicita confirmación.
+5. El ejecutor llama a la API del editor o al servicio de negocio.
+6. El entorno registra el resultado y decide si necesita otro paso.
+
+El modelo no recibe acceso directo al editor por generar una llamada.
+El código que implementa la herramienta realiza la acción.
+La selección de herramientas no sustituye la autorización dentro del ejecutor.
+El servicio verifica el usuario, la empresa, la obra y la operación en cada solicitud.
+Una confirmación del chat no amplía el rol del usuario.
+
+La configuración `trustedExtensionAuthAccess` citada en las notas de DeepWiki corresponde a autenticación de extensiones.
+No concede autorización general para modificar archivos o datos de negocio.
+Las [confirmaciones y el sandbox](https://code.visualstudio.com/docs/agents/concepts/trust-and-safety) son controles separados.
+El alcance de cada control depende del entorno y de la herramienta utilizados.
+
+## Un entorno con dos capacidades
+
+La propuesta usa un entorno compartido para conversación, contexto, router y trazas.
+La política concede capacidades distintas para operar módulos y desarrollar extensiones.
+El permiso para crear una extensión no concede acceso a todos los datos de la empresa.
+El permiso para usar un módulo no concede permiso para modificar su código.
+
+| Capacidad | Herramientas propuestas | Autoridad |
+|---|---|---|
+| Operar | Consultar datos, preparar cambios, guardar un borrador y abrir una vista. | Permisos del usuario en el servicio de negocio. |
+| Extender | Leer el SDK de ctrl+, generar archivos, ejecutar pruebas y abrir una vista previa. | Permisos sobre el proyecto de la extensión y su entorno de prueba. |
+| Activar | Instalar o activar una versión concreta para una obra o empresa. | Rol autorizado y capacidades declaradas por la extensión. |
+
+El SDK de extensiones de ctrl+ es una propuesta de contrato pendiente de definición.
+El contrato debe describir puntos de extensión, versiones compatibles, acceso a datos y capacidades permitidas.
+Los módulos pueden aportar vistas, comandos y herramientas del agente mediante ese contrato.
+El código generado usa ese contrato y conserva las reglas de ERP y ECMS.
+La definición de módulos sigue [la jerarquía existente](../domain/module-hierarchy.mdx).
+
+El flujo de desarrollo crea un proyecto, genera el cambio, ejecuta pruebas y presenta una vista previa.
+El flujo de activación identifica la versión revisada y las capacidades solicitadas.
+Una modificación posterior invalida la aprobación de esa versión.
+La actualización conserva los datos existentes y permite volver a una versión compatible.
+Una migración de datos requiere un plan propio de recuperación.
+
+El Extension Host de Node no constituye por sí solo un sandbox para código no confiable.
+Una API limitada tampoco impide que ese código acceda directamente a recursos del proceso.
+La ejecución de extensiones no confiables requiere un aislamiento aplicable a sus recursos y un canal de capacidades limitado.
+La elección concreta de ese aislamiento queda pendiente de la prueba.
+
+Un plugin de DeepSeek Harness modifica el entorno del agente.
+Una extensión de ctrl+ añade capacidades a la aplicación.
+El sistema no trata esas dos categorías como instalaciones equivalentes.
+La instalación de una extensión de negocio no instala por defecto un plugin con autoridad sobre el entorno del agente.
+
+## Criterios de selección
+
+Cada candidato debe demostrar los siguientes criterios con el mismo conjunto de tareas.
+
+| Criterio | Evidencia requerida |
+|---|---|
+| Control del entorno | El equipo puede modificar instrucciones, herramientas, políticas y límites sin depender de una cuenta de Copilot. |
+| Router propio | Dos proveedores completan una tarea con las mismas herramientas. El sistema valida sus capacidades antes de enviar la solicitud. |
+| Autoridad del usuario | El ejecutor rechaza una operación fuera de la empresa, obra o rol autorizado, incluso con argumentos válidos. |
+| Confirmación | La aprobación identifica la acción y sus argumentos. Un cambio posterior exige una nueva decisión. |
+| Recuperación | Una interrupción conserva el estado. Un reintento no duplica una escritura de negocio. |
+| Control de ejecución | Cancelación, tiempo máximo y límites de pasos, tokens y gasto detienen el trabajo. |
+| Contexto | Cada tarea identifica las reglas aplicadas y las fuentes consultadas. Los documentos recuperados no pueden ampliar permisos. |
+| Observación | Un identificador conecta solicitud, modelo, decisión de política, herramienta y resultado. El registro excluye secretos. |
+| Calidad | Pruebas automáticas verifican resultados, rechazos y estado final. Una respuesta convincente no basta. |
+| Mantenimiento | La integración declara su dependencia de API públicas o internas, licencia, versión fijada y estrategia de actualización. |
+| Desarrollo de extensiones | El agente crea una extensión mediante el SDK propuesto, ejecuta pruebas y abre una vista previa con datos de prueba. |
+| Aislamiento | Una extensión no confiable no puede eludir el canal de capacidades para obtener credenciales o datos de otra empresa. |
+| Activación y actualización | La activación verifica versión, rol y capacidades. La actualización demuestra conservación de datos y recuperación. |
+
+La autorización, la integridad de las escrituras y el control del entorno son condiciones obligatorias.
+Una mejora de costo o velocidad no compensa el incumplimiento de esas condiciones.
+Entre los candidatos que pasan, el equipo compara éxito de tarea, costo por tarea exitosa, duración y trabajo de integración.
+Las mediciones distinguen fallos del modelo, del entorno y del servicio de negocio.
+
+## Candidatos para una prueba
+
+| Recurso | Uso propuesto | Punto que debe comprobar la prueba |
+|---|---|---|
+| [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) | Primer candidato si interesa sustituir capacidades mediante plugins. | Integración del SDK con el editor, aplicación de políticas y recuperación de escrituras. |
+| [AI SDK](https://ai-sdk.dev/docs/agents/overview) | Base TypeScript para un entorno pequeño bajo control del equipo. | Cuánto estado, recuperación y auditoría debe implementar ctrl+. |
+| [Deep Agents para JavaScript](https://docs.langchain.com/oss/javascript/deepagents/overview) | Alternativa con planificación, archivos y delegación incorporados. | Si las capacidades adicionales ayudan a las tareas reales. |
+| [Persistencia de LangGraph](https://docs.langchain.com/oss/javascript/langgraph/persistence) | Alternativa para flujos que se interrumpen y continúan. | Recuperación con almacenamiento persistente y efectos de negocio idempotentes. |
+| [OpenTelemetry](https://opentelemetry.io/docs/) | Trazas exportables bajo control del equipo. | Correlación entre modelo, política y servicio, con datos sensibles excluidos. |
+| [Promptfoo](https://www.promptfoo.dev/docs/getting-started/) | Comparación automática de configuraciones mediante un adaptador del entorno. | Evaluar llamadas reales y estado final, además del texto de respuesta. |
+
+Estos recursos cumplen funciones diferentes.
+La propuesta compara entornos alternativos antes de combinar dependencias.
+MCP puede conectar herramientas externas, pero no define por sí mismo el entorno ni la autorización de negocio.
+
+DeepSeek Harness usa Cordis y permite sustituir servicios mediante plugins.
+Su [arquitectura](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) describe un SDK, un registro de herramientas y un registro de eventos de sesión.
+El proyecto declara una vista previa con cambios incompatibles posibles.
+Su [aviso de seguridad](https://github.com/deepseek-ai/deepseek-harness/blob/master/SAFETY.md) indica que no está preparado para producción ni auditado.
+La primera prueba usa un entorno desechable y datos ficticios.
+
+## Comparación con Agent-Native
+
+[Agent-Native](https://github.com/BuilderIO/agent-native) es otro candidato para la arquitectura.
+No es solo una biblioteca de interfaz.
+Su [contrato de superficies](https://www.agent-native.com/docs/agent-surfaces/) incluye un ciclo propio, un motor de llamadas al modelo y ejecución sin navegador.
+El ciclo recibe modelo, instrucciones, herramientas, acciones, mensajes y señal de cancelación.
+
+DSH centra su arquitectura en plugins de Cordis que componen el modelo, las herramientas, el ciclo y el registro de sesión.
+Agent-Native centra su arquitectura en acciones compartidas por la interfaz, el agente y protocolos externos.
+El segundo enfoque incluye estado SQL, identidad y operaciones de aplicación.
+Ambos permiten ampliar capacidades, pero sus contratos de extensión tienen alcances distintos.
+
+| Necesidad | DSH | Agent-Native |
+|---|---|---|
+| Configurar llamadas al modelo | Adaptadores de modelo compuestos mediante plugins. | Motores y modelos bajo el ciclo de la aplicación. |
+| Modificar el entorno | Servicios y eventos reemplazables mediante Cordis. | Acciones, procesadores del ciclo, adaptadores y extensiones del framework. |
+| Operar módulos | Herramientas que conectan con los servicios de ctrl+. | Acciones compartidas por agente e interfaz con validación y autorización. |
+| Trazar ejecuciones | Registro de sesión y capacidades de telemetría del entorno. | Trazas de ejecuciones, llamadas al modelo y herramientas, con infraestructura de observación documentada. |
+| Evaluar cambios | Necesita conectar los casos y el ejecutor de ctrl+. | Documenta un ejecutor de evaluaciones y umbrales de CI. |
+| Conservar el chat de Code OSS | Requiere el adaptador propuesto. | También requiere un adaptador; sus componentes de chat no equivalen a los del workbench. |
+
+La [observación de Agent-Native](https://www.agent-native.com/docs/observability/) documenta consumo, costo, duración, herramientas y experimentos.
+El [ejecutor de evaluaciones](https://www.agent-native.com/docs/evals/) usa el ciclo y el registro de motores del framework.
+Su contrato permite preparación personalizada y evaluadores adicionales.
+ctrl+ debe aportar las comprobaciones del estado de negocio y la integridad de las extensiones.
+La documentación no prueba que toda esa instrumentación observe cada llamada interna de un entorno externo.
+
+Agent-Native distingue un motor para una llamada al modelo de un [adaptador de entorno completo](https://www.agent-native.com/docs/harness-agents/).
+Documenta adaptadores para Codex, Claude Code y Pi, además de ACP.
+Las capacidades de aprobación, aislamiento y restauración dependen del adaptador.
+Su existencia no demuestra paridad con los proveedores del Agent Host del fork.
+
+La recomendación provisional mantiene DSH como candidato para controlar la composición del entorno.
+Agent-Native merece una prueba por su infraestructura de acciones, observación y evaluaciones.
+La prueba debe medir el costo de adoptar sus contratos de servidor, identidad y persistencia junto con la arquitectura existente.
+No se propone combinar ambos ciclos de agente.
+Una combinación futura necesitaría definir un único dueño del ciclo por chat y un contrato explícito entre ambos sistemas.
+Esta comparación se basa en documentación y código publicados; no incluye mediciones de ejecución.
+
+## Primera prueba propuesta
+
+El [plan del entorno propio](../execution/owned-agent-runtime.mdx) fija la secuencia vigente para implementar esta prueba.
+
+El equipo establece una línea base con DeepSeek Harness y un conjunto pequeño de tareas representativas.
+El primer objetivo es ejecutar, trazar y evaluar esas tareas desde el mismo contrato que usa el chat.
+Después se cambia una instrucción, herramienta o fuente de contexto para comprobar el ciclo de mejora.
+Una comparación de modelos conserva el entorno y cambia el modelo mediante el router.
+Una comparación posterior de backends añade Codex o Claude Code y declara sus diferencias.
+El equipo repite cada escenario para observar variación.
+
+El flujo de operación propone un borrador de certificado desde una medición oficial de prueba.
+Una herramienta consulta datos autorizados.
+Otra prepara una vista previa con los cálculos del motor ECMS.
+Otra guarda el borrador aprobado por el usuario.
+El servicio rechaza revisiones obsoletas y usa una clave de idempotencia.
+El agente abre el borrador en el editor mediante un adaptador limitado.
+Las reglas del certificado siguen [el documento de dominio](../domain/certifications.mdx).
+
+El flujo de desarrollo crea una extensión de informe semanal desde esos certificados de prueba.
+La extensión consulta los datos mediante el contrato propuesto y muestra su procedencia.
+El agente genera el proyecto, ejecuta una verificación dirigida y abre una vista previa en un entorno aislado.
+El usuario autorizado puede activar la versión revisada para la obra de prueba.
+Una segunda solicitud modifica la extensión y verifica su compatibilidad con la versión anterior.
+Las herramientas de desarrollo y las herramientas de negocio tienen permisos separados.
+
+La prueba incluye una tarea válida, acceso a otra empresa, cancelación, contenido que intenta ampliar permisos, fallo del proveedor e interrupción después de una escritura.
+La prueba comprueba que generar una extensión no permite activarla sin el rol necesario.
+La prueba comprueba que una extensión no obtiene capacidades adicionales al invocar una herramienta del agente.
+El informe compara el resultado final, los rechazos correctos, el costo, la duración y el trabajo necesario para mantener la integración.
+
+## Límites de esta propuesta
+
+La revisión consulta el wiki, las interfaces locales y documentación oficial.
+No ejecuta ni compara los candidatos.
+El directorio `factory/` no está presente en este workspace.
+La compatibilidad del SDK y las garantías de cada candidato requieren la prueba propuesta.

@@ -1,0 +1,216 @@
+# Entorno propio para agentes
+
+*Execution · draft*
+
+## Objetivo
+
+ctrl+ controla la ejecución de sus agentes mediante un fork de DeepSeek Harness (DSH), un plugin propio y un adaptador del chat existente.
+El equipo mide cambios de instrucciones, herramientas, contexto y modelos antes de activarlos.
+El objetivo económico es reducir el costo total de propiedad sin reducir la calidad de las tareas.
+La [arquitectura del agente](../system/agent-harness.mdx) define las responsabilidades y los permisos.
+
+Este documento fija el alcance propuesto de la primera entrega.
+No confirma una integración ejecutada ni una reducción de costo medida.
+
+## Decisión de alcance
+
+El equipo mantiene un fork fijado a un commit de upstream.
+El fork puede comenzar sin cambios en el código del núcleo.
+Un perfil de DSH carga un paquete de plugin de ctrl+.
+El plugin contiene la integración del router, las herramientas de aplicación y la instrumentación que no cubra DSH.
+El adaptador del fork de Code OSS conecta el chat con el proceso administrado de DSH.
+DSH conserva un solo ciclo de agente por conversación.
+
+El MVP reutiliza las herramientas, el registro de sesión, la persistencia y las capacidades de política de DSH.
+El equipo no crea otro framework de agentes ni otra interfaz de chat.
+El equipo registra cada parche del núcleo con su motivo, prueba y condición de eliminación.
+La distribución fija el commit de DSH, las dependencias, el perfil y el plugin como una unidad reproducible.
+
+## Componentes mínimos
+
+| Componente | Responsabilidad |
+|---|---|
+| Fork de DSH | Proveer el ciclo, la composición de plugins y la persistencia del entorno. |
+| Plugin ctrl+ | Conectar router, herramientas, revisiones de prompt y datos de observación. |
+| Adaptador del editor | Traducir chat, permisos, cancelación y referencias de sesión al transporte elegido. |
+| Ejecutor de evaluaciones | Ejecutar casos mediante el mismo perfil, plugin y contrato que usa el chat. |
+| Informe de comparación | Mostrar calidad, consumo, costo, duración y diferencias entre configuraciones. |
+
+La instrumentación usa primero los eventos y datos existentes de DSH.
+Los metadatos de evaluación se guardan junto al registro de ejecución con referencias estables.
+El MVP no duplica el historial de conversación en otra base de datos.
+Un archivo estructurado y un informe Markdown bastan para consultar las primeras comparaciones.
+Un dashboard o un servicio de telemetría requieren una necesidad posterior demostrada.
+
+## Transporte y compatibilidad
+
+El primer experimento verifica el [perfil ACP](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/acp/acp/README.md) antes de modificar el SDK.
+Ese contrato documenta cancelación, permisos de una sola operación, cierre por sesión y restauración.
+Su transporte publica mensajes confirmados y eventos semánticos.
+No expone deltas crudos, reproducción de transcripciones ni todas las funciones interactivas de DSH.
+
+El MVP acepta mostrar la respuesta cuando se confirma el mensaje.
+El historial visible se reconstruye desde los registros existentes mediante el adaptador.
+La inspección del formato persistido se concentra en un lector sujeto al commit fijado.
+Una restauración debe mostrar el historial sin ejecutar otra llamada al modelo.
+Las funciones no soportadas se declaran en las capacidades del proveedor.
+
+Las limitaciones de cancelación y aprobaciones del [SDK documentado](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/sdk/client/README.md) no se atribuyen al transporte ACP.
+Si ACP no cubre un requisito obligatorio, el equipo documenta el caso fallido antes de ampliar el transporte.
+Los deltas de texto y la revisión avanzada de ediciones no justifican reescribir el ciclo.
+El proceso local usa stdio y no se publica como servidor accesible por red.
+
+## Hito uno: probar la integración
+
+El equipo verifica los contratos en un commit concreto de DSH.
+El equipo registra las licencias, la versión de Node y las dependencias requeridas.
+El paquete se prepara dentro del área de código de `vscode/` y conserva su procedencia upstream.
+La ruta concreta del checkout del fork se define conforme al proceso existente de dependencias.
+
+La primera prueba usa un modelo, una configuración de prompt y un proyecto aislado.
+El adaptador conecta el chat nativo con DSH.
+El plugin registra una herramienta que consulta datos ficticios mediante un contrato de ctrl+.
+El equipo reutiliza la infraestructura existente del Agent Host para proceso, catálogo de chats y restauración.
+
+### Salida verificable
+
+- El chat entrega una solicitud y muestra el resultado de una herramienta.
+- Una aprobación autoriza solo la acción y los argumentos presentados.
+- Una negativa impide ejecutar la herramienta.
+- Stop cancela el trabajo y la sesión puede recibir otra solicitud.
+- Cerrar una sesión no interrumpe otra sesión activa.
+- Reiniciar la aplicación conserva el historial y no repite operaciones.
+- El adaptador expone errores de protocolo sin convertirlos en respuestas exitosas.
+
+El equipo decide continuar o reducir el alcance con estas pruebas.
+No activa escrituras de negocio hasta que funcionan autorización, cancelación y recuperación.
+
+## Hito dos: trazar y contabilizar
+
+La misma entrega incorpora observación desde el primer flujo completo.
+El identificador de ejecución conecta chat, sesión DSH, turno, intento del modelo y herramienta.
+El registro conserva la relación con ejecuciones hijas cuando existan.
+
+| Dato | Regla de captura |
+|---|---|
+| Configuración | Commit de DSH, versión del plugin, perfil, modelo y revisión del prompt. |
+| Contexto | Fuentes, revisiones y contenido efectivo permitido para reproducir el caso. |
+| Modelo | Inicio, fin, resultado, reintento y error de cada intento observable. |
+| Tokens | Entrada, salida y caché según la semántica declarada por el proveedor. |
+| Herramienta | Nombre, versión, argumentos permitidos, resultado, tiempo y error. |
+| Política | Decisión de autorización, alcance y respuesta del usuario cuando corresponda. |
+| Resultado | Estado final, artefactos, comprobaciones y causa de fallo. |
+
+El plugin captura los datos dentro de DSH si ACP no los entrega.
+El transporte del editor no tiene que contener toda la telemetría.
+Los eventos se identifican para evitar duplicación al reconectar.
+Los totales evitan sumar otra vez el consumo de hijos que un proveedor ya incluya.
+Un intento fallido conserva su costo conocido.
+Un valor no informado se registra como desconocido.
+Una estimación se identifica como estimación.
+
+El costo monetario usa una tabla de precios con procedencia y revisión.
+La fórmula respeta si los tokens de caché forman parte del total de entrada.
+Un total estimado no se presenta como factura del proveedor.
+El informe incluye las llamadas auxiliares de resumen y evaluación cuando sean observables.
+
+Los casos de evaluación conservan el contexto completo permitido sobre datos ficticios.
+Los registros operativos excluyen secretos y limitan contenido, tamaño, acceso y retención.
+La tarea se marca sin evidencia completa si falla el registro.
+Una escritura controlada requiere registrar la intención antes de ejecutar y conciliar el resultado después.
+La traza no presupone acceso al razonamiento privado del modelo.
+
+### Salida verificable
+
+Un informe permite explicar qué configuración ejecutó una tarea, qué herramientas usó, por qué terminó y cuánto consumo se conoce.
+La prueba incluye un error del modelo, una herramienta fallida y una cancelación.
+La conciliación de tokens detecta eventos duplicados y datos ausentes.
+
+## Hito tres: evaluar prompts y herramientas
+
+El ejecutor usa la misma configuración de DSH que la aplicación.
+Solo sustituye las credenciales, el entorno y los datos por los de prueba.
+El equipo comienza con 12 casos y tres repeticiones por caso.
+Ese tamaño sirve para detectar regresiones iniciales, no para afirmar una superioridad estadística general.
+
+Los casos cubren consulta, borrador de certificado, generación de una extensión pequeña y manejo de fallos.
+La extensión usa un ejemplo mínimo del contrato de ctrl+ y se prueba en un proyecto aislado.
+El MVP no incluye marketplace ni instalación automática de código generado en producción.
+Cada caso declara estado inicial, solicitud, permisos, límites y verificaciones.
+
+Los evaluadores comprueban cantidades, estado final, artefactos y conducta ejecutable.
+Una respuesta convincente o la presencia de una llamada a herramienta no prueban éxito.
+Un evaluador con otro modelo se añade solo si una comprobación ejecutable no cubre un criterio necesario.
+Su consumo y versión se registran aparte.
+
+El primer experimento compara dos revisiones del prompt con el mismo modelo.
+Las herramientas, los datos, los límites y las condiciones de caché se conservan.
+El orden de ejecución se alterna para reducir efectos del momento de la prueba.
+El informe conserva fallos y tiempos de espera.
+Un subconjunto separado comprueba la configuración elegida sin ajustar el prompt a esos casos.
+
+### Salida verificable
+
+- Un comando ejecuta los casos sin usar la interfaz.
+- El resultado enlaza cada puntuación con su traza y sus artefactos.
+- Un caso que falla puede ejecutarse otra vez desde su estado inicial.
+- La comparación muestra éxitos, fallos, consumo, costo, duración y reintentos.
+- Un fallo de permisos, integridad o duplicación bloquea la promoción de la configuración.
+- Los umbrales de calidad se fijan con la línea base antes de elegir el candidato.
+
+Una comparación posterior cambia el modelo y conserva el resto de la configuración.
+El router empieza con selección explícita.
+La selección automática se añade después de disponer de evidencia por tipo de tarea.
+
+## Hito cuatro: integrar y activar el MVP
+
+El equipo completa el flujo desde el chat hasta el informe de evaluación.
+El flujo de negocio prepara y guarda un borrador sobre datos de prueba con una clave de idempotencia.
+El flujo de extensión crea un proyecto pequeño, ejecuta una comprobación y muestra el resultado.
+Una repetición tras interrupción no duplica la escritura.
+Las herramientas conservan la identidad y el alcance autorizado de la empresa y la obra.
+
+La distribución fija runtime, plugin, perfil y prompt como una configuración restaurable.
+El equipo prueba instalación y arranque en la plataforma usada por el piloto.
+La compatibilidad con otras plataformas se declara pendiente hasta probarlas.
+La activación inicial se limita al piloto autorizado y conserva la configuración anterior.
+Un cambio de esquema persistido exige una prueba de restauración y un plan de recuperación propio.
+
+El MVP termina cuando el equipo puede ejecutar, inspeccionar, modificar y comparar una configuración desde la aplicación y desde el ejecutor.
+Una exportación de informe basta; el MVP no requiere una interfaz de observación nueva.
+
+## Reducción del costo total
+
+El informe separa costo de inferencia, evaluaciones, infraestructura, almacenamiento y trabajo humano.
+El trabajo humano incluye desarrollo, mantenimiento del fork, revisión, corrección de fallos y operaciones.
+El equipo declara el periodo y el volumen al distribuir costos fijos.
+
+`TCO por tarea exitosa = costos totales del periodo / tareas completadas con éxito en ese periodo`
+
+El numerador incluye ejecuciones fallidas y reintentos.
+El equipo informa también el costo marginal por tarea para distinguirlo del costo fijo amortizado.
+Una reducción de tokens no se acepta como mejora si aumenta fallos o trabajo humano.
+El plan no promete un ahorro porcentual sin mediciones.
+
+La optimización empieza por eliminar llamadas redundantes y contexto irrelevante.
+Después se comparan prompts, selección de herramientas y modelos de menor costo.
+La caché se aprovecha solo si la comparación conserva la calidad y declara sus condiciones.
+Cada nueva capacidad incorpora al menos un caso útil y una prueba de regresión.
+
+## Mantenimiento y límites
+
+El perfil de ctrl+ y sus cambios permanecen fuera del núcleo cuando los contratos de plugin lo permiten.
+Cada actualización de upstream ejecuta las pruebas de transporte, trazas, permisos, restauración y tareas.
+El equipo registra horas de actualización y tamaño del conjunto de parches.
+No sigue automáticamente cada commit de upstream.
+Las actualizaciones corrigen una necesidad identificada o un problema de seguridad aplicable.
+El equipo conserva un responsable y una configuración anterior recuperable.
+
+Codex y Claude Code quedan para una entrega posterior mediante adaptadores explícitos.
+La evaluación de sus entornos no se confunde con cambiar un modelo dentro de DSH.
+También quedan fuera del MVP las migraciones automáticas, un marketplace, múltiples agentes coordinados y una plataforma propia de telemetría.
+
+DSH sigue siendo software en vista previa según su [aviso de seguridad](https://github.com/deepseek-ai/deepseek-harness/blob/master/SAFETY.md).
+El piloto comienza con datos ficticios y recursos limitados.
+Los contratos de transporte, los eventos y las garantías de aislamiento deben verificarse en el commit elegido.
+Este plan no inicia un fork remoto, no instala dependencias y no ejecuta modelos.
