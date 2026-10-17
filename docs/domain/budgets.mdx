@@ -2,6 +2,16 @@
 
 *Domain · draft*
 
+## Entrega de OpenCalc en ctrl
+
+El editor y el motor de Presupuestos se migran desde OpenCalc. El plan de implementación está en [Migración de OpenCalc](../execution/opencalc-integration.mdx).
+
+Una obra, identificada por una fila de `projects`, tiene un presupuesto actual. La organización es su propietaria. El workspace agrupa obras. Clerk autoriza a los miembros vigentes de la organización para consultar y editar.
+
+El documento OpenCalc conserva la representación canónica. El original importado se guarda como referencia contractual inmutable. Las operaciones registran el historial técnico. Restaurar una versión crea una revisión nueva.
+
+Esta entrega incluye importación, edición, eliminación recuperable, versiones, exportación y colaboración. Los procesos de aprobación, adendas, penalizaciones, topes y movimientos contractuales descritos más abajo pertenecen a entregas posteriores. No se consideran implementados por el historial técnico de operaciones.
+
 ## Qué es el Presupuesto
 
 El presupuesto es el **plan económico de la obra**:
