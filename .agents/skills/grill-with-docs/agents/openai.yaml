@@ -1,0 +1,5 @@
+interface:
+  display_name: "Grill with Docs"
+  short_description: "Sharpen a plan and write its wiki docs"
+policy:
+  allow_implicit_invocation: false

@@ -6,6 +6,12 @@ Este documento especifica las decisiones confirmadas del sprint `create-ctrl`. E
 
 El contexto de los dos motores está en `docs/foundations/erp-ecms-architecture.mdx`. La jerarquía de módulos está en `docs/domain/module-hierarchy.mdx`. El flujo de trabajo del sprint sigue `docs/execution/agile-workflow.mdx`.
 
+Este documento contiene solo el contrato.
+Los objetivos verificables y su estado están en `docs/execution/create-ctrl-plan.mdx`.
+El runbook manual de producción está en `docs/execution/create-ctrl-manual-e2e.mdx`.
+La evidencia de cada ronda está en `docs/execution/create-ctrl-evidence.mdx`.
+El procedimiento de publicación npm está en `docs/execution/ctrl-npm-release.mdx`.
+
 ## Objetivo
 
 El usuario instala el CLI con `npm i -g @ctrlmas/ctrl` o usa la terminal integrada de Ctrl+. La distribución incluye el CLI con la aplicación. El CLI crea un workspace con su primera obra (work site). El CLI también vincula una carpeta local a un workspace existente.
@@ -170,6 +176,7 @@ Opciones:
   --auth-cli     Comando del helper de autenticación
   --advanced     Permite editar la configuración y las sugerencias empresariales
   --pull         Trae todos los workspaces de la empresa seleccionada
+  --manage-org   Abre el portal de la organización en Clerk
   --yes          Acepta los recomendados sin preguntas
   --json         Produce un documento JSON en stdout
   --help         Muestra la ayuda
@@ -180,6 +187,8 @@ Reglas del comportamiento:
 
 - La opción `--workspace` vincula una carpeta local a un workspace existente.
 - La opción `--workspace` es incompatible con las opciones de modificación.
+- La opción `--manage-org` es incompatible con la creación, la vinculación y el destino.
+- Con la opción `--json`, `--manage-org` devuelve la organización, el rol y la URL del portal.
 - Si la selección de módulos está vacía, la opción `--yes` acepta los recomendados.
 - La opción `--json` no hace preguntas.
 - La opción `--json` no inicia el login interactivo.
@@ -390,314 +399,9 @@ Los documentos de fundamentos, puente y certificaciones usan obra para la unidad
 La tabla `projects` conserva las obras existentes. `workspaces` agrupa obras.
 Los documentos modificados permanecen como borradores hasta la aprobación del autor.
 
-## Revisión de preparación para producción
+## Experiencia de terminal
 
-La revisión corrige la verificación OAuth con el contrato del SDK de Clerk.
-La API requiere la clave publicable y la clave secreta de la instancia del helper.
-El onboarding exige administrador antes de devolver un perfil existente.
-Una carrera de onboarding reconcilia la membresía antes de consultar al ganador.
-El código automático de obra conserva el UUID completo para evitar colisiones.
-
-El diario local declara una versión independiente del manifiesto canónico.
-La recuperación vincula organización, servidor y entrada confirmada.
-La recuperación conserva archivos ajenos y rechaza rutas generadas incompatibles.
-El asistente interactivo permite crear o vincular después de elegir organización.
-
-El Worker preview utiliza una instancia separada y una base de desarrollo.
-La distribución del CLI con Ctrl+ y npm requiere la evidencia de las tres plataformas antes de la publicación estable.
-La evidencia debe identificar el commit verificado y las comprobaciones pendientes.
-Un fallo de facturación de GitHub Actions no equivale a una prueba aprobada.
-
-## Verificación manual del administrador y del miembro en producción
-
-Esta ronda verifica el PR `Ssrrb/ctrl-mas#14`, commit `c3c50fccbdb671745111a84f7a45213646e150c0`.
-La prueba utiliza dos cuentas en el mismo Mac.
-La organización anfitriona es `Sebas's Organization`, identificador `org_3KWSArrkx0yNy1x2ywExfkJs7TZ`.
-El administrador es `sebarojasb20@gmail.com`.
-El miembro es `sirsebastianrojas@gmail.com`.
-El autor confirma que el miembro ya aceptó la invitación.
-Esta ronda verifica su reconocimiento y su réplica; no repite la aceptación ni cambia membresías.
-
-### Cómo accede el miembro
-
-El miembro inicia sesión con su propia cuenta.
-La API consulta sus membresías vigentes en Clerk en cada solicitud autenticada.
-La API reconcilia `company_members` y resuelve la empresa mediante `companies.clerk_org_id`.
-El Worker consulta Neon con el rol `obra_api` y el contexto del usuario.
-Las políticas RLS aíslan los datos de cada empresa.
-La conexión a PostgreSQL pertenece al Worker; el miembro no recibe sus credenciales.
-Esta entrega utiliza la base del servicio con aislamiento por empresa; no provisiona una base separada para cada organización.
-
-La aceptación no crea una carpeta en la computadora del miembro.
-El miembro ejecuta `--workspace <id> --org <id>` para descargar el snapshot canónico.
-El CLI genera la misma estructura y los mismos identificadores en una carpeta nueva.
-La vinculación no crea otro workspace ni otra obra.
-La vinculación puede reconciliar las filas de identidad y membresía.
-La réplica no transfiere el contenido local de `archivos-compartidos/` ni mantiene sincronización continua.
-La revocación impide futuras consultas; no elimina los archivos ya descargados.
-
-### Preparación y conexión
-
-Ejecutar un bloque por vez en una terminal dedicada.
-Si un comando falla, conservar su salida y detener el siguiente paso.
-Las creaciones QA permanecen en producción.
-La prueba no utiliza los scripts antiguos que borran directorios temporales.
-
-El entorno local de esta ronda se guarda, sin credenciales, en `.research/stage2/manual-e2e.env`.
-La carpeta QA nueva es `/tmp/ctrl-e2e.bmPFRj`.
-El autor creó el workspace `sebas-obra` en `/Users/sebastian/Desktop/obra-studio/sebas-obra` y el perfil `sebas-enterprise`.
-`CTRL_QA_ADMIN` conserva esa ruta real; la carpeta no se mueve ni se elimina.
-La creación Recomendada ya terminó: continuar desde la réplica, sin repetir la creación.
-Si se pierde esa carpeta tras un reinicio, preparar otra ronda; no borrar ni reutilizar un destino ocupado.
-
-```bash
-source /Users/sebastian/Desktop/obra-studio/.research/stage2/manual-e2e.env
-"$CTRL_QA_NODE" "$CTRL_QA_CLI" --version
-"$CTRL_QA_HELPER" obra-auth session
-```
-
-La versión esperada es `0.1.0`.
-El helper sin `--json` muestra la cuenta y los scopes, sin mostrar el token.
-El helper con `--json` contiene un token: no copiar esa salida al reporte.
-La salida `--json` de `create-ctrl` no contiene credenciales.
-
-Comprobar HTTPS antes de cerrar una sesión existente:
-
-```bash
-"$CTRL_QA_NODE" -e '
-Promise.all([
-  "https://clerk.ctrlmas.tech/.well-known/openid-configuration",
-  process.env.CTRL_API_URL + "/healthz"
-].map(async url => {
-  const response = await fetch(url, { signal: AbortSignal.timeout(10000) });
-  if (!response.ok) throw new Error("HTTP " + response.status + " en " + url);
-  const data = await response.json();
-  if (url.endsWith("/healthz") && data.ok !== true) throw new Error("API sin healthz válido");
-  if (url.endsWith("/openid-configuration") && data.issuer !== "https://clerk.ctrlmas.tech") throw new Error("Issuer inesperado");
-  console.log(JSON.stringify({ url, status: response.status, issuer: data.issuer, ok: data.ok }));
-})).catch(error => { console.error(error.message); process.exitCode = 1; });
-'
-```
-
-La comprobación debe devolver HTTP 200 en ambos endpoints, el issuer esperado y `ok: true` para la API.
-En la red original, la inspección HTTPS de Fortinet presentó una cadena que los clientes locales rechazaron.
-La conexión desde el hotspot resolvió el fallo sin desactivar TLS ni cambiar certificados del sistema.
-Un fallo de confianza TLS no demuestra que Clerk o la API estén caídos.
-
-### Creación como administrador
-
-Si la sesión pertenece a otra cuenta, ejecutar logout después de comprobar HTTPS.
-El cambio de cuenta también afecta la sesión local que usa Ctrl+.
-
-```bash
-"$CTRL_QA_HELPER" obra-auth logout
-"$CTRL_QA_HELPER" obra-auth login --no-browser
-```
-
-Si la sesión ya está cerrada, ejecutar solamente el login.
-Abrir la URL de login en una ventana privada y usar `sebarojasb20@gmail.com`.
-No guardar esa URL en el reporte.
-Después del login, comprobar la organización:
-
-```bash
-"$CTRL_QA_NODE" "$CTRL_QA_CLI" --json --manage-org --org "$CTRL_QA_ORG" \
-  > "$CTRL_QA_ROOT/admin-org.json"
-printf 'exit=%s\n' "$?"
-cat "$CTRL_QA_ROOT/admin-org.json"
-```
-
-La respuesta debe contener `ok: true`, la organización anfitriona y `role: "org:admin"`.
-No continuar si la cuenta, la organización o el rol no coinciden.
-La URL de gestión devuelta apunta al Dashboard de desarrolladores de Clerk; este es un fallo conocido del PR, no una verificación aprobada del portal de usuarios.
-
-```bash
-printf 'Carpeta del administrador: %s\n' "$CTRL_QA_ADMIN"
-"$CTRL_QA_NODE" "$CTRL_QA_CLI" --org "$CTRL_QA_ORG"
-printf 'exit=%s\n' "$?"
-```
-
-El autor eligió Obra, Recomendada y el nombre `sebas-obra`.
-El autor utilizó `./sebas-obra` como destino y como nombre de la primera obra.
-Completar los datos de la primera obra.
-Si falta el perfil empresarial, el administrador lo completa en el asistente.
-Revisar el resumen antes de confirmar la creación.
-El autor eligió Invitar miembros; la CLI informó que abrió el Dashboard de desarrolladores de Clerk.
-La salida esperada es cero y la verificación local debe terminar con éxito.
-
-Comprobar el manifiesto y conservar el identificador:
-
-```bash
-"$CTRL_QA_NODE" -e '
-const fs = require("node:fs"), assert = require("node:assert/strict");
-const workspace = JSON.parse(fs.readFileSync(process.env.CTRL_QA_ADMIN + "/.ctrl/workspace.json", "utf8"));
-assert.equal(workspace.clerkOrgId, process.env.CTRL_QA_ORG);
-assert.equal(workspace.obras.length, 1);
-const obra = JSON.parse(fs.readFileSync(process.env.CTRL_QA_ADMIN + "/" + workspace.obras[0].path + "/.ctrl/obra.json", "utf8"));
-assert.equal(obra.workspaceId, workspace.workspaceId);
-assert.equal(obra.companyId, workspace.companyId);
-assert.equal(obra.modules.explicit.length, 17);
-assert(obra.modules.explicit.includes("ecms.budgets"));
-assert(!obra.modules.effective.some(module => module.code === "ecms.partes"));
-console.log(JSON.stringify({ workspaceId: workspace.workspaceId, companyId: workspace.companyId, obraId: obra.obraId, explicitCount: obra.modules.explicit.length }, null, 2));
-' &&
-export CTRL_QA_WS="$("$CTRL_QA_NODE" -p 'require(process.argv[1]).workspaceId' "$CTRL_QA_ADMIN/.ctrl/workspace.json")"
-```
-
-### Réplica como miembro
-
-Después de verificar la creación, cerrar la sesión del administrador e iniciar sesión en una ventana privada como `sirsebastianrojas@gmail.com`.
-
-```bash
-"$CTRL_QA_HELPER" obra-auth logout
-"$CTRL_QA_HELPER" obra-auth login --no-browser
-"$CTRL_QA_NODE" "$CTRL_QA_CLI" --json --manage-org --org "$CTRL_QA_ORG" \
-  > "$CTRL_QA_ROOT/member-org.json"
-printf 'exit=%s\n' "$?"
-cat "$CTRL_QA_ROOT/member-org.json"
-```
-
-La organización debe conservar el mismo identificador y devolver `role: "org:member"`.
-Si la terminal se cerró, cargar el entorno y recuperar `CTRL_QA_WS` desde el manifiesto del administrador.
-
-```bash
-"$CTRL_QA_NODE" "$CTRL_QA_CLI" --json --yes \
-  --org "$CTRL_QA_ORG" --workspace "$CTRL_QA_WS" \
-  "$CTRL_QA_ROOT/member" > "$CTRL_QA_ROOT/member-result.json"
-printf 'exit=%s\n' "$?"
-cat "$CTRL_QA_ROOT/member-result.json"
-```
-
-La salida esperada es cero, con `ok: true` y `mode: "link"`.
-Comparar los identificadores y el árbol generado:
-
-```bash
-"$CTRL_QA_NODE" -e '
-const fs = require("node:fs"), assert = require("node:assert/strict");
-const root = process.env.CTRL_QA_ROOT;
-const admin = JSON.parse(fs.readFileSync(process.env.CTRL_QA_ADMIN + "/.ctrl/workspace.json", "utf8"));
-const member = JSON.parse(fs.readFileSync(root + "/member-result.json", "utf8"));
-assert.equal(member.ok, true);
-assert.equal(member.mode, "link");
-assert.equal(member.workspace.id, admin.workspaceId);
-assert.equal(member.clerkOrgId, admin.clerkOrgId);
-assert.deepEqual(member.obras.map(obra => obra.id), admin.obras.map(obra => obra.id));
-console.log("Identificadores de la réplica: OK");
-' &&
-diff -r -x journal.json "$CTRL_QA_ADMIN" "$CTRL_QA_ROOT/member"
-printf 'exit=%s\n' "$?"
-```
-
-El diff debe terminar sin diferencias y con salida cero.
-Las carpetas comparadas deben contener solamente la estructura recién generada.
-El journal es específico de cada operación y no se compara.
-Los manifiestos de workspace y obra sí deben ser idénticos.
-
-### Casos adicionales y cierre
-
-| Caso | Acción | Resultado esperado |
-|---|---|---|
-| Personalizar | Volver al administrador; crear `QA E2E Personalizada` en `$CTRL_QA_ROOT/personalizada` con Control de costos y sin Partes | Presupuestos y Control de costos explícitos; ACU y Catálogos incorporados; cuatro capacidades efectivas |
-| Cancelación | Iniciar otro asistente y presionar Ctrl+C en la primera pregunta | Salida 130, terminal utilizable, sin una creación central |
-| Destino ocupado | Repetir el comando de vinculación sobre `$CTRL_QA_ROOT/member` | Salida uno, rechazo explícito; repetir el diff y comprobar que los archivos se conservaron |
-| Portal | Inspeccionar la URL de `--manage-org --json` | Registrar el enlace al Dashboard como fallo conocido; no marcar aprobado el portal para usuarios finales |
-| Cierre | Volver a iniciar sesión como administrador y comprobar su cuenta | Cuenta del administrador activa; carpetas QA conservadas para inspección |
-
-No eliminar filas productivas ni revocar al miembro durante esta ronda.
-No publicar npm, desplegar, fusionar ni enviar comentarios externos.
-El borrador de comentario se guarda en `.research/stage2/pr-comment-manual-e2e-draft.md`.
-El borrador distingue resultados locales, resultados manuales y pasos pendientes.
-
-### Evidencia de esta ronda
-
-| Comprobación | Estado | Evidencia |
-|---|---|---|
-| Versión de la CLI | Verificado | El autor ejecutó el bundle local y obtuvo `0.1.0` |
-| Sesión inicial | Verificado | El autor obtuvo `Signed in as sirsebastianrojas@gmail.com` y los scopes esperados |
-| Cambio inicial de cuenta | Interrumpido por TLS | Logout eliminó la sesión local; la revocación remota no pudo confirmarse; login falló durante discovery |
-| Conexión desde hotspot | Verificado | Discovery HTTP 200 con issuer esperado; healthz HTTP 200 con `ok: true`; TLS activo |
-| Integración multiusuario local | Verificado | Cuatro pruebas aprobadas con PGlite y Clerk simulado sobre el commit indicado |
-| Organización y rol del administrador | Verificado | El autor obtuvo `ok: true`, el identificador esperado, `Sebas's Organization` y `org:admin` desde producción |
-| Creación Recomendada y perfil empresarial | Verificado | Autor: exit cero; workspace `sebas-obra`, empresa `sebas-enterprise`; manifiestos verificados localmente, 17 módulos explícitos y efectivos, sin Partes; journal `done` |
-| Reconocimiento del miembro | Verificado | Login de `sirsebastianrojas@gmail.com`; API devuelve la misma organización con `org:member`; lista un workspace con una obra antes de vincular |
-| Réplica del miembro | Verificado | CLI real: `ok: true`, `mode: link`; 22 archivos y 24 directorios idénticos, salvo el journal; mismos IDs de empresa, workspace y obra |
-| Vincular sin duplicar dominio | Verificado | API productiva antes y después: un workspace y una obra, misma lista de identificadores |
-| Cancelación | Verificado manual | Autor: Ctrl+C en la primera pregunta, error `cancelled`, salida 130; teclado y cursor normales |
-| Destino ocupado | Verificado manual y local | Autor: salida uno y error `incompatible`; JSON comprobado y diff posterior sin diferencias |
-| Reutilización del perfil desde la app | Pendiente | El autor prioriza crear otro workspace desde la terminal integrada con el CLI local, sin repetir los datos de empresa |
-| Personalizar | Diferido | El autor prioriza la reutilización del perfil empresarial |
-| Estado del PR | Revisión pendiente | Tres hilos sin resolver y tres checks `chat-lib tests` fallidos; ninguna aprobación formal |
-
-La evidencia manual de esta ronda corresponde al commit indicado.
-El nuevo asistente integrado requiere su propia verificación.
-Una invitación aceptada, un healthz válido o las pruebas con Clerk simulado no sustituyen esa evidencia.
-
-### Evidencia anterior: otro workspace desde Ctrl+
-
-En la ronda anterior, el autor prioriza ejecutar el CLI desde la terminal integrada de Ctrl+. La entrega actual agrega npm según el contrato de distribución descrito abajo.
-La creación debe reutilizar el perfil de la misma organización.
-`runCreateFlow` solicita el perfil solamente cuando `org.company` es `null`.
-Una empresa existente evita las preguntas de nombre empresarial, identificación legal, país, moneda y zona horaria.
-La selección de organización y los datos del workspace y de la obra siguen perteneciendo al asistente.
-
-La prueba local utiliza el bundle indicado en `.research/stage2/manual-e2e.env`.
-La instalación externa del tarball ya verificada conserva su valor como prueba del artefacto interno.
-La ejecución desde una terminal de desarrollo no verifica que el instalador de Ctrl+ incluya el CLI ni que detecte automáticamente el helper de una app instalada.
-El entorno QA proporciona explícitamente el helper y la API productiva.
-La ronda anterior excluye la publicación npm. El contrato actual sustituye esa decisión y requiere artefactos verificados antes de publicar.
-Ejecutar desde Ctrl+ no restringe por sí mismo el acceso HTTP a la API.
-La autenticación, los permisos de organización y la protección contra abuso siguen perteneciendo al servidor.
-
-## Entrega del asistente integrado
-
-La rama local `feat/ctrl-cli-desktop-guided` contiene la creación guiada, la réplica empresarial y la integración del empaquetado.
-La evidencia de esta sección corresponde al paquete interno anterior. La entrega npm usa `@ctrlmas/ctrl`.
-El cambio conserva la estructura canónica y no agrega migraciones de base de datos.
-El ledger de esta entrega es `factory/contracts/patch-ledger.desktop-cli.yaml`.
-El ledger canónico del fork conserva su baseline anterior.
-
-La tabla separa el código verificado de los pasos del release:
-
-| Comprobación | Resultado |
-|---|---|
-| Suite CLI | 177 pruebas aprobadas en 15 archivos; tipos y bundle verificados |
-| Suite API | 156 pruebas aprobadas; tipos y bundles de Worker verificados |
-| Integración de terminal y autenticación | Siete pruebas aprobadas; extensión compilada con el compilador del fork |
-| Metadata nativa | Dos pruebas aprobadas; helper de release construido |
-| Procedimiento WAF | Nueve pruebas aprobadas; regla creada y releída mediante token de zona; salud 200 y sin sesión 401 después de aplicarla |
-| Artefacto macOS | Electron ejecuta ambos comandos fuera del checkout, desde una ruta con espacios y sin Node/npm en PATH |
-| VSIX interno de macOS | Ruta `extensions/obra-auth/test/.validation/obra-auth-desktop-darwin-arm64.vsix`; sha256 `f3add67ec5ee09c50a7a29c8e465b9bbfdc16c66b252548d2a4a28e24fddf7a2`; 9367177 bytes; manifiesto sin cambios; sin fuentes, pruebas, `node_modules` ni secretos |
-| Documentos nativo en macOS | El helper devuelve la carpeta Documentos del usuario sin inicializar estado del launcher |
-| Réplica real del miembro | Commit `37c1265`, bundle `8388b3351b82da1b1b1c976aae9ed5131408a33a96899ea03951b3b4624de7a6`: producción, primera ejecución `created`, segunda `existing`, salida cero; solo tres GET por ejecución |
-| Portal de usuarios | Chrome muestra organización, miembros, invitación y formulario de creación; no se modifica la organización |
-| Preview del Worker | Versión `bb309d67-a1c0-4da4-805a-c9e64ff45956`; salud 200, sin sesión 401, cuerpo grande 413 |
-| Producción del Worker | Versión `4591c684-a1e9-4e75-a49c-06703b7d8eb9`; mismas comprobaciones con solicitudes acotadas |
-| Instaladores completos | Pendiente de construir y comprobar; el artefacto de extensión no equivale a un instalador |
-| Ejecución nativa Windows y Linux | Pendiente; el autor dispone solo de su Mac durante esta ronda |
-
-La prueba productiva del miembro utiliza un destino QA temporal.
-La prueba conserva la carpeta original `sebas-obra` del administrador.
-La revisión independiente detecta y corrige la versión del bundle y la limpieza del lock (reserva) tras una cancelación.
-La réplica repetida conserva ajustes, carpetas agregadas y archivos del usuario.
-Las pruebas de recuperación incluyen cancelación al publicar el propietario y al retirar una reserva de un proceso terminado.
-Las pruebas incluyen resultados parciales y recuperación de una creación pendiente mediante GET.
-El bundle final `b5864b21595323021839ef50b16d2e0d4e2ce334ba7facb98b298543c2d55cf1` corresponde al commit `31a4d6b7`.
-Los dos commits posteriores a la réplica registrada cambian el aviso del abridor del navegador, la lista de archivos del artefacto y dos pruebas.
-La repetición de la réplica GET con el bundle final queda pendiente.
-El empaquetado del VSIX omitió el paso `prepublish` porque `gulp` no estaba disponible en el entorno; la compilación nativa y las pruebas de navegador se ejecutaron por separado. La auditoría del VSIX no encontró valores de secretos ni nombres sospechosos.
-El gate (control) de Factory conserva dos fallos y cinco avisos anteriores a esta entrega.
-Estos fallos no se registran como comprobaciones aprobadas.
-El PR original conserva su head anterior hasta publicar los commits locales con autorización separada.
-
-La regla WAF creada tiene el identificador `0d785164745f4781aaf838cdb185ab1b`.
-El ruleset (conjunto de reglas) tiene el identificador `6a7d6c51762e42c5956608058a6e9498`.
-La evidencia local registra la ruta DELETE de esa regla para un rollback (reversión) acotado.
-La aplicación no reemplaza otra regla ni usa el WAF Enterprise de cuenta.
-
-## Fase uno: experiencia de terminal
-
-Esta entrega es experimental hasta completar las verificaciones de plataforma.
-La aceptación visual de esta fase precede a la publicación.
-El plan separado de npm está en `docs/execution/ctrl-npm-release.mdx`.
+La aceptación visual de la TUI precede a la publicación estable.
 El snapshot visual de Codex vive en `.research/codex` como referencia de solo lectura.
 El commit fijado es `cf0ed4c600161fcaa18eeac02b5fc715e1076955`.
 La extracción inicial de lifecycle y scroll conserva su atribución a `816fa702ec66a4c81b204701a03371a1ac3511e6`.
@@ -709,7 +413,10 @@ Cada respuesta identifica la pregunta activa.
 Node conserva autenticación, validación, API, journal y materialización.
 Los tokens del helper permanecen fuera del protocolo visual.
 Esc y Ctrl+C cancelan la operación con salida 130.
-La cancelación, EOF y los errores restauran terminal y cursor.
+El renderer usa la pantalla alterna con captura del mouse y actualizaciones sincronizadas.
+Un monitor de tamaño vuelve a consultar cada 500 ms cuando la terminal omite el evento de cambio de tamaño.
+La finalización, la cancelación, los errores del backend, el EOF y los pánicos restauran la pantalla alterna, la captura del mouse, el pegado, el modo crudo y el cursor.
+La terminal restaurada muestra el resumen final.
 
 `CtrlWidget` compone el historial y `BottomPane`.
 `BottomPane` conserva el campo, el login, la actividad y el contexto.
@@ -717,9 +424,13 @@ El composer comparte geometría entre medición, dibujo y cursor.
 El campo usa el prefijo `›`, fondo suave y espacio interior sin borde.
 El renderer usa el cursor real de la terminal.
 El campo desplaza el texto por grafemas completos.
-El historial conserva respuestas con las etiquetas del usuario.
+El historial conserva las respuestas con las etiquetas del usuario.
 Node confirma los resultados antes de mostrar éxito.
-El viewport adapta su altura al contenido y a la pantalla.
+El viewport ocupa la pantalla completa.
+Las filas del historial se reajustan a cada ancho.
+El emblema se centra en el espacio libre hasta la primera respuesta enviada.
+PageUp, PageDown, la rueda y Ctrl+End navegan el historial retenido.
+Editar, pegar o enviar reanuda el seguimiento de las filas nuevas.
 La empresa y la carpeta aparecen sobre los atajos.
 El login muestra espera y la URL pública completa en el historial.
 Los estados de espera permiten cancelar.
@@ -753,53 +464,3 @@ La prueba usa un ítem temporal y lo elimina al terminar.
 La prueba no lee credenciales de Clerk.
 Esta identidad no reemplaza Developer ID ni notarización.
 
-### Evidencia actual de la fase uno
-
-| Comprobación | Resultado |
-|---|---|
-| Backend Node | 235 pruebas aprobadas; tipos y bundle correctos |
-| Renderer Rust | 14 pruebas aprobadas; clippy sin avisos |
-| PTY desde tarballs | 15 escenarios aprobados; login, Unicode, NO_COLOR, resize, señales, EOF y errores |
-| Runtime integrado | Ocho escenarios aprobados con Electron, paleta clara y Node fuera de PATH |
-| Paquetes locales | Principal y macOS ARM64 instalados offline fuera del checkout; cuatro aliases responden |
-| Llavero aislado | Dos builds firmados con el mismo requisito designado leen el mismo ítem temporal |
-| Íconos | Los cuatro commits del PR 14 ya son ancestros de la rama actual |
-| Revisión visual | Pendiente; los PNG derivan de celdas capturadas por xterm en PTY |
-| Clerk real | Pendiente; login, invitación, réplica y apertura requieren ejecución del usuario |
-
-La rama actual es `feat/create-ctrl-levels-release`.
-La tabla siguiente conserva evidencia de la entrega anterior.
-El ZIP anterior no contiene el renderer de esta fase.
-El release exige un nuevo artefacto de escritorio con estos bytes.
-
-## Evidencia de la implementación npm y TUI
-
-El commit de producto es `f8d74605d237b9c3642f2b9c97f9e721d85adf03` en `feat/ctrl-cli-desktop-guided`.
-El commit `55a01e57f08` contiene la implementación.
-El commit siguiente permite verificar el launcher instalado desde un tarball.
-La entrega permanece experimental.
-
-| Comprobación | Resultado |
-|---|---|
-| CLI Node | 204 pruebas aprobadas en 19 archivos; tipos y bundle correctos |
-| TUI Rust | Cinco pruebas aprobadas, clippy sin avisos y release macOS ARM64 construido |
-| Puente PTY | Nueve escenarios aprobados; Unicode, pegado, terminal estrecha, selectores, multiselección, señales, EOF y errores |
-| Runtime integrado | Electron ejecuta los escenarios sin Node en PATH; terminal y cursor restaurados |
-| Tarballs reales | Principal y macOS ARM64 instalados juntos fuera del checkout; cuatro aliases verificados |
-| Helper y extensión | Helper reconstruido; TUI, bundles, licencias y shims generados; cinco pruebas de terminal aprobadas |
-| Ledger experimental | 80 archivos y cinco core; generador con worktree explícito y prueba aprobada; ledger fresco |
-| Wiki | Check aprobado |
-| Repositorio público | `Ssrrb/ctrl-releases` creado con documentación; acceso GitHub admin y push verificado |
-| Publicación npm | No ejecutada; npm informa ENEEDAUTH; propiedad del scope sin verificar |
-| Escritorio completo | Pendiente en macOS, Linux y Windows; manifiesto sin descargas |
-| Clerk real y réplica multiusuario | Pendiente en cada plataforma; los fixtures no sustituyen esta evidencia |
-
-El reporte completo vive en `factory/reports/ctrl-npm-tui-2026-10-13.md`.
-Los artefactos locales viven en `vscode-worktrees/create-ctrl-prod/.build/ctrl-npm-tui/`.
-`SHA256SUMS` registra los bytes de los tarballs y ejecutables.
-`platform-evidence.json` conserva los gates incompletos.
-El gate de congelación rechaza esta evidencia con `Incomplete verification: darwin-arm64`.
-No se generan artefactos congelados ni se publica una entrega estable.
-Factory conserva los dos fallos y cinco avisos previos.
-La ejecución no modifica cuentas ni invitaciones de usuarios reales.
-La ejecución no publica código del fork, despliegues ni paquetes npm.

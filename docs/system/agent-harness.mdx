@@ -317,6 +317,25 @@ La prueba comprueba que generar una extensión no permite activarla sin el rol n
 La prueba comprueba que una extensión no obtiene capacidades adicionales al invocar una herramienta del agente.
 El informe compara el resultado final, los rechazos correctos, el costo, la duración y el trabajo necesario para mantener la integración.
 
+## Prueba local de agent-pack
+
+`agent-pack/test_launch_agents.py` ejecuta una prueba con el modelo real mediante OpenCode.
+La prueba solicita leer un archivo temporal y escribir los importes calculados en JSON.
+El evaluador comprueba los importes de 3600 y 900 PYG, y el total de 4500 PYG.
+La ejecución verificada produce `agent-pack/smoke-output.json` y `agent-pack/report.json`.
+Esta prueba valida el lanzador local de OpenCode.
+La prueba no valida la integración propuesta de DSH con ctrl+.
+
+El lanzador usa `OPENCODE_BIN` si existe esa variable.
+Si no existe, usa `~/.opencode/bin/opencode` cuando el archivo permite ejecución.
+Si ese archivo no permite ejecución, usa `opencode` desde PATH.
+Cada tarea transmite su directorio de trabajo al proceso y a la variable `PWD`.
+Una ruta relativa parte del directorio desde el cual se ejecuta el lanzador.
+Una ruta absoluta evita depender de ese directorio.
+La copia obsoleta de Homebrew se eliminó porque dependía de una biblioteca de Node ausente.
+La instalación verificada permanece en `~/.opencode/bin/opencode`.
+La prueba requiere credenciales de OpenCode y consume uso del modelo configurado.
+
 ## Límites de esta propuesta
 
 La revisión consulta el wiki, las interfaces locales y documentación oficial.

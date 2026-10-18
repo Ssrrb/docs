@@ -1,0 +1,159 @@
+# Plan de ejecución de create-ctrl
+
+*Execution · draft*
+
+Este plan divide el sprint `create-ctrl` en objetivos verificables.
+El contrato está en `docs/execution/create-ctrl-sprint.mdx`.
+La evidencia de cada ronda está en `docs/execution/create-ctrl-evidence.mdx`.
+
+## Reglas del plan
+
+- Cada objetivo tiene una definición de terminado.
+- Cada definición nombra la evidencia que la demuestra.
+- La evidencia identifica el commit, la versión o el hash verificado.
+- Un objetivo pasa a ✅ solo con toda su evidencia.
+- Una prueba simulada no reemplaza una evidencia real.
+- Un fallo de facturación de CI no equivale a una prueba aprobada.
+- Si los bytes de un artefacto cambian, su evidencia vuelve a ⏳.
+
+Estados: ✅ terminado, 🟡 parcial, ⏳ pendiente, ⛔ bloqueado.
+
+## Resumen
+
+| # | Objetivo | Estado | Bloquea a |
+|---|---|---|---|
+| O1 | Núcleo CLI, API y contrato de carpetas | ✅ | O3 |
+| O2 | Worker en producción y protección | ✅ | O3 |
+| O3 | Multiusuario real en producción | 🟡 | O7 |
+| O4 | TUI Rust aceptada | 🟡 | O7 |
+| O5 | Canal de prueba npm | 🟡 | O7 |
+| O6 | Escritorio Ctrl+ por plataforma | 🟡 | O7 |
+| O7 | Release estable `@ctrlmas/ctrl` | ⛔ | — |
+
+## O1. Núcleo CLI, API y contrato de carpetas
+
+Terminado cuando:
+
+- Las pruebas automáticas cubren los 20 escenarios de aceptación del contrato.
+- Las suites de CLI, API y TUI aprueban sobre el mismo commit de `main`.
+- Las migraciones son aditivas y las obras antiguas siguen válidas.
+
+Evidencia vigente:
+
+- CLI Node: 235 pruebas aprobadas; tipos y bundle correctos.
+- API: 156 pruebas aprobadas; bundles del Worker verificados.
+- TUI Rust: 25 pruebas aprobadas; clippy sin avisos.
+- PR 14 fusionado en `main` con el merge `7e90c6dfc98`.
+
+Pendiente:
+
+- Ejecutar las tres suites sobre el head actual de `main`, `52c8099ba8a`, y registrar el resultado.
+
+## O2. Worker en producción y protección
+
+Terminado cuando:
+
+- Preview y producción responden salud 200, sin sesión 401 y cuerpo grande 413.
+- La regla WAF existe y tiene una ruta de reversión registrada.
+- Producción desactiva workers.dev y las URLs de preview.
+
+Evidencia vigente:
+
+- Preview: versión `bb309d67-a1c0-4da4-805a-c9e64ff45956`.
+- Producción: versión `4591c684-a1e9-4e75-a49c-06703b7d8eb9`.
+- Regla WAF `0d785164745f4781aaf838cdb185ab1b` en el ruleset `6a7d6c51762e42c5956608058a6e9498`.
+
+## O3. Multiusuario real en producción
+
+El runbook está en `docs/execution/create-ctrl-manual-e2e.mdx`.
+
+Terminado cuando:
+
+| Check | Definición | Estado |
+|---|---|---|
+| Creación del administrador | Recomendada con salida cero; 17 módulos; sin Partes | ✅ |
+| Reconocimiento del miembro | API devuelve la organización con `org:member` | ✅ |
+| Réplica del miembro | `mode: link`; diff vacío salvo el journal; mismos IDs | ✅ |
+| Vincular sin duplicar | La API lista el mismo workspace y la misma obra antes y después | ✅ |
+| Cancelación | Ctrl+C en la primera pregunta; salida 130; terminal utilizable | ✅ |
+| Destino ocupado | Salida uno; error `incompatible`; archivos conservados | ✅ |
+| Réplica con el bundle final | Primera ejecución `created`, segunda `existing`, con el bundle del head de `main` | ⏳ |
+| Reutilización del perfil | Un segundo workspace desde la terminal integrada no pide los datos de empresa | ⏳ |
+| Personalizar | Control de costos sin Partes produce cuatro capacidades efectivas | ⏳ diferido |
+| Pull de la empresa | `pull-ctrl` trae todos los workspaces y abre un solo `Ctrl.code-workspace` | ⏳ |
+
+La evidencia aprobada corresponde al commit `c3c50fccbdb671745111a84f7a45213646e150c0` y al bundle de `37c1265`.
+
+## O4. TUI Rust aceptada
+
+Terminado cuando:
+
+- El autor aprueba la revisión visual en su terminal.
+- Los escenarios PTY aprueban desde el launcher del tarball instalado, con la pantalla alterna.
+- El runtime integrado ejecuta la TUI sin Node en PATH.
+
+| Check | Estado |
+|---|---|
+| Renderer: 15 escenarios PTY con pantalla alterna | ✅ |
+| Runtime integrado: ocho escenarios con Electron | ✅ |
+| Launcher del tarball con la pantalla alterna | ⏳ recaptura |
+| Revisión visual del autor | ⏳ |
+
+## O5. Canal de prueba npm
+
+El canal de prueba usa el scope `@ssrrb` y no reemplaza el release estable.
+
+Terminado cuando:
+
+- El paquete principal y el nativo de cada destino inicial están publicados con la misma versión.
+- Una instalación desde el registry en cada destino responde a los cuatro aliases.
+- El login real y una réplica funcionan desde esa instalación.
+
+| Paquete | Versión publicada | Estado |
+|---|---|---|
+| `@ssrrb/ctrl-test` | `0.0.0-test.5`, publicada el 2026-10-14 | ✅ publicado |
+| `@ssrrb/ctrl-win32-x64-test` | `0.0.0-test.5`, publicada el 2026-10-14 | ✅ publicado |
+| `@ssrrb/ctrl-linux-x64-test` | `0.0.0-test.1` | 🟡 versión distinta |
+| Nativo macOS ARM64 | Sin publicar | ⏳ |
+| Instalación desde el registry por destino | Sin evidencia registrada | ⏳ |
+
+## O6. Escritorio Ctrl+ por plataforma
+
+Terminado cuando, por cada destino inicial:
+
+- El archivo de escritorio está subido a `Ssrrb/ctrl-releases`.
+- El SHA-256 descargado coincide con `desktop-manifest.json`.
+- El instalador instala, reutiliza la instalación y abre la app.
+- `create-ctrl` y `pull-ctrl` funcionan desde la terminal integrada sin Node en PATH.
+
+| Destino | Archivo | Estado |
+|---|---|---|
+| Linux x64 | `1.142.0-test.3` en `desktop-manifest.json` | 🟡 falta la terminal integrada |
+| macOS ARM64 | ZIP local de `0.1.0`, sin subir; anterior a la TUI actual | ⏳ |
+| Windows x64 | Sin archivo de escritorio | ⏳ |
+
+## O7. Release estable `@ctrlmas/ctrl`
+
+El procedimiento está en `docs/execution/ctrl-npm-release.mdx`.
+
+Terminado cuando:
+
+- O3, O4, O5 y O6 están en ✅.
+- `freeze-release.mjs` acepta `platform-evidence.json` sin destinos incompletos.
+- Los paquetes de `@ctrlmas` están publicados desde los tarballs congelados.
+- Una instalación desde el registry funciona en cada destino.
+
+Bloqueos:
+
+- El 2026-10-17, el registry responde 404 para `@ctrlmas/ctrl`.
+- La sesión npm y el permiso de publicación en `@ctrlmas` no están verificados.
+- El contrato fija tres destinos iniciales; `ctrl-npm-release.mdx` lista seis paquetes nativos. El autor decide si el release estable exige los seis.
+
+## Orden de ejecución
+
+1. O1: ejecutar las suites sobre el head de `main`.
+2. O4: recapturar el launcher del tarball y hacer la revisión visual.
+3. O5: publicar el nativo macOS y alinear Linux con la versión de prueba vigente.
+4. O3: repetir la réplica y probar la reutilización del perfil con esa versión.
+5. O6: subir y verificar el archivo de escritorio de cada destino.
+6. O7: verificar el scope `@ctrlmas`, congelar y publicar.

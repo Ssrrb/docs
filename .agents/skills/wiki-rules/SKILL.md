@@ -9,7 +9,7 @@ description: >-
 
 # Writing documents in the wiki
 
-This repository describes Obra Studio. `AGENTS.md` at the root is the entry point and the form authority. Read it before you write. It states the terminology, the folder of each topic, the document form, the writing rules, and the commit rules.
+This repository describes ctrl+. `AGENTS.md` at the root is the entry point and the form authority. Read it before you write. It states the terminology, the folder of each topic, the document form, the writing rules, and the commit rules.
 
 - **One folder per topic.** `docs/foundations/` holds the two engines and the bridge. `docs/domain/` holds the entities and the business rules. `docs/system/` holds the architecture. `docs/product/` holds the interfaces and the workflows. `docs/execution/` holds the plans and the pending work. `docs/references/` and `docs/decisions/` inform.
 - **Extend before you create.** Search the folder for a document that covers the topic. Create a file only if no document covers the topic. A document holds one topic.

@@ -1,0 +1,179 @@
+# Evidencia de create-ctrl
+
+*Execution · draft*
+
+Este documento registra la evidencia de cada ronda del sprint `create-ctrl`.
+Los objetivos y su estado vigente están en `docs/execution/create-ctrl-plan.mdx`.
+Una fila de este registro no cambia de valor después de escribirse.
+Una ronda nueva agrega una sección.
+
+## Revisión de preparación para producción
+
+La revisión corrige la verificación OAuth con el contrato del SDK de Clerk.
+La API requiere la clave publicable y la clave secreta de la instancia del helper.
+El onboarding exige administrador antes de devolver un perfil existente.
+Una carrera de onboarding reconcilia la membresía antes de consultar al ganador.
+El código automático de obra conserva el UUID completo para evitar colisiones.
+
+El diario local declara una versión independiente del manifiesto canónico.
+La recuperación vincula organización, servidor y entrada confirmada.
+La recuperación conserva archivos ajenos y rechaza rutas generadas incompatibles.
+El asistente interactivo permite crear o vincular después de elegir organización.
+
+El Worker preview utiliza una instancia separada y una base de desarrollo.
+La distribución del CLI con Ctrl+ y npm requiere la evidencia de las tres plataformas antes de la publicación estable.
+La evidencia debe identificar el commit verificado y las comprobaciones pendientes.
+Un fallo de facturación de GitHub Actions no equivale a una prueba aprobada.
+
+
+## Ronda manual de producción sobre el PR 14
+
+
+| Comprobación | Estado | Evidencia |
+|---|---|---|
+| Versión de la CLI | Verificado | El autor ejecutó el bundle local y obtuvo `0.1.0` |
+| Sesión inicial | Verificado | El autor obtuvo `Signed in as sirsebastianrojas@gmail.com` y los scopes esperados |
+| Cambio inicial de cuenta | Interrumpido por TLS | Logout eliminó la sesión local; la revocación remota no pudo confirmarse; login falló durante discovery |
+| Conexión desde hotspot | Verificado | Discovery HTTP 200 con issuer esperado; healthz HTTP 200 con `ok: true`; TLS activo |
+| Integración multiusuario local | Verificado | Cuatro pruebas aprobadas con PGlite y Clerk simulado sobre el commit indicado |
+| Organización y rol del administrador | Verificado | El autor obtuvo `ok: true`, el identificador esperado, `Sebas's Organization` y `org:admin` desde producción |
+| Creación Recomendada y perfil empresarial | Verificado | Autor: exit cero; workspace `sebas-obra`, empresa `sebas-enterprise`; manifiestos verificados localmente, 17 módulos explícitos y efectivos, sin Partes; journal `done` |
+| Reconocimiento del miembro | Verificado | Login de `sirsebastianrojas@gmail.com`; API devuelve la misma organización con `org:member`; lista un workspace con una obra antes de vincular |
+| Réplica del miembro | Verificado | CLI real: `ok: true`, `mode: link`; 22 archivos y 24 directorios idénticos, salvo el journal; mismos IDs de empresa, workspace y obra |
+| Vincular sin duplicar dominio | Verificado | API productiva antes y después: un workspace y una obra, misma lista de identificadores |
+| Cancelación | Verificado manual | Autor: Ctrl+C en la primera pregunta, error `cancelled`, salida 130; teclado y cursor normales |
+| Destino ocupado | Verificado manual y local | Autor: salida uno y error `incompatible`; JSON comprobado y diff posterior sin diferencias |
+| Reutilización del perfil desde la app | Pendiente | El autor prioriza crear otro workspace desde la terminal integrada con el CLI local, sin repetir los datos de empresa |
+| Personalizar | Diferido | El autor prioriza la reutilización del perfil empresarial |
+| Estado del PR | Revisión pendiente | Tres hilos sin resolver y tres checks `chat-lib tests` fallidos; ninguna aprobación formal |
+
+La evidencia manual de esta ronda corresponde al commit indicado.
+El nuevo asistente integrado requiere su propia verificación.
+Una invitación aceptada, un healthz válido o las pruebas con Clerk simulado no sustituyen esa evidencia.
+
+
+## Evidencia anterior: otro workspace desde Ctrl+
+
+En la ronda anterior, el autor prioriza ejecutar el CLI desde la terminal integrada de Ctrl+. La entrega actual agrega npm según el contrato de distribución descrito abajo.
+La creación debe reutilizar el perfil de la misma organización.
+`runCreateFlow` solicita el perfil solamente cuando `org.company` es `null`.
+Una empresa existente evita las preguntas de nombre empresarial, identificación legal, país, moneda y zona horaria.
+La selección de organización y los datos del workspace y de la obra siguen perteneciendo al asistente.
+
+La prueba local utiliza el bundle indicado en `.research/stage2/manual-e2e.env`.
+La instalación externa del tarball ya verificada conserva su valor como prueba del artefacto interno.
+La ejecución desde una terminal de desarrollo no verifica que el instalador de Ctrl+ incluya el CLI ni que detecte automáticamente el helper de una app instalada.
+El entorno QA proporciona explícitamente el helper y la API productiva.
+La ronda anterior excluye la publicación npm. El contrato actual sustituye esa decisión y requiere artefactos verificados antes de publicar.
+Ejecutar desde Ctrl+ no restringe por sí mismo el acceso HTTP a la API.
+La autenticación, los permisos de organización y la protección contra abuso siguen perteneciendo al servidor.
+
+
+## Entrega del asistente integrado
+
+La rama local `feat/ctrl-cli-desktop-guided` contiene la creación guiada, la réplica empresarial y la integración del empaquetado.
+La evidencia de esta sección corresponde al paquete interno anterior. La entrega npm usa `@ctrlmas/ctrl`.
+El cambio conserva la estructura canónica y no agrega migraciones de base de datos.
+El ledger de esta entrega es `factory/contracts/patch-ledger.desktop-cli.yaml`.
+El ledger canónico del fork conserva su baseline anterior.
+
+La tabla separa el código verificado de los pasos del release:
+
+| Comprobación | Resultado |
+|---|---|
+| Suite CLI | 177 pruebas aprobadas en 15 archivos; tipos y bundle verificados |
+| Suite API | 156 pruebas aprobadas; tipos y bundles de Worker verificados |
+| Integración de terminal y autenticación | Siete pruebas aprobadas; extensión compilada con el compilador del fork |
+| Metadata nativa | Dos pruebas aprobadas; helper de release construido |
+| Procedimiento WAF | Nueve pruebas aprobadas; regla creada y releída mediante token de zona; salud 200 y sin sesión 401 después de aplicarla |
+| Artefacto macOS | Electron ejecuta ambos comandos fuera del checkout, desde una ruta con espacios y sin Node/npm en PATH |
+| VSIX interno de macOS | Ruta `extensions/obra-auth/test/.validation/obra-auth-desktop-darwin-arm64.vsix`; sha256 `f3add67ec5ee09c50a7a29c8e465b9bbfdc16c66b252548d2a4a28e24fddf7a2`; 9367177 bytes; manifiesto sin cambios; sin fuentes, pruebas, `node_modules` ni secretos |
+| Documentos nativo en macOS | El helper devuelve la carpeta Documentos del usuario sin inicializar estado del launcher |
+| Réplica real del miembro | Commit `37c1265`, bundle `8388b3351b82da1b1b1c976aae9ed5131408a33a96899ea03951b3b4624de7a6`: producción, primera ejecución `created`, segunda `existing`, salida cero; solo tres GET por ejecución |
+| Portal de usuarios | Chrome muestra organización, miembros, invitación y formulario de creación; no se modifica la organización |
+| Preview del Worker | Versión `bb309d67-a1c0-4da4-805a-c9e64ff45956`; salud 200, sin sesión 401, cuerpo grande 413 |
+| Producción del Worker | Versión `4591c684-a1e9-4e75-a49c-06703b7d8eb9`; mismas comprobaciones con solicitudes acotadas |
+| Instaladores completos | Pendiente de construir y comprobar; el artefacto de extensión no equivale a un instalador |
+| Ejecución nativa Windows y Linux | Pendiente; el autor dispone solo de su Mac durante esta ronda |
+
+La prueba productiva del miembro utiliza un destino QA temporal.
+La prueba conserva la carpeta original `sebas-obra` del administrador.
+La revisión independiente detecta y corrige la versión del bundle y la limpieza del lock (reserva) tras una cancelación.
+La réplica repetida conserva ajustes, carpetas agregadas y archivos del usuario.
+Las pruebas de recuperación incluyen cancelación al publicar el propietario y al retirar una reserva de un proceso terminado.
+Las pruebas incluyen resultados parciales y recuperación de una creación pendiente mediante GET.
+El bundle final `b5864b21595323021839ef50b16d2e0d4e2ce334ba7facb98b298543c2d55cf1` corresponde al commit `31a4d6b7`.
+Los dos commits posteriores a la réplica registrada cambian el aviso del abridor del navegador, la lista de archivos del artefacto y dos pruebas.
+La repetición de la réplica GET con el bundle final queda pendiente.
+El empaquetado del VSIX omitió el paso `prepublish` porque `gulp` no estaba disponible en el entorno; la compilación nativa y las pruebas de navegador se ejecutaron por separado. La auditoría del VSIX no encontró valores de secretos ni nombres sospechosos.
+El gate (control) de Factory conserva dos fallos y cinco avisos anteriores a esta entrega.
+Estos fallos no se registran como comprobaciones aprobadas.
+El PR original conserva su head anterior hasta publicar los commits locales con autorización separada.
+
+La regla WAF creada tiene el identificador `0d785164745f4781aaf838cdb185ab1b`.
+El ruleset (conjunto de reglas) tiene el identificador `6a7d6c51762e42c5956608058a6e9498`.
+La evidencia local registra la ruta DELETE de esa regla para un rollback (reversión) acotado.
+La aplicación no reemplaza otra regla ni usa el WAF Enterprise de cuenta.
+
+## Evidencia de la fase uno
+
+
+| Comprobación | Resultado |
+|---|---|
+| Backend Node | 235 pruebas aprobadas; tipos y bundle correctos |
+| Renderer Rust | 25 pruebas aprobadas; clippy sin avisos |
+| PTY del renderer | 15 escenarios aprobados con capturas nuevas; pantalla alterna, historial con desplazamiento, login, Unicode, NO_COLOR, resize, señales, EOF y errores |
+| Launcher del tarball | Pendiente de recaptura con la pantalla alterna; la evidencia vigente es del renderer anterior |
+| Runtime integrado | Ocho escenarios aprobados con Electron, paleta clara y Node fuera de PATH |
+| Paquetes locales | Principal y macOS ARM64 instalados offline fuera del checkout; cuatro aliases responden |
+| Llavero aislado | Dos builds firmados con el mismo requisito designado leen el mismo ítem temporal |
+| Íconos | Los cuatro commits del PR 14 ya son ancestros de la rama actual |
+| Revisión visual | Pendiente; los PNG derivan de celdas capturadas por xterm en PTY |
+| Clerk real | Pendiente; login, invitación, réplica y apertura requieren ejecución del usuario |
+
+La rama actual es `feat/create-ctrl-levels-release`.
+La tabla siguiente conserva evidencia de la entrega anterior.
+El ZIP anterior no contiene el renderer de esta fase.
+El release exige un nuevo artefacto de escritorio con estos bytes.
+
+## Evidencia de la implementación npm y TUI
+
+El commit de producto es `f8d74605d237b9c3642f2b9c97f9e721d85adf03` en `feat/ctrl-cli-desktop-guided`.
+El commit `55a01e57f08` contiene la implementación.
+El commit siguiente permite verificar el launcher instalado desde un tarball.
+La entrega permanece experimental.
+
+| Comprobación | Resultado |
+|---|---|
+| CLI Node | ✅ 204 pruebas aprobadas en 19 archivos; tipos y bundle correctos |
+| TUI Rust | ✅ Cinco pruebas aprobadas, clippy sin avisos y release macOS ARM64 construido |
+| Puente PTY | ✅ Nueve escenarios aprobados; Unicode, pegado, terminal estrecha, selectores, multiselección, señales, EOF y errores |
+| Runtime integrado | ✅ Electron ejecuta los escenarios sin Node en PATH; terminal y cursor restaurados |
+| Launcher instalado | ✅ El launcher del tarball resuelve el paquete opcional y completa los nueve escenarios con Node 24.21.0 |
+| Tarballs reales | ✅ Principal y macOS ARM64 instalados juntos fuera del checkout; cuatro aliases verificados |
+| Helper y extensión | ✅ Helper reconstruido; TUI, bundles, licencias y shims generados; cinco pruebas de terminal aprobadas |
+| Archivo de escritorio macOS | ✅ ZIP real de 656048086 bytes, 29162 entradas y sin enlaces simbólicos; sha256 `cd3d11b5aec3dc5018c68f80e26e61e5d50a77a914c6c37a2cfbc4d3358816cd` |
+| Instalación y apertura en macOS | ✅ Instalado en `~/Applications/CtrlPlus/Ctrl+.app` con marcador de identidad; una segunda ejecución lo reutiliza sin re-extraer; la app abre y muestra el inicio de sesión |
+| Listado de archivos del release | ✅ `prepare-desktop-manifest.mjs` y `freeze-release.mjs` listaron el ZIP de 656 MB tras elevar el buffer a 256 MiB |
+| Ledger experimental | ✅ 80 archivos y cinco core; generador con worktree explícito y prueba aprobada; ledger fresco |
+| Wiki | ✅ Check aprobado |
+| Repositorio público | ✅ `Ssrrb/ctrl-releases` creado con documentación; acceso GitHub admin y push verificado |
+| Publicación npm | ⏳ No ejecutada; npm informa ENEEDAUTH; propiedad del scope sin verificar |
+| Descarga desde `ctrl-releases` | ⏳ El ZIP no está subido; el manifiesto del checkout sigue vacío y la descarga por URL no está verificada |
+| Escritorio Linux y Windows | ⏳ Pendiente; el autor dispone solo de su Mac en esta ronda |
+| Clerk real y réplica multiusuario | ⏳ En curso; login real, invitación aceptada, réplica idempotente y apertura por plataforma requieren evidencia propia |
+
+El reporte completo vive en `factory/reports/ctrl-npm-tui-2026-10-13.md`.
+Los artefactos locales viven en `vscode-worktrees/create-ctrl-prod/.build/ctrl-npm-tui/`.
+`SHA256SUMS` registra los bytes de los tarballs y ejecutables.
+`platform-evidence.json` conserva los gates incompletos.
+El gate de congelación rechaza esta evidencia con `Incomplete verification: darwin-arm64`.
+El ZIP de escritorio de macOS vive en `/private/tmp/ctrl-desktop-archive/CtrlPlus-darwin-arm64-0.1.0.zip`; su hash se recalculó desde los bytes locales.
+El listado de archivos del release elevó el buffer de `tar` a 256 MiB: el valor anterior de 1 MiB abortaba con ENOBUFS sobre un archivo real de 650 MB y no producía manifiesto.
+El bundle conserva los nombres `Code - OSS` de `product.json`; la identidad de Ctrl+ vive en el marcador `.ctrl-plus-install.json`, así que el nombre del bundle es una inconsistencia y no una falla.
+Rust incrusta rutas, así que el helper no es reproducible byte a byte: una reconstrucción posterior dejó `extensions/obra-auth/bin/code` con un hash distinto al de la copia empaquetada.
+La tarea `-ci` de macOS falla de forma ajena a esta entrega porque `build/.moduleignore` excluye `@github/copilot/**` y `build/lib/copilot.ts` requiere ese SDK.
+No se generan artefactos congelados ni se publica una entrega estable.
+Factory conserva los dos fallos y cinco avisos previos.
+La ejecución no modifica cuentas ni invitaciones de usuarios reales.
+La ejecución no publica código del fork, despliegues ni paquetes npm.
