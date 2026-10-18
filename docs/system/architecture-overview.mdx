@@ -241,12 +241,15 @@ Cada extensión:
 
 Un módulo entra al workbench como una extensión integrada de `ctrl/extensions/`. No cambia el core de VS Code.
 
-- La Activity Bar muestra el contenedor Obras. Un clic en Obras muestra en la Sidebar las obras del workspace.
+- La Activity Bar muestra el contenedor Obras. Un clic en Obras muestra en la Sidebar las obras del usuario.
+- Las obras están en la carpeta predeterminada `Documentos/Ctrl/<Empresa>/<Obra>/`. El índice `Documentos/Ctrl/.ctrl/locations.json` lista las carpetas. El usuario no abre ni elige carpetas.
+- Limitación: la vista no detecta una carpeta Documentos redirigida en Windows. El CLI sí la detecta.
+- Al abrir la vista, Ctrl+ trae las obras de cada empresa del usuario con `create-ctrl --pull`. Una obra creada en la web aparece así en la lista. La acción "Actualizar obras" repite la descarga.
 - Un clic en una obra cambia la Sidebar. El título muestra el nombre de la obra. El árbol muestra las carpetas `erp/` y `ecms/` de esa obra.
 - Una carpeta aparece solo si tiene módulos, igual que en create-ctrl.
 - La acción "Todas las obras" vuelve a la lista de obras.
-- La acción "Nueva obra" abre un formulario en el área principal. El formulario pide el nombre, el código y los módulos. Presupuestos es obligatorio. El formulario incluye las dependencias de cada módulo.
-- La extensión `ctrl/extensions/obra-obras` envía el formulario a `POST /v1/organizations/:orgId/workspaces/:workspaceId/obras`. Después escribe las carpetas de la obra con `expectedInventory` de `obra-api/src/shared`.
+- La acción "Nueva obra" abre un formulario en el área principal. El formulario pide el nombre, el código y los módulos. Si el usuario tiene más de una empresa, el formulario también pide la empresa. Presupuestos es obligatorio. El formulario incluye las dependencias de cada módulo.
+- La extensión `ctrl/extensions/obra-obras` ejecuta `create-ctrl --yes --json` sin terminal, con el comando interno `obra-auth.runWorkspaceCli`. El CLI reserva la carpeta, crea la obra en la API y escribe sus carpetas.
 - La fuente de la vista es `ui/packages/obra-workbench-ui`. La vista usa solo `TreeView`, `TreeItem` y `ThemeIcon`.
 - Un módulo con interfaz contribuye el comando `ctrl.open.<código>`. Un ejemplo es `ctrl.open.ecms.budgets`.
 - El comando recibe `{ orgId, obraId }`. El módulo vuelve a resolver la obra con los manifiestos locales. El módulo no confía en el argumento.
