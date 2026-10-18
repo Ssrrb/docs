@@ -1,0 +1,47 @@
+# Editor de Presupuestos
+
+*Product · draft*
+
+## Idioma
+
+El editor usa español de Paraguay (`es-PY`). Español es el idioma oficial y el idioma de respaldo.
+
+- La interfaz trata al usuario de "tú".
+- Los números usan `.` para los miles y `,` para los decimales.
+- La moneda es PYG (`Gs.`) o USD (`US$`). Un presupuesto nuevo usa PYG.
+- Los identificadores de datos heredados de OpenCalc no cambian. Un ejemplo es `begrotingspost`. La interfaz no muestra estos identificadores.
+
+## Glosario de la interfaz
+
+Este glosario reemplaza los términos de OpenCalc y del español de España.
+
+| Término de OpenCalc | Término en ctrl |
+|---|---|
+| hoofdstuk, capítulo | rubro |
+| paragraaf, apartado | sub-rubro |
+| begrotingspost, partida | ítem |
+| coste | costo |
+| hoeveelheid, medición | cantidad |
+| BTW hoog, IVA general | IVA 10 % |
+| BTW laag, IVA reducido | IVA 5 % |
+| BVO, superficie construida | superficie cubierta |
+| bruto inhoud | volumen bruto |
+| st | u |
+| post, ls | gl |
+| m1 | ml |
+
+"Medición oficial" es un término del dominio. El editor no usa este término para la cantidad de un ítem. Ver `docs/domain/budgets.mdx`.
+
+## Recargos por defecto
+
+Un presupuesto nuevo tiene una sola línea de recargo: "Gastos generales (K)" al 10 %. El usuario puede cambiar el porcentaje.
+
+- K se calcula sobre el costo directo.
+- El IVA no es una línea de recargo. Cada ítem tiene una tasa de IVA: exento, 5 % o 10 %. La tasa por defecto es 10 %.
+- El editor no crea la cadena neerlandesa de recargos.
+- Un presupuesto existente conserva sus líneas de recargo.
+
+## Datos de referencia
+
+- La librería de recursos empieza vacía.
+- El selector de códigos STABU y NL-SfB no aparece en ctrl.

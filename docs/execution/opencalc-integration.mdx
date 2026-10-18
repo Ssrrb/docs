@@ -142,11 +142,11 @@ Cerrar sockets y limpiar el documento visible al salir o perder acceso. La próx
 
 ## Editor dentro de ctrl
 
-Abrir desde la navegación de una obra real y desde un comando. Resolver contexto con manifiesto local y snapshot autorizado. Reutilizar la pestaña por organización y obra. Dos obras abiertas no comparten documento ni pendientes.
+Abrir desde la navegación de una obra real (Obras → la obra → `ecms/` → Presupuestos, comando `ctrl.open.ecms.budgets`) y desde un comando. Resolver contexto con manifiesto local y snapshot autorizado. Reutilizar la pestaña por organización y obra. Dos obras abiertas no comparten documento ni pendientes.
 
 Conservar React y las herramientas de OpenCalc en un webview nativo. Sustituir guardado, autosave y versiones locales por backend. La configuración visual puede permanecer local. Usar CSP restrictiva, recursos empaquetados y mensajes validados. No cargar scripts, fuentes o servicios de OpenAEC desde red.
 
-Adaptar colores, tipografía, foco y controles al workbench. Verificar claro, oscuro y alto contraste. Revisar teclado, edición, pegado, deshacer y modales sin interferir con atajos fuera del webview.
+Adaptar colores, tipografía, foco y controles al workbench. `src/ctrl/vscode-theme.css` mapea las variables `--theme-*` a `--vscode-*`. Verificar claro, oscuro y alto contraste. Revisar teclado, edición, pegado, deshacer y modales sin interferir con atajos fuera del webview.
 
 Completar `es-PY` en menús, grilla, unidades, errores, diálogos, importación, impresión y exportación. Sustituir marca visible OpenCalc/OpenAEC por ctrl o la organización. Conservar avisos legales y atribuciones en distribución. No traducir códigos de formatos ni alterar identificadores de datos.
 

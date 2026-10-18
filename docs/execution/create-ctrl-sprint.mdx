@@ -140,6 +140,10 @@ El sprint agrega tres tablas nuevas: `workspaces`, `submodules` y `project_submo
 
 La tabla `workspaces` agrupa obras. La tabla `workspaces` guarda una clave de creación. La clave de creación es única por empresa. La tabla `workspaces` guarda un hash de la entrada. El hash respalda la idempotencia de la creación.
 
+La migración `0006_obra_creation.sql` agrega dos columnas nulas en la tabla `projects`: `creation_key` e `input_hash`. Las dos columnas respaldan la idempotencia de una obra que se agrega a un workspace existente. Las dos columnas son nulas o tienen valor al mismo tiempo. La clave es única por empresa. La primera obra de un workspace conserva las dos columnas nulas. El workspace guarda la clave de esa obra.
+
+La migración `0007_obra_creation_security.sql` permite a la API cambiar solo la columna `revision` de `workspaces`. La política de fila limita el cambio a los miembros de la empresa.
+
 Las obras antiguas conservan el workspace nulo. Las migraciones son aditivas.
 
 ## API v1
@@ -155,6 +159,41 @@ La tabla lista las rutas de la API:
 | `GET /v1/organizations/:orgId/workspaces` | Workspaces de la organización |
 | `POST /v1/organizations/:orgId/workspaces` | Creación de un workspace. La creación es idempotente por `creationKey` |
 | `GET /v1/organizations/:orgId/workspaces/:workspaceId` | Snapshot (instantánea) canónico del workspace |
+| `POST /v1/organizations/:orgId/workspaces/:workspaceId/obras` | Creación de una obra en un workspace existente. La creación es idempotente por `creationKey` |
+
+### Creación de una obra en un workspace existente
+
+El cuerpo de la solicitud tiene esta forma:
+
+```json
+{
+  "creationKey": "<uuid>",
+  "schemaVersion": 1,
+  "catalogVersion": 1,
+  "obra": { "name": "Segunda etapa", "code": null, "requestedModuleIds": ["ecms.budgets"] }
+}
+```
+
+- El campo `obra` aplica las mismas reglas que el campo `firstObra` de la creación de un workspace.
+- El nombre tiene de 1 a 200 caracteres después del recorte.
+- El código es opcional. Si el código existe, tiene de 1 a 40 caracteres después del recorte.
+- Si el código falta, la API deriva el código del identificador de la obra.
+- `requestedModuleIds` tiene como máximo 100 entradas.
+- Toda obra nueva requiere `ecms.budgets`.
+
+La respuesta tiene esta forma: `{ "snapshot": <WorkspaceSnapshot>, "created": <boolean>, "obraId": "<uuid>" }`.
+
+- Si la API crea la obra, la API responde HTTP 201 con `created: true`.
+- La API crea la obra y sus submódulos efectivos en una transacción.
+- La API incrementa en uno la revisión del workspace en la misma transacción.
+- El snapshot muestra el workspace después de la creación.
+- Si la solicitud repite la clave con la misma entrada y el mismo workspace, la API responde HTTP 200 con `created: false`. La respuesta contiene el snapshot actual y el identificador de la obra existente. La revisión no cambia.
+- Si la clave ya existe con otra entrada o con otro workspace, la API responde HTTP 409 con `creation_key_reused`.
+- Si otra obra de la empresa usa el código, la API responde HTTP 409 con `obra_code_taken`.
+- Si el cuerpo no es válido, la API responde HTTP 422 con `validation_error`. La misma respuesta aplica si falta `ecms.budgets` o si un módulo no existe.
+- Si el workspace no es un UUID o no pertenece a la empresa, la API responde HTTP 404 con `workspace_missing`.
+- Si el método no es POST, la API responde HTTP 405.
+- La API verifica la clave antes de exigir `ecms.budgets`. Así una repetición de una obra anterior a la regla no falla.
 
 La API verifica los tokens OAuth del helper de autenticación mediante Clerk. La API verifica la membresía vigente en Clerk. La API reconcilia la caché `company_members`. Si Clerk no puede verificar el token, la API responde con un fallo temporal. La API nunca autoriza una solicitud con una fila antigua.
 

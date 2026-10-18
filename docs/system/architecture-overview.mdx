@@ -237,6 +237,23 @@ Cada extensión:
 - Se configura por obra
 - Tiene su propio módulo en `/src/modules/`
 
+### Módulo en el workbench de ctrl
+
+Un módulo entra al workbench como una extensión integrada de `ctrl/extensions/`. No cambia el core de VS Code.
+
+- La Activity Bar muestra el contenedor Obras. Un clic en Obras muestra en la Sidebar las obras del workspace.
+- Un clic en una obra cambia la Sidebar. El título muestra el nombre de la obra. El árbol muestra las carpetas `erp/` y `ecms/` de esa obra.
+- Una carpeta aparece solo si tiene módulos, igual que en create-ctrl.
+- La acción "Todas las obras" vuelve a la lista de obras.
+- La acción "Nueva obra" abre un formulario en el área principal. El formulario pide el nombre, el código y los módulos. Presupuestos es obligatorio. El formulario incluye las dependencias de cada módulo.
+- La extensión `ctrl/extensions/obra-obras` envía el formulario a `POST /v1/organizations/:orgId/workspaces/:workspaceId/obras`. Después escribe las carpetas de la obra con `expectedInventory` de `obra-api/src/shared`.
+- La fuente de la vista es `ui/packages/obra-workbench-ui`. La vista usa solo `TreeView`, `TreeItem` y `ThemeIcon`.
+- Un módulo con interfaz contribuye el comando `ctrl.open.<código>`. Un ejemplo es `ctrl.open.ecms.budgets`.
+- El comando recibe `{ orgId, obraId }`. El módulo vuelve a resolver la obra con los manifiestos locales. El módulo no confía en el argumento.
+- El comando abre la vista del módulo en el área principal. El módulo reutiliza una pestaña por organización y obra.
+- Si ningún módulo contribuye el comando, la vista Módulos muestra el módulo como "Próximamente".
+- Un módulo con webview mapea sus variables de color a `--vscode-*` en un solo archivo CSS. El ejemplo es `ui/packages/obra-budget-editor/src/ctrl/vscode-theme.css`.
+
 ## Flujo de datos completo
 
 Ejemplo: Factura al cliente
