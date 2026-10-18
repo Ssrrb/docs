@@ -1,0 +1,106 @@
+# Entorno de desarrollo en el desktop
+
+*Execution · draft*
+
+La máquina `desktop` de la tailnet es el entorno oficial de desarrollo.
+Los repositorios, las dependencias, los agentes y el stack viven en el desktop.
+La laptop de cada dev muestra el trabajo: una terminal o Remote-SSH y un navegador.
+La laptop no instala `node_modules`, Postgres ni el build de ctrl.
+
+## Máquina
+
+| Dato | Valor |
+|---|---|
+| Nombre en Tailscale | `desktop` (`100.124.76.17`) |
+| Sistema | Arch Linux x86_64, 20 núcleos, 31 GB de RAM |
+| Herramientas | `mise` fija Node `24.18.0` y pnpm `12.10.1` en `~/obra-studio/mise.toml` |
+| Base de datos | PostgreSQL del sistema; cada dev tiene su propio cluster en `ctrl/obra-api/.local/pg` |
+| Secretos | `/srv/obra/secrets/`, grupo `obra`, modo `640` |
+
+## Organización
+
+Cada dev tiene un usuario Linux propio.
+Cada usuario tiene la misma estructura:
+
+```
+~/obra-studio/
+  ctrl/  ui/  wiki/      un checkout por repositorio, rama dev por defecto
+  dev.sh                 levanta el stack
+  mise.toml              versiones de Node y pnpm
+  AGENTS.md
+~/Desktop/ctrl-workspace-compartido/   workspace de create-ctrl que siembra la API
+```
+
+El equipo no usa worktrees.
+Un dev cambia de rama con `git switch` en el checkout.
+Los agentes y sus sub-agentes trabajan en el mismo checkout y en la misma rama.
+La rama de integración es `dev` en los tres repositorios.
+
+## Conexión
+
+Cada dev agrega este bloque a `~/.ssh/config` de su laptop:
+
+```
+Host obra
+  HostName desktop
+  User <usuario-linux>
+  ForwardAgent yes
+  LocalForward 6006 127.0.0.1:<6006 + offset>
+  LocalForward 8787 127.0.0.1:<8787 + offset>
+  LocalForward 8080 127.0.0.1:<8080 + offset>
+  ServerAliveInterval 30
+```
+
+| Dev | Usuario | `OBRA_PORT_OFFSET` | Storybook | API | ctrl web |
+|---|---|---|---|---|---|
+| Sebastián | `sebastian` | 0 | 6006 | 8787 | 8080 |
+| Segundo dev | `<usuario>` | 100 | 6106 | 8887 | 8180 |
+
+Los túneles llevan los puertos del desktop a los mismos puertos locales.
+Cada dev abre siempre `localhost:6006`, `localhost:8787` y `localhost:8080`.
+Clerk acepta el origen `localhost`.
+El stack escucha solo en `127.0.0.1`, así que la red no lo ve.
+
+## Uso diario
+
+```
+ssh obra
+cd ~/obra-studio
+tmux new -As obra ./dev.sh
+```
+
+`dev.sh` imprime la URL de ctrl web con su token.
+La sesión `tmux` sigue activa cuando la laptop se desconecta.
+`tmux attach -t obra` vuelve a la sesión.
+Ctrl+C en la sesión detiene Storybook, la API, el watch, ctrl y PostgreSQL.
+
+En Linux, `dev.sh` levanta ctrl como servidor web con `npm run watch`.
+Un cambio de rama o una edición recompila de forma incremental.
+Una recarga del navegador muestra el cambio.
+Storybook aplica los cambios de `ui/` sin recargar.
+La API se compila al arrancar; un cambio en `obra-api/` requiere reiniciar `dev.sh`.
+Un cambio de esquema requiere `./dev.sh --reset-db`.
+
+Los logs viven en `~/obra-studio/.dev-logs/` (`storybook.log`, `api.log`, `watch.log`).
+
+## Agentes
+
+Cada dev ejecuta su agente en el desktop: Claude Code u opencode en `tmux`, o la terminal de Remote-SSH.
+Las herramientas del agente corren en el desktop y ven el stack en marcha.
+Cada usuario inicia sesión en su agente una vez.
+
+## Secretos
+
+`/srv/obra/secrets/` guarda `ctrl.env`, `.dev.vars.ctrl-budgets` y `.dev.vars.ctrl-budgets-decimal`.
+`dev.sh` enlaza `ctrl/.env` a `ctrl.env` y copia `.dev.vars.ctrl-budgets` a `ctrl/obra-api/.dev.vars`.
+Ningún secreto entra en git.
+Un secreto nuevo se agrega en `/srv/obra/secrets/` con grupo `obra` y modo `640`.
+
+## Alta de un dev
+
+Un administrador ejecuta `sudo ~/obra-studio/scripts/add-dev.sh <usuario> "<clave pública SSH>"` en el desktop.
+El script crea el usuario, lo agrega al grupo `obra`, instala la clave, copia `~/obra-studio` sin `node_modules` y fija `OBRA_PORT_OFFSET=100`.
+El dev entra con `ssh obra` y ejecuta `tmux new -As obra ./dev.sh`.
+El primer arranque instala las dependencias, compila ctrl y el helper de login, y crea la base local.
+El primer arranque tarda varios minutos.
+La política de Tailscale SSH debe permitir el usuario nuevo en `desktop`.
