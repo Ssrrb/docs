@@ -214,6 +214,80 @@ Esas relaciones no incorporan capacidades durante la creación estructural.
 
 ---
 
+## Niveles de presentación
+
+Los niveles organizan el selector del asistente de creación.
+Cada módulo aparece una sola vez en los niveles.
+El selector identifica cada módulo como ERP o ECMS.
+
+| Nivel | Capacidades |
+|---|---|
+| 0 | Autenticación y Proyectos como infraestructura; Presupuestos, Catálogos, Precios de mano de obra, Caja chica y Archivos adjuntos |
+| 1 | ACU, Órdenes de compra, Subcontratos y Solicitudes de materiales |
+| 2 | Partes de máquina, Certificaciones, Facturas, Pagos y Almacén |
+| 3 | Control de costos, Recursos humanos y Tablero financiero |
+| 4 | Finanzas |
+
+Reglas de los niveles:
+
+- Autenticación y Proyectos no son opciones desactivables.
+- Autenticación y Proyectos no cuentan como módulos de negocio.
+- Presupuestos permanece marcado y bloqueado para toda obra (work site) nueva.
+- Los niveles y el preset recomendado son configuración de presentación.
+- El catálogo y su grafo estructural confirmado no cambian.
+- El selector muestra las dependencias incorporadas.
+- El selector distingue las dependencias incorporadas de las integraciones operativas.
+- Control de costos permanece disponible con Partes deshabilitado.
+
+### Preset Recomendada
+
+El preset Recomendada incluye 17 módulos.
+El preset incluye todos los módulos salvo Partes de máquina.
+El preset es la selección por defecto del asistente.
+El preset es la selección por defecto de la automatización sin `--modules`.
+La opción Personalizar abre el selector con Presupuestos obligatorio.
+La opción Personalizar abre el selector con los demás módulos desmarcados.
+Una selección explícita conserva las elecciones indicadas.
+El resolver añade Presupuestos y las dependencias a una selección explícita.
+
+---
+
+## Contrato empresarial y operativo
+
+Esta sección describe el contrato de la siguiente etapa.
+La entrega actual conserva las carpetas y las habilitaciones actuales.
+
+Todo el ERP comparte una configuración empresarial.
+La configuración empresarial cubre Catálogos, Compras, Facturas, Pagos, Caja chica, Finanzas y Tablero.
+Las operaciones del ERP identifican las obras correspondientes.
+
+La vista general muestra un único tablero financiero por empresa.
+El tablero ofrece filtros por proyecto y obra.
+
+Cada obra conserva su presupuesto (budget) y sus precios aplicables.
+Cada obra conserva sus copias del ACU (unit cost analysis) y sus parámetros contractuales.
+
+Caja chica administra varios fondos independientes.
+Un fondo es empresarial o se asigna a una obra.
+Cada fondo tiene su responsable y su saldo.
+La imputación del gasto se distingue del fondo que lo paga.
+
+Solicitudes de materiales vincula las necesidades de cada obra con Compras.
+
+Los adjuntos usan un almacenamiento común.
+Los adjuntos conservan el vínculo de sus documentos.
+Los adjuntos conservan los permisos de sus documentos.
+
+Para equipos, el contrato de Control de costos distingue los registros de Partes de las estimaciones.
+Sin Partes, Control de costos puede estimar el costo de equipos.
+La estimación usa la cantidad certificada, los coeficientes de equipos del ACU y las tarifas aplicables.
+Si faltan esos datos, Control de costos muestra el componente como incompleto.
+Toda estimación identifica su origen.
+Control de costos nunca presenta una estimación como costo observado.
+Control de costos nunca presenta una estimación como cero por falta de datos.
+
+---
+
 ## Matrices de acceso
 
 ### Quién puede leer qué
@@ -246,7 +320,10 @@ Esas relaciones no incorporan capacidades durante la creación estructural.
 ## Configuración por obra
 
 Cada obra registra su versión de catálogo y el conjunto efectivo de capacidades.
-La selección inicial de negocio es vacía.
+La selección inicial de negocio ya no es vacía.
+Toda obra nueva incorpora Presupuestos.
+La API exige Presupuestos después de comprobar si la solicitud corresponde a un replay (repetición) de una creación existente.
+La automatización usa el preset Recomendada.
 La API determina las dependencias y devuelve la configuración canónica.
 El CLI crea carpetas bajo `erp/` o `ecms/` solo cuando contienen capacidades.
 La vinculación replica la selección registrada sin modificarla.

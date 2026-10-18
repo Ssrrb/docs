@@ -464,3 +464,63 @@ La prueba usa un ítem temporal y lo elimina al terminar.
 La prueba no lee credenciales de Clerk.
 Esta identidad no reemplaza Developer ID ni notarización.
 
+## Segunda etapa: selección por niveles y release productivo
+
+Esta sección agrega la evolución del sprint.
+El contenido anterior describe la primera etapa y permanece como registro.
+
+### Recorrido guiado
+
+El asistente guía al usuario desde el tipo de proyecto Obra hasta la verificación de la carpeta.
+El recorrido pasa por el preset Recomendada o la opción Personalizar, el selector por niveles, los datos, el login con el helper de Ctrl+, la organización mediante Clerk, el perfil empresarial, el resumen, la creación, la verificación y la invitación de miembros o su postergación.
+El portal de Clerk permite crear la organización cuando la organización falta.
+Los selectores responden a ↑/↓, Espacio y Enter.
+El CLI incorpora la librería prompts al bundle.
+El CLI restaura la terminal y el cursor al terminar.
+La combinación `--manage-org --org <id>` vuelve al portal de la organización.
+Con `--json`, la combinación devuelve la organización y la URL.
+Con `--json`, la combinación no hace preguntas y no abre el navegador.
+El CLI busca el helper empaquetado de Ctrl+.
+El CLI conserva `--auth-cli`, las variables de entorno y la ruta manual.
+El detalle del recorrido está en `docs/system/architecture-overview.mdx`.
+
+### Presentación por niveles y preset Recomendada
+
+El selector organiza los módulos en cinco niveles de presentación.
+Cada módulo aparece una sola vez, identificado como ERP o ECMS.
+La tabla de niveles está en `docs/domain/module-hierarchy.mdx`.
+Los niveles y el preset son configuración de presentación.
+El catálogo y su grafo estructural confirmado no cambian.
+El preset Recomendada incluye 17 módulos: todos salvo Partes de máquina.
+El preset es la selección por defecto del asistente y de la automatización sin `--modules`.
+La opción Personalizar abre el selector con Presupuestos obligatorio y los demás módulos desmarcados.
+Presupuestos es obligatorio para toda obra nueva.
+El CLI incorpora Presupuestos a la entrada normalizada de toda creación nueva.
+La API exige Presupuestos después de comprobar si la solicitud corresponde a un replay (repetición) existente.
+El escenario 5 de la primera etapa (selección vacía válida) queda superado por esta regla.
+Vincular y recuperar conservan la selección original registrada.
+La decisión está en `docs/decisions/module-configuration.mdx`.
+
+### Verificación y publicación
+
+La verificación de esta etapa incluye:
+
+- Las suites de pruebas se ejecutan por ssh en la máquina desktop.
+- El tarball se construye y se instala en macOS y en Linux.
+- Las instalaciones usan Ctrl+ en las dos plataformas.
+- El registro, la organización, la invitación, la aceptación, la réplica y la revocación funcionan con la organización existente de Clerk.
+- Las migraciones se ensayan sobre una rama Neon que reproduce producción.
+- El Worker se despliega en `api.ctrlmas.tech`.
+- Una revisión independiente precede a la publicación.
+- La publicación libera el paquete `create-ctrl@0.1.0`.
+
+Reglas del lanzamiento:
+
+- El lanzamiento requiere Ctrl+ instalado.
+- Cada organización mantiene cinco miembros como límite.
+
+Fuera del alcance de esta etapa:
+
+- La interfaz empresarial.
+- Los números operativos.
+- La transferencia de archivos.
