@@ -1,0 +1,97 @@
+# Sprint semana 1
+
+*Execution · vigente*
+
+Cuatro personas, cuatro tarjetas, una por persona. Esta semana **no se implementan módulos**: se
+definen los límites, el flujo de datos y la interfaz del núcleo y de dos módulos.
+
+| Tarjeta | Dueño | Rama | Issue |
+|---|---|---|---|
+| N1 · Núcleo: identidad y sesión | Leandro | `core/sesion` | [#36](https://github.com/Ssrrb/ctrl-mas/issues/36) |
+| N2 · Núcleo: datos y multiempresa | Baltazar | `core/datos` | [#37](https://github.com/Ssrrb/ctrl-mas/issues/37) |
+| M1 · Módulo `erp.catalogs` | Sebastián | `mod/erp.catalogs` | [#38](https://github.com/Ssrrb/ctrl-mas/issues/38) |
+| M2 · Módulo `ecms.budgets` | Agustín | `mod/ecms.budgets-limites` | [#39](https://github.com/Ssrrb/ctrl-mas/issues/39) |
+
+## Por qué este sprint existe
+
+El catálogo declara 18 módulos. Uno solo está implementado. Hoy no existe ni un puerto ni un
+repositorio en `obra-api`, `obra-domain` ni `obra-module-core`: cada función recibe el cliente SQL
+directo. La capa de casos de uso que pide la arquitectura limpia todavía no existe.
+
+Si las cuatro personas arrancan módulos sin definir esto, cada una inventa su propio acceso a
+datos y a sesión. El núcleo nace cuatro veces. Por eso la semana produce interfaces y pruebas, no
+pantallas.
+
+El término es **módulo**. Un módulo es una capacidad de la aplicación. El núcleo es lo que
+comparten los módulos: la identidad, los datos y el catálogo. Ver
+[Jerarquía de módulos](../domain/module-hierarchy.mdx).
+
+## Estado del que parte
+
+La base es la rama `dev`.
+
+| Anillo | Dónde está | Qué hay |
+|---|---|---|
+| Entidades | `obra-domain/src/` | 70 líneas en total. Identificadores, fecha local y el decimal del motor. |
+| Casos de uso | — | No existe la capa. La lógica vive en `obra-api/src/worker/service.ts` y `budgets.ts`. |
+| Adaptadores | `obra-api/src/worker/` | Rutas, identidad, workspaces, obras, cliente SQL, errores. |
+| Drivers | Worker, Neon, Clerk, host de extensión, webview | Once migraciones, cada una con su archivo de seguridad. Trece tablas. |
+| Contratos compartidos | `obra-api/src/shared/` | El catálogo de 18 módulos con sus dependencias, el resolvedor y los manifiestos. |
+| Módulo con pantalla | `extensions/obra-budgets` | El único. El árbol de Inicio descubre un módulo por su comando `ctrl.open.<código>`. Sin comando, muestra «Próximamente». |
+
+`erp.catalogs` no depende de ningún módulo y seis dependen de él. `ecms.budgets` tampoco depende
+de ninguno y toda obra nueva lo incluye.
+
+## Las cuatro preguntas de cada tarjeta
+
+Cada dueño responde las mismas cuatro preguntas sobre su tema. La tarjeta trae las preguntas. El
+dueño investiga y escribe las respuestas.
+
+1. **Funcionalidad.** Qué resuelve, y qué queda explícitamente afuera.
+2. **Límites.** Qué archivo pertenece a qué anillo. Qué es núcleo y qué es del módulo. Quién
+   puede importar a quién.
+3. **Flujo de datos.** Quién es dueño del dato, qué cruza la frontera y en qué dirección, quién
+   lo valida y en qué punto.
+4. **Interfaz.** El puerto en TypeScript, el contrato HTTP y la pantalla.
+
+## Definición de Terminado
+
+La misma para las cuatro tarjetas.
+
+- Un documento con las cuatro respuestas, en este wiki.
+- La interfaz en TypeScript, que compila.
+- Un fixture de entrada y salida, escrito antes del código.
+- Una prueba con adaptador en memoria que pasa sin base de datos, sin Clerk y sin Docker.
+- El linter limpio en los archivos que cambió.
+- Cero archivos editados fuera del área que la tarjeta declara.
+- El PR con el problema, el límite propuesto, el flujo, la interfaz, las pruebas corridas con su
+  salida, los riesgos y lo que dejó afuera.
+- La revisión del vecino contra esta lista.
+
+## Reglas
+
+1. Una tarjeta por persona. Nadie toma la segunda hasta cerrar la propia.
+2. Nadie edita archivos fuera del área que su tarjeta declara. Si hace falta tocar lo de otro, el
+   dueño para, lo anota en su PR como lo que al núcleo le falta, y sigue. Esa nota es material del
+   cierre.
+3. Cada dueño escribe su propio adaptador en memoria. Nadie importa la rama del otro esta semana.
+   Así los cuatro avanzan sobre el mismo núcleo sin esperarse.
+4. El dueño investiga antes de escribir. Lee el código y este wiki, y trabaja con sus agentes.
+   Una respuesta se apoya en evidencia.
+5. El dueño verifica antes de publicar la rama. El PR nace en borrador el primer día y se publica
+   cuando los comandos pasan.
+
+## Fechas
+
+| Día | Qué |
+|---|---|
+| Martes 20 | Apertura. Cada dueño abre su PR en borrador con su objetivo en el título. |
+| Miércoles 21 y jueves 22 | Investigación y escritura. Un comentario por día en el PR propio. |
+| Viernes 23 | Cada dueño publica su interfaz y pide la revisión del vecino. |
+| Sábado 24 | Entrega. Cierre de 45 minutos: se comparan las cuatro interfaces. Lo que se repite es el núcleo. Un choque entre dos interfaces es el hallazgo de la semana y sale como decisión. |
+
+## Lo que este sprint no define
+
+- El reparto de los 14 módulos restantes.
+- El calendario hasta el release.
+- La implementación de ninguna pantalla.
