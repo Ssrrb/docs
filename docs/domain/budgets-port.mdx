@@ -1,0 +1,73 @@
+# Presupuestos (`ecms.budgets`): anillos y puerto
+
+*Domain · draft*
+
+`obra-api/src/worker/budgets.ts` junta en 717 líneas la ruta, la regla, el SQL y el motor de cálculo. Esta página separa cada parte por anillo y lista lo que un módulo nuevo repetiría. `GET …/changes` ya está extraído como prueba: ruta → caso de uso → puerto, sin cambio de comportamiento.
+
+## Respuestas
+
+1. **Funcionalidad.** Son las rutas de la tabla. Lo que no está en la tabla no existe.
+2. **Límites.** El motor (`obra-budget-engine`) aplica comandos, recalcula, importa y totaliza. El módulo pone la empresa, el idempotente, la revisión, el borrado lógico y la persistencia.
+3. **Flujo de datos.** El webview habla con el host (mensajes `v: 1`), y el host con el Worker por HTTP. El token queda en el host. La base es la dueña del presupuesto: el editor pide `/changes` cada 15 s y el disco solo recibe exportaciones. No hay nada que reconciliar.
+4. **Interfaz.** Está en `obra-api/src/budgets/`: `ports.ts` (`PresupuestosRepos` y `BudgetPort`), `casosDeUso.ts` (`listarCambios`) y dos adaptadores, `memory.ts` y `postgres.ts`.
+
+| Ruta (`…/projects/:id/budgets/:kind` o `…/budgets/:id` si es suelto) | Respuestas |
+|---|---|
+| `GET` · `POST` crear · `DELETE` | 200 · 201/200 · 404 · 422 |
+| `POST /commands`: un lote contra `baseRevision`, idempotente por `mutationId` | 200 · 409 · 422 |
+| `GET /changes?after&limit` | 200 · 404 · 422 |
+| `POST /restore` · `POST /import` · `POST /promote` (solo suelto) | 200 · 201 · 409 · 422 |
+| `GET` · `POST /v1/organizations/:org/budgets`: índice y suelto nuevo | 200 · 201 · 409 · 422 |
+
+## Mapa de anillos de `budgets.ts`
+
+| Líneas | Qué | Anillo |
+|---|---|---|
+| 33-67, 306-317, 362-431, 577-592 | `DetailedApiError`, `BudgetRequest`, `integerParam`, `parseImport`, `parseDraft` | Borde HTTP |
+| 542-575, 716-717 | `handleBudgetRequest`, `handleCompanyBudgets` | Borde HTTP |
+| 93-112, 222-236 | `budgetMissing`, `toSnapshot`, `replayOrConflict` | Regla del módulo |
+| 136-157, 192-220, 433-453 | `parseCurrency`, `parseBatch`, `applyOrReject`, `importedDocument` | Motor (entidad) |
+| 159-190, 252-304, 340-352, 455-540, 594-656, 690-714 | `createBudget`, `applyBatch`, `setDeleted`, `importBudget`, `createDraft`, `promoteDraft`, `listBudgets` | Caso de uso con el SQL adentro |
+| 69-91, 114-134, 238-250 | filas, `isUuid`, `requireProject`, `findBudget`, `budgetTarget`, `findOperation` | Adaptador |
+| 319-338 | `budgetRef`, `listChanges` | Borde HTTP. Llama a `listarCambios` (extraído). |
+
+## Lo que un módulo nuevo repetiría
+
+Esta lista es la propuesta de núcleo. La marca ✓ indica que `erp.catalogs` o `core/datos` ya repiten lo mismo.
+
+| # | Qué | Dónde | Se repite |
+|---|---|---|---|
+| 1 | La empresa entra una vez (`TenantScope`) y va en cada WHERE | `app.ts`, `budgetTarget`, `listBudgets` | ✓ |
+| 2 | «La obra existe en esta empresa» → 404 | `requireProject` | ✓ |
+| 3 | `isUuid` del id de la ruta | `isUuid` | |
+| 4 | Error con campos extra junto a `error`. Validación del motor → 422 `{path}` (4 veces). | `DetailedApiError` | ✓ |
+| 5 | Leer enteros y monedas de la consulta y del cuerpo | `integerParam`, `parseCurrency` | |
+| 6 | Revisión optimista: `WHERE revision = $n` → 409 | `applyBatch`, `importBudget` | ✓ |
+| 7 | Diario idempotente: `mutationId` + hash → repetir o 409 | `replayOrConflict` | |
+| 8 | `SAVEPOINT` + choque de unicidad → devolver el ganador (4 veces) | `createBudget`, `applyBatch`, `importBudget`, `promoteDraft` | |
+| 9 | Borrado lógico y restaurar | `setDeleted` | ✓ |
+| 10 | Página por clave: `after`, `limit + 1`, `hasMore` | `listChanges` | ✓ |
+| 11 | Crear idempotente: 201 nuevo, 200 si ya existía | `createBudget`, `createDraft` | |
+| 12 | Autoría: `created_by` y `updated_by` en cada escritura | todos los INSERT/UPDATE | ✓ |
+| 13 | bigint → `Number` | `toSnapshot`, `postgres.ts` | |
+| 14 | Registrar la ruta, los métodos, el límite de tasa y el tamaño del cuerpo | `app.ts` | ✓ |
+
+## `BudgetPort`
+
+Caja chica lo usa para comprometer un ítem del presupuesto. Está definido, sin implementar: obra-api todavía no tiene tabla de movimientos.
+
+```ts
+interface BudgetPort {
+	item(projectId: string, itemId: string): Promise<BudgetItemRef | null>; // itemId = CostItem.id
+	post(movement: BudgetMovement): Promise<{ id: string }>; // committed al cargar · actual al aprobar
+	reverse(source: MovementSource): Promise<void>; // rechazo: anula los del comprobante
+}
+```
+
+Los montos son `DecimalString`, no `number`.
+
+## Fuera de esta página
+
+- El resto del refactor de `budgets.ts`.
+- La tabla de movimientos y el adaptador del `BudgetPort`.
+- El editor vendorizado.
