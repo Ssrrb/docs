@@ -1,0 +1,42 @@
+# Catálogos (`erp.catalogs`)
+
+*Domain · draft*
+
+Catálogos guarda los datos maestros de la empresa: insumos, unidades, proveedores y precios de referencia. La empresa define cada insumo. La obra habilita insumos y fija su precio aplicable. Siete módulos dependen de Catálogos y enlazan por id.
+
+## Reglas del ERP
+
+Estas reglas aplican a todo módulo del ERP.
+
+| # | Regla | En Catálogos |
+|---|---|---|
+| R1 | Una fila por cosa. Ningún JSON guarda listas. | Una tabla por entidad. |
+| R2 | Un enlace usa el id. Un enlace no usa el texto. | `unidadId`, `insumoId`. El código no cambia. |
+| R3 | Cada fila tiene `company_id`, RLS y FK compuestas. | El puerto recibe la empresa una vez, en `TenantScope`. |
+| R4 | Un precio solo se agrega. Tiene vigencia, moneda y origen. | Corregir un precio agrega una fila. |
+| R5 | Un documento copia el precio. | El documento guarda una `CotizacionInsumo`. |
+| R6 | Desactivar, no borrar. | Un insumo inactivo sigue legible. |
+| R7 | La concurrencia es por fila. | `revision` → 409 `revision_mismatch`. |
+
+## Respuestas
+
+1. **Funcionalidad.** Entran `Insumo` (material, mano de obra, equipo o servicio), `Unidad`, `Proveedor`, `PrecioInsumo`, `HabilitacionObra` y `PrecioObra`. Quedan afuera la composición del ACU, las existencias, el precio de compra, el jornal con cargas, las máquinas y el IVA.
+2. **Límites.** La empresa define. La obra habilita y fija su precio. Esto responde «los valores empresariales que una obra hereda» de `docs/decisions/module-configuration.mdx`.
+3. **Flujo de datos.** Un miembro de la empresa crea el insumo. ACU, presupuesto y compras copian una cotización. El precio de la obra tiene prioridad sobre el de la empresa. Un precio que falta es null, nunca cero. Desactivar no consulta a los consumidores.
+4. **Interfaz.** Los puertos y los casos de uso están en `obra-api/src/catalogs/`. Las rutas son `/v1/organizations/:orgId/catalogs/{insumos,proveedores,unidades}` y `/v1/organizations/:orgId/projects/:obraId/catalog`. Los errores son 404, 409 tipado y 422.
+
+## Pantalla (boceto)
+
+- Comando `ctrl.open.erp.catalogs`. Un panel por empresa.
+- Pestañas: Insumos · Proveedores · Unidades · Esta obra.
+- Insumos: Código · Descripción · Unidad · Tipo · Precio vigente · Moneda · Desde · Estado.
+- Esta obra: Precio aplicable · Origen (obra, empresa o sin precio).
+- Estados: vacío · cargando · guardado · conflicto · sin acceso.
+
+## Lo que le falta al núcleo
+
+- Un repositorio que solo agrega filas (R4).
+- Una lectura de filas inactivas. Archivar no es desactivar (R6).
+- `update` con `baseRevision` (R7).
+- FK compuestas entre tablas (R3).
+- La migración del banco de ACU: de JSON a filas, de código a id (R1, R2).
