@@ -25,6 +25,28 @@ Estas reglas aplican a todo módulo del ERP.
 3. **Flujo de datos.** Un miembro de la empresa crea el insumo. ACU, presupuesto y compras copian una cotización. El precio de la obra tiene prioridad sobre el de la empresa. Un precio que falta es null, nunca cero. Desactivar no consulta a los consumidores.
 4. **Interfaz.** Los puertos y los casos de uso están en `obra-api/src/catalogs/`. Las rutas son `/v1/organizations/:orgId/catalogs/{insumos,proveedores,unidades}` y `/v1/organizations/:orgId/projects/:obraId/catalog`. Los errores son 404, 409 tipado y 422.
 
+## Contrato HTTP (`erp.catalogs/api`)
+
+Base: `/v1/organizations/:orgId`. Toda ruta exige un miembro de la organización (401 sin sesión, 403 sin membresía). `:coleccion` es `unidades`, `insumos` o `proveedores`. Un id que no es uuid o es de otra empresa responde 404 `no_encontrado`.
+
+| Método | Ruta | Cuerpo | Responde |
+|---|---|---|---|
+| GET | `/catalogs/:coleccion?limit&after&activo` | — | 200 `{ items, nextCursor }` · 422 si `limit` no está entre 1 y 200 o `after` no es uuid |
+| POST | `/catalogs/:coleccion` | la entidad nueva | 201 la fila · 422 `{ error: { code: "validacion" }, campo }` · 409 `codigo_tomado`, `ruc_tomado`, `unidad_inactiva` |
+| GET | `/catalogs/:coleccion/:id` | — | 200 la fila, aunque esté inactiva |
+| PATCH | `/catalogs/:coleccion/:id` | `{ baseRevision, cambios }` | 200 la fila · 409 `revision_mismatch` con `actual` · 422 con `campo` (un campo inmutable también es 422) |
+| POST | `/catalogs/:coleccion/:id/desactivar` | `{ baseRevision }` | 200 la fila · 409 `revision_mismatch` con `actual` |
+| POST | `/catalogs/:coleccion/:id/reactivar` | `{ baseRevision }` | 200 la fila · 409 `revision_mismatch` con `actual` |
+| GET | `/catalogs/insumos/:id/precios` | — | 200 `{ items }` en orden de vigencia |
+| POST | `/catalogs/insumos/:id/precios` | `{ valor, moneda, vigenteDesde, origen }` | 201 el precio · 422 con `campo` |
+| GET | `/catalogs/insumos/:id/cotizacion?fecha&moneda[&obraId]` | — | 200 `{ cotizacion }` o `{ cotizacion: null }` · 422 con `campo` |
+| GET | `/projects/:obraId/catalog/insumos?fecha&moneda&limit&after` | — | 200 `{ items: [{ habilitacion, insumo, cotizacion }], nextCursor }` |
+| POST | `/projects/:obraId/catalog/insumos` | `{ insumoId }` | 200 la habilitación (repetirlo devuelve la misma) · 409 `insumo_inactivo` |
+| POST | `/projects/:obraId/catalog/insumos/:insumoId/precio` | `{ valor, moneda, vigenteDesde, origen }` | 201 el precio de obra · 409 `insumo_no_habilitado` |
+| POST | `/projects/:obraId/catalog/habilitaciones/:id/deshabilitar` | `{ baseRevision }` | 200 la habilitación · 409 `revision_mismatch` con `actual` |
+
+Los errores tienen la forma `{ error: { code, message } }` más `campo` en un 422 y `actual` en un 409 por revisión. Los montos (`valor`, `precio`) y las fechas viajan como texto: `"50000"`, `"2026-01-01"`.
+
 ## Pantalla (boceto)
 
 - Comando `ctrl.open.erp.catalogs`. Un panel por empresa.
