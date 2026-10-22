@@ -40,6 +40,7 @@ Base: `/v1/organizations/:orgId`. Toda ruta exige un miembro de la organización
 | GET | `/catalogs/insumos/:id/precios` | — | 200 `{ items }` en orden de vigencia |
 | POST | `/catalogs/insumos/:id/precios` | `{ valor, moneda, vigenteDesde, origen }` | 201 el precio · 422 con `campo` |
 | GET | `/catalogs/insumos/:id/cotizacion?fecha&moneda[&obraId]` | — | 200 `{ cotizacion }` o `{ cotizacion: null }` · 422 con `campo` |
+| GET | `/catalogs/cotizaciones?fecha&moneda&limit&after&activo` | — | 200 `{ items: [{ insumo, cotizacion }], nextCursor }`: la página de insumos con el precio de la empresa que rige |
 | GET | `/projects/:obraId/catalog/insumos?fecha&moneda&limit&after` | — | 200 `{ items: [{ habilitacion, insumo, cotizacion }], nextCursor }` |
 | POST | `/projects/:obraId/catalog/insumos` | `{ insumoId }` | 200 la habilitación (repetirlo devuelve la misma) · 409 `insumo_inactivo` |
 | POST | `/projects/:obraId/catalog/insumos/:insumoId/precio` | `{ valor, moneda, vigenteDesde, origen }` | 201 el precio de obra · 409 `insumo_no_habilitado` |
